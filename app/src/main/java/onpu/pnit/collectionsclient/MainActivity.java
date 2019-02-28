@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -85,17 +86,26 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+
+        if (id == R.id.nav_search) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_profile) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_collections) {
+            Intent i = new Intent(this, CollectionList.class);
+            startActivity(i);
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_favorites) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_cart) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_chats) {
+
+        } else if(id == R.id.nav_settings) {
+
+        } else if(id == R.id.nav_signout) {
+
+        } else if(id== R.id.nav_help) {
 
         }
 
