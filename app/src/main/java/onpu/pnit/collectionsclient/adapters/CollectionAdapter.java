@@ -36,7 +36,7 @@ public class CollectionAdapter extends ListAdapter<Collection, CollectionAdapter
     @Override
     public CollectionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.collection_info, parent, false);
+                .inflate(R.layout.collection_card, parent, false);
         return new CollectionViewHolder(itemView);
     }
 
