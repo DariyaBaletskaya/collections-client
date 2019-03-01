@@ -16,6 +16,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META_INF/ASL2.0'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/notice.txt'
+    }
 }
 
 dependencies {
@@ -29,5 +38,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.4.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.4.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
+    implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
 
 }
