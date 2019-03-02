@@ -41,10 +41,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
 
     private void addToFavourites() {
-        Toast.makeText(this, "Add to favourites", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ItemDetailsActivity.this, "Add to favourites", Toast.LENGTH_SHORT).show();
     }
 
     private void shareItemDetails() {
-        Toast.makeText(this, "Share item details", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ItemDetailsActivity.this, "Share item details", Toast.LENGTH_SHORT).show();
     }
 }
