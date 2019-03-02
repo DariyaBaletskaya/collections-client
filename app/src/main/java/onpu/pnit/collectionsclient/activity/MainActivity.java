@@ -1,10 +1,10 @@
 package onpu.pnit.collectionsclient.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.view.View;
 
@@ -15,27 +15,43 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import onpu.pnit.collectionsclient.R;
+import onpu.pnit.collectionsclient.adapters.CollectionAdapter;
+import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.models.CollectionRestClient;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    private CollectionAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RecyclerView recyclerView = findViewById(R.id.list_collections);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+
+        adapter = new CollectionAdapter();
+        recyclerView.setAdapter(adapter);
+        new HttpRequestAsk().execute();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, MyItemDetailsActivity.class);
+                Intent i = new Intent(MainActivity.this, UserAddActivity.class);
                 startActivity(i);
             }
         });
@@ -47,6 +63,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_collections);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -83,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -93,10 +110,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_search) {
             // Handle the camera action
         } else if (id == R.id.nav_profile) {
-
-        } else if (id == R.id.nav_collections) {
-            Intent i = new Intent(this, CollectionList.class);
-            startActivity(i);
 
         } else if (id == R.id.nav_favorites) {
 
@@ -117,4 +130,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private class HttpRequestAsk extends AsyncTask<Void, Void, List<Collection>> {
+
+        @Override
+        protected List<Collection> doInBackground(Void... params){
+            CollectionRestClient collectionRestClient = new CollectionRestClient();
+            return collectionRestClient.findAll();
+        }
+
+        @Override
+        protected void onPostExecute(List<Collection> collections) {
+            adapter.submitList(collections);
+        }
+
+    }
 }
