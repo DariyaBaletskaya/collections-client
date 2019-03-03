@@ -25,6 +25,10 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/notice.txt'
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -44,6 +48,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
     implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
 
 
 }
