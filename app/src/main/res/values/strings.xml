@@ -29,4 +29,28 @@
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+
+    <!--strings for enter_form.xml-->
+    <string name="tv_nameProgram">Collections App</string>
+    <string name="tv_taglineProgram">Collect anytime, anywhere</string>
+    <string name="tv_email">Email address</string>
+    <string name="tv_password">Password</string>
+    <string name="tv_forgotPassword">Forgot password?</string>
+    <string name="b_logIn">Log in</string>
+    <string name="tv_logWithSocialAcc">Or login with social accounts</string>
+    <string name="tv_noAccountYet">Don\'t have an account yet?</string>
+    <string name="tv_signUp">Sign up now!</string>
+
+    <string name="tv_full_name">Full name</string>
+    <string name="tv_place_living">Place of living</string>
+    <string name="tv_interest">Intresting in</string>
+    <string name="tv_likes">233</string>
+    <string name="tv_followers">109</string>
+    <string name="tv_collections">9</string>
+    <string name="b_complain">Complain</string>
+    <string name="b_follow">Follow</string>
+    <string name="sign_up">Sign up</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
