@@ -15,6 +15,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import onpu.pnit.collectionsclient.R;
@@ -30,18 +33,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private CollectionAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.list_collections);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-
-        adapter = new CollectionAdapter();
-        recyclerView.setAdapter(adapter);
-        new HttpRequestAsk().execute();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,7 +60,6 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_collections);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -105,11 +101,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Fragment fragment = null;
 
 
         if (id == R.id.nav_search) {
-            // Handle the camera action
-        } else if (id == R.id.nav_profile) {
+
+        } else if(id == R.id.nav_collections) {
+
+            fragment = new CollectionFragment();
+
+        }else if (id == R.id.nav_profile) {
 
         } else if (id == R.id.nav_favorites) {
 
@@ -125,23 +126,18 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        if(fragment != null){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+
+            ft.replace(R.id.screen_area, fragment);
+
+            ft.commit();
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private class HttpRequestAsk extends AsyncTask<Void, Void, List<Collection>> {
-
-        @Override
-        protected List<Collection> doInBackground(Void... params){
-            CollectionRestClient collectionRestClient = new CollectionRestClient();
-            return collectionRestClient.findAll();
-        }
-
-        @Override
-        protected void onPostExecute(List<Collection> collections) {
-            adapter.submitList(collections);
-        }
-
-    }
 }
