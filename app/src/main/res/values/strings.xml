@@ -28,6 +28,8 @@
     <string name="add_to_favourites">Add to favourites</string>
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="edit">Edit</string>
+    <string name="title">Title</string>
+    <string name="price">Price</string>
     <string name="delete">Delete</string>
 
     <!--strings for enter_form.xml-->
@@ -50,7 +52,4 @@
     <string name="b_complain">Complain</string>
     <string name="b_follow">Follow</string>
     <string name="sign_up">Sign up</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
