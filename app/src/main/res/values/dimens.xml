@@ -17,7 +17,7 @@
     <dimen name="image_horizontal_margin">16dp</dimen>
     <dimen name="edit_text_vertical_margin">0dp</dimen>
 
-    <dimen name="profile_image">150dp</dimen>
+    <dimen name="profile_image">140dp</dimen>
     <dimen name="icons_profile">43dp</dimen>
     <dimen name="font_size_full_name">25sp</dimen>
     <dimen name="space_between_grid_blocks">25dp</dimen>

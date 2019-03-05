@@ -1,34 +1,23 @@
 package onpu.pnit.collectionsclient.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import onpu.pnit.collectionsclient.R;
-import onpu.pnit.collectionsclient.adapters.CollectionAdapter;
-import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.models.CollectionRestClient;
-
-import android.view.Menu;
-import android.view.MenuItem;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -111,6 +100,8 @@ public class MainActivity extends AppCompatActivity
             fragment = new CollectionFragment();
 
         }else if (id == R.id.nav_profile) {
+
+            fragment = new ViewProfile();
 
         } else if (id == R.id.nav_favorites) {
 

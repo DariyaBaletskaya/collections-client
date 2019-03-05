@@ -32,13 +32,14 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
@@ -48,7 +49,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
     implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-
-
-
+    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
 }
