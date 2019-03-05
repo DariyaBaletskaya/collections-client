@@ -44,20 +44,20 @@ public class CollectionAdapter extends ListAdapter<Collection, CollectionAdapter
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         Collection currentCollection = getItem(position);
         holder.title.setText(currentCollection.getTitle());
-        holder.description.setText(currentCollection.getDescription());
+        holder.category.setText(currentCollection.getCategory());
     }
 
     public class CollectionViewHolder extends RecyclerView.ViewHolder {
         //TODO: Добавить отображение фото, возможно по URL
         ImageView photo;
         TextView title;
-        TextView description;
+        TextView category;
 
         public CollectionViewHolder(View itemView){
             super(itemView);
-            title = itemView.findViewById(R.id.collection_title);
-            description = itemView.findViewById(R.id.collection_description);
-            photo = itemView.findViewById(R.id.collection_photo);
+            title = itemView.findViewById(R.id.card_collection_title);
+            category = itemView.findViewById(R.id.card_collection_category);
+            photo = itemView.findViewById(R.id.card_collection_photo);
         }
     }
 }
