@@ -6,35 +6,35 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_search"
-            android:icon="@drawable/ic_search_24dp"
+            android:icon="@drawable/ic_search"
             android:title="@string/nav_search" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_profile_24dp"
+            android:icon="@drawable/ic_profile"
             android:title="@string/nav_profile" />
         <item
             android:id="@+id/nav_collections"
-            android:icon="@drawable/ic_collections_24dp"
+            android:icon="@drawable/ic_collections"
             android:title="@string/nav_collections" />
         <item
             android:id="@+id/nav_favorites"
-            android:icon="@drawable/ic_favorites_24dp"
+            android:icon="@drawable/ic_favorites"
             android:title="@string/nav_favorites" />
         <item
             android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_cart_24dp"
+            android:icon="@drawable/ic_cart"
             android:title="@string/nav_cart" />
         <item
             android:id="@+id/nav_chats"
-            android:icon="@drawable/ic_chat_24dp"
+            android:icon="@drawable/ic_chat"
             android:title="@string/nav_chats" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_24dp"
+            android:icon="@drawable/ic_settings"
             android:title="@string/action_settings" />
         <item
             android:id="@+id/nav_signout"
-            android:icon="@drawable/ic_signout_24dp"
+            android:icon="@drawable/ic_signout"
             android:title="@string/nav_signout" />
         <item
             android:id="@+id/nav_help"

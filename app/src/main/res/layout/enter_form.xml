@@ -117,7 +117,7 @@
             android:layout_weight="1"
             android:layout_marginRight="@dimen/image_horizontal_margin"
             android:layout_marginLeft="@dimen/image_horizontal_margin"
-            app:srcCompat="@drawable/logo" />
+            app:srcCompat="@drawable/logo_facebook" />
 
         <ImageView
             android:id="@+id/im_google"
@@ -126,7 +126,7 @@
             android:layout_weight="1"
             android:layout_marginRight="@dimen/image_horizontal_margin"
             android:layout_marginLeft="@dimen/image_horizontal_margin"
-            app:srcCompat="@drawable/ic_add_24dp" />
+            app:srcCompat="@drawable/ic_add" />
     </LinearLayout>
 
     <LinearLayout
