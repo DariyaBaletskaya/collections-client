@@ -126,7 +126,7 @@
             android:layout_weight="1"
             android:layout_marginRight="@dimen/image_horizontal_margin"
             android:layout_marginLeft="@dimen/image_horizontal_margin"
-            app:srcCompat="@drawable/plus" />
+            app:srcCompat="@drawable/ic_add_24dp" />
     </LinearLayout>
 
     <LinearLayout

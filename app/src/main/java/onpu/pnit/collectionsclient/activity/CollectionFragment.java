@@ -1,5 +1,9 @@
 package onpu.pnit.collectionsclient.activity;
 
+
+import android.content.Context;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import onpu.pnit.collectionsclient.MyReceiver;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
@@ -21,12 +26,21 @@ import onpu.pnit.collectionsclient.models.CollectionRestClient;
 
 
 public class CollectionFragment extends Fragment {
+    MyReceiver broadcastReceiver = new MyReceiver();
 
     private CollectionAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.collection_list, null);
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        context.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     @Override
@@ -43,6 +57,12 @@ public class CollectionFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
     private class HttpRequestAsk extends AsyncTask<Void, Void, List<Collection>> {
 
         @Override
@@ -57,4 +77,8 @@ public class CollectionFragment extends Fragment {
         }
 
     }
+
+
 }
+
+
