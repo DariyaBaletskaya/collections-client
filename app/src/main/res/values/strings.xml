@@ -45,10 +45,16 @@
 
     <string name="tv_full_name">Full name</string>
     <string name="tv_place_living">Place of living</string>
-    <string name="tv_interest">Intresting in</string>
-    <string name="tv_likes">233</string>
-    <string name="tv_followers">109</string>
-    <string name="tv_collections">9</string>
+    <string name="tv_interest">Intresting in Transform legacy-support-core-utils.aar (androidx.legacy:legacy-support-core-utils:1.0.0) with AarTransform
+> Transform circleimageview.aar (de.hdodenhof:circleimageview:3.0.0) with AarTransform
+> Transform recyclerview.aar (androidx.recyclerview:recyclerview:1.0.0) with AarTransform
+> Transform constraintlayout.aar (androidx.constraintlayout:constraintlayout:1.1.3) with AarTransform</string>
+    <string name="tv_likes_value">233</string>
+    <string name="tv_followers_value">109</string>
+    <string name="tv_collections_value">9</string>
+    <string name="tv_likes">likes</string>
+    <string name="tv_followers">followers</string>
+    <string name="tv_collections">collections</string>
     <string name="b_complain">Complain</string>
     <string name="b_follow">Follow</string>
     <string name="sign_up">Sign up</string>
