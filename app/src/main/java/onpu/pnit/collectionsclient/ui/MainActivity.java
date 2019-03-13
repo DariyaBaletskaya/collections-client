@@ -1,4 +1,4 @@
-package onpu.pnit.collectionsclient.activity;
+package onpu.pnit.collectionsclient.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, UserAddActivity.class);
+                Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
                 startActivity(i);
             }
         });

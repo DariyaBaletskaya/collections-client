@@ -1,4 +1,4 @@
-package onpu.pnit.collectionsclient.activity;
+package onpu.pnit.collectionsclient.ui;
 
 
 import android.os.Bundle;
@@ -25,19 +25,19 @@ public class UserAddActivity extends AppCompatActivity {
 
         setContentView(R.layout.user_add);
 
-        TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
+        TextInputLayout usernameWrapper = findViewById(R.id.usernameWrapper);
         usernameWrapper.setHint("Username");
-        TextInputLayout passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
+        TextInputLayout passwordWrapper = findViewById(R.id.passwordWrapper);
         passwordWrapper.setHint("Password");
-        TextInputLayout confirmPasswordWrapper = (TextInputLayout) findViewById(R.id.confirmPasswordWrapper);
+        TextInputLayout confirmPasswordWrapper = findViewById(R.id.confirmPasswordWrapper);
         confirmPasswordWrapper.setHint("Confirm Password");
-        TextInputLayout countryWrapper = (TextInputLayout) findViewById(R.id.countryWrapper);
+        TextInputLayout countryWrapper = findViewById(R.id.countryWrapper);
         countryWrapper.setHint("Country");
-        TextInputLayout cityWrapper = (TextInputLayout) findViewById(R.id.cityWrapper);
+        TextInputLayout cityWrapper = findViewById(R.id.cityWrapper);
         cityWrapper.setHint("City");
-        TextInputLayout ageWrapper = (TextInputLayout) findViewById(R.id.ageWrapper);
+        TextInputLayout ageWrapper = findViewById(R.id.ageWrapper);
         ageWrapper.setHint("Age");
-        TextInputLayout userInfoWrapper = (TextInputLayout) findViewById(R.id.userInfoWrapper);
+        TextInputLayout userInfoWrapper = findViewById(R.id.userInfoWrapper);
         userInfoWrapper.setHint("Info");
 
         Button signUpBtn = (Button) findViewById(R.id.sign_up);
@@ -73,9 +73,7 @@ public class UserAddActivity extends AppCompatActivity {
     private boolean validateAge(String age) {
         matcher = patternAge.matcher(age);
         if(matcher.matches()) {
-            if(Integer.parseInt(age) > 0 && Integer.parseInt(age) < 110) {
-                return true;
-            }
+            return Integer.parseInt(age) > 0 && Integer.parseInt(age) < 110;
         }
 
         return false;

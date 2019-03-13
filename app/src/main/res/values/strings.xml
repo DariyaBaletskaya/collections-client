@@ -31,6 +31,10 @@
     <string name="title">Title</string>
     <string name="price">Price</string>
     <string name="delete">Delete</string>
+    <string name="create_collection">Create collection</string>
+    <string name="add_item">Add item</string>
+    <string name="edit_collection">Edit collection</string>
+    <string name="edit_item">Edit item</string>
 
     <!--strings for enter_form.xml-->
     <string name="tv_nameProgram">Collections App</string>

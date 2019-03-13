@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
 
-public class Collection implements Serializable {
+public class Collection {
     @JsonProperty("id")
     private long id;
     @JsonProperty("title")

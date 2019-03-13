@@ -1,4 +1,4 @@
-package onpu.pnit.collectionsclient.activity;
+package onpu.pnit.collectionsclient.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

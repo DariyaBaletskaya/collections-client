@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ViewProfile">
+    tools:context=".ui.ViewProfile">
 
     <View
         android:layout_width="match_parent"
@@ -163,8 +163,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/profile_btn_margin"
                             android:layout_marginRight="@dimen/profile_btn_margin"
-                            android:layout_weight="1"
                             android:background="@drawable/element_outline"
+                            android:layout_weight="1"
                             android:text="@string/b_complain"
                             android:textColor="@color/colorAccent"
                             android:textSize="@dimen/font_size_plain_text" />
@@ -174,8 +174,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/profile_btn_margin"
                             android:layout_marginRight="@dimen/profile_btn_margin"
-                            android:layout_weight="1"
                             android:background="@drawable/element_outline1"
+                            android:layout_weight="1"
                             android:text="@string/b_follow"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="@dimen/font_size_plain_text" />
