@@ -7,6 +7,7 @@ import java.io.Serializable;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
@@ -70,4 +71,7 @@ public class Collection implements Serializable {
         this.description = description;
     }
 
+    public int getUserId() {
+        return userId;
+    }
 }

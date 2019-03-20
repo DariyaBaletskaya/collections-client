@@ -14,7 +14,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "items", foreignKeys =  @ForeignKey(entity = User.class,
         parentColumns = "id", childColumns = "userId", onDelete = CASCADE))
-public class Item implements Serializable {
+public class Item {
 
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
@@ -41,5 +41,29 @@ public class Item implements Serializable {
 
     @Ignore
     public Item() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isOnSale() {
+        return isOnSale;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }

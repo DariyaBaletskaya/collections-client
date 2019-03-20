@@ -9,4 +9,17 @@ import androidx.room.ForeignKey;
 public class ItemCollectionJoin {
     private int itemId;
     private int collectionId;
+
+    public ItemCollectionJoin(int itemId, int collectionId) {
+        this.itemId = itemId;
+        this.collectionId = collectionId;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public int getCollectionId() {
+        return collectionId;
+    }
 }
