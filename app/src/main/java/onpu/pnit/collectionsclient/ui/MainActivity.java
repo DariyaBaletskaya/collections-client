@@ -1,4 +1,4 @@
-package onpu.pnit.collectionsclient.activity;
+package onpu.pnit.collectionsclient.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
