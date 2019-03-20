@@ -11,7 +11,7 @@ import androidx.room.Update;
 import onpu.pnit.collectionsclient.entities.User;
 
 @Dao
-public interface UserDAO {
+public interface UserDao {
 
     @Insert
     void insertUser(User user);
@@ -26,7 +26,7 @@ public interface UserDAO {
     User getUserByUsername(String username);
 
     @Update
-    void updateUser(User... users);
+    void updateUsers(User... users);
 
     @Query("SELECT * from users")
     LiveData<List<User>> getAllUsers();

@@ -1,4 +1,4 @@
-package onpu.pnit.collectionsclient.models;
+package onpu.pnit.collectionsclient;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;

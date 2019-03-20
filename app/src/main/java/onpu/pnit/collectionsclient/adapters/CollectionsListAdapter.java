@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.OnItemClick;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
 
-public class CollectionAdapter extends ListAdapter<Collection, CollectionAdapter.CollectionViewHolder>{
+public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsListAdapter.CollectionViewHolder>{
 
     private static final DiffUtil.ItemCallback<Collection> DIFF_CALLBACK = new DiffUtil.ItemCallback<Collection>() {
         @Override
@@ -28,7 +30,7 @@ public class CollectionAdapter extends ListAdapter<Collection, CollectionAdapter
         }
     };
 
-    public CollectionAdapter() {
+    public CollectionsListAdapter() {
         super(DIFF_CALLBACK);
     }
 
@@ -59,5 +61,7 @@ public class CollectionAdapter extends ListAdapter<Collection, CollectionAdapter
             category = itemView.findViewById(R.id.card_collection_category);
             photo = itemView.findViewById(R.id.card_collection_photo);
         }
+
+
     }
 }

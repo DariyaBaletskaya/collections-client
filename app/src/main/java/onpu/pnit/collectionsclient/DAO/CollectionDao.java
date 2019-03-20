@@ -11,7 +11,7 @@ import androidx.room.Update;
 import onpu.pnit.collectionsclient.entities.Collection;
 
 @Dao
-public interface CollectionDAO {
+public interface CollectionDao {
     @Insert
     void insertCollection(Collection collection);
 
@@ -19,7 +19,10 @@ public interface CollectionDAO {
     void deleteCollection(Collection collection);
 
     @Update
-    void updateColection(Collection... collections);
+    void updateCollections(Collection... collections);
+
+    @Update
+    void updateCollection(Collection collection);
 
     @Query("DELETE FROM collections WHERE userId=:userId")
     void deleteAllCollectionsForUser(int userId);

@@ -11,6 +11,6 @@ public class ItemAddEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_add_edit);
-        getSupportActionBar().setTitle(R.string.add_item);
+        setTitle(R.string.add_item);
     }
 }

@@ -16,15 +16,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import onpu.pnit.collectionsclient.R;
-import onpu.pnit.collectionsclient.adapters.CollectionAdapter;
+import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.models.CollectionRestClient;
+import onpu.pnit.collectionsclient.CollectionRestClient;
 
 
 public class CollectionFragment extends Fragment {
 
 
-    private CollectionAdapter adapter;
+    private CollectionsListAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class CollectionFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list_collections);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
-        adapter = new CollectionAdapter();
+        adapter = new CollectionsListAdapter();
         recyclerView.setAdapter(adapter);
         new HttpRequestAsk().execute();
 
