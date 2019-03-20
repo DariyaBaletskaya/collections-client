@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_array">
+        <item>Монеты</item>
+        <item>Почтовые марки</item>
+        <item>Картины</item>
+        <item>Модели</item>
+        <item>Автомобили</item>
+        <item>Кинофильмы</item>
+        <item>Музыкальные диски</item>
+        <item>Виниловые пластинки</item>
+        <item>Компьютерные игры</item>
+        <item>Насекомые</item>
+        <item>Минералы</item>
+        <item>Раковины моллюсков</item>
+        <item>Цветы</item>
+        <item>Купюры</item>
+        <item>Нашивки и шевроны</item>
+        <item>Униформа</item>
+        <item>Ордена, медали, значки</item>
+        <item>Пуговицы</item>
+        <item>Книги</item>
+        <item>Наклейки</item>
+        <item>Билеты</item>
+        <item>Часы</item>
+        <item>Посуда</item>
+        <item>Предметы из стекла</item>
+        <item>Техника</item>
+        <item>Бирдекели</item>
+        <item>Бабочки</item>
+        <item>Кактусы</item>
+        <item>Растения</item>
+        <item>Комнатные растения</item>
+        <item>Конструкторы</item>
+        <item>Куклы</item>
+        <item>Брелоки</item>
+        <item>Свечи</item>
+        <item>Вино</item>
+        <item>Алкоголь</item>
+        <item>Канцелярия</item>
+        <item>Настольные игры</item>
+        <item>Игральные карты</item>
+    </string-array>
+</resources>

@@ -17,9 +17,33 @@
     <dimen name="image_horizontal_margin">16dp</dimen>
     <dimen name="edit_text_vertical_margin">0dp</dimen>
 
-    <dimen name="profile_image">140dp</dimen>
+    <dimen name="profile_image">150dp</dimen>
     <dimen name="icons_profile">43dp</dimen>
     <dimen name="font_size_full_name">25sp</dimen>
     <dimen name="space_between_grid_blocks">25dp</dimen>
+
+
+    <dimen name="profile_main_padding">40dp</dimen>
+    <dimen name="v_color_background_profile">250dp</dimen>
+    <dimen name="block_vertical_margin">30dp</dimen>
+    <dimen name="profile_card_view_marginTop">85dp</dimen>
+    <dimen name="profile_card_corner_radius">10dp</dimen>
+    <dimen name="profile_content_padding">15dp</dimen>
+    <dimen name="full_name_margin_top">60dp</dimen>
+    <dimen name="profile_font_size_plain_text">17sp</dimen>
+    <dimen name="profile_place_of_living_margin_top">10dp</dimen>
+    <dimen name="profile_interest_margin_top">20dp</dimen>
+    <dimen name="profile_block_follower_collection_margin_top">20dp</dimen>
+    <dimen name="profile_block_follower_collection_width">62dp</dimen>
+    <dimen name="profile_block_follower_collection_value_font_size">35sp</dimen>
+    <dimen name="profile_block_follower_collection_font_size">20sp</dimen>
+    <dimen name="profile_block_buttons_margin">30dp</dimen>
+    <dimen name="profile_block_buttons_margin_bottom">80dp</dimen>
+    <dimen name="profile_btn_width">125dp</dimen>
+    <dimen name="profile_btn_margin">10dp</dimen>
+
+
+
+
 
 </resources>
