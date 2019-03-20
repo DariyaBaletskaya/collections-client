@@ -1,4 +1,4 @@
-package onpu.pnit.collectionsclient.activity;
+package onpu.pnit.collectionsclient.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import onpu.pnit.collectionsclient.R;
