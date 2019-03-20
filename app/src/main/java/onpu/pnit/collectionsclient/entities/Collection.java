@@ -1,29 +1,48 @@
 package onpu.pnit.collectionsclient.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.List;
 
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "collections", foreignKeys =  @ForeignKey(entity = User.class,
+        parentColumns = "id", childColumns = "userId", onDelete = CASCADE))
 public class Collection implements Serializable {
     @JsonProperty("id")
-    private long id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     @JsonProperty("title")
     private String title;
     @JsonProperty("category")
     private String category;
     @JsonProperty("description")
     private String description;
-    @JsonIgnoreProperties("items")
-    private List<Items> items;
+    @JsonProperty("userid")
+    private int userId;
+
+    public Collection(int id, String title, String category, String description, int userId) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.description = description;
+        this.userId = userId;
+    }
+
+    @Ignore
+    public Collection() {
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,25 +68,6 @@ public class Collection implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Items> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Items> items) {
-        this.items = items;
-    }
-
-    @Override
-    public String toString() {
-        return "Collection{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", category='" + category + '\'' +
-                ", description='" + description + '\'' +
-                ", items=" + items +
-                '}';
     }
 
 }

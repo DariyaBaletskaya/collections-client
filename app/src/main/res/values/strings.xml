@@ -52,4 +52,8 @@
     <string name="b_complain">Complain</string>
     <string name="b_follow">Follow</string>
     <string name="sign_up">Sign up</string>
+
+
+    <!-- Server Reference -->
+    <string name="base_uri">https://collections-blue.herokuapp.com</string>
 </resources>

@@ -30,14 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CollectionListActivity">
-
-        </activity>
+        <activity android:name=".activity.CollectionListActivity"></activity>
         <activity
             android:name=".activity.ItemDetailsActivity"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".activity.MainActivity" ></activity>
         <activity
-            android:name=".activity.UserAddActivity" />
+            android:name=".activity.UserAddActivity"
+            android:parentActivityName=".activity.MainActivity" > </activity>
+
     </application>
 
 </manifest>
