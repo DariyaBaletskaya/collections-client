@@ -35,4 +35,8 @@ public interface CollectionDao {
 
     @Query("SELECT * from collections WHERE category=:category")
     LiveData<List<Collection>> getCollectionByCategory(String category);
+
+    @Query("SELECT * from collections")
+    LiveData<List<Collection>> getAllCollection();
+
 }

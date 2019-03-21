@@ -28,10 +28,12 @@ public class User implements Serializable {
     private String password;
     @JsonProperty("active")
     private boolean active;
+    @JsonProperty("role")
+    private Role role;
     @JsonIgnoreProperties("collections")
     private List<Collection> collections;
 
-    public User(int id, String name, String age, String city, String username, String password, boolean active, List<Collection> collections) {
+    public User(int id, String name, String age, String city, String username, String password, boolean active, Role role, List<Collection> collections) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -39,6 +41,7 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.active = active;
+        this.role = role;
         this.collections = collections;
     }
 
@@ -110,4 +113,11 @@ public class User implements Serializable {
         this.age = age;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
