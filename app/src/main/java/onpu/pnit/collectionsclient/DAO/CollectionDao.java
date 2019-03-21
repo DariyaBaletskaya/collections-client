@@ -24,15 +24,15 @@ public interface CollectionDao {
     @Update
     void updateCollection(Collection collection);
 
-    @Query("DELETE FROM collections WHERE userId=:userId")
+    @Query("DELETE FROM collections WHERE user_id=:userId")
     void deleteAllCollectionsForUser(int userId);
 
-    @Query("SELECT * from collections WHERE userId=:userId")
+    @Query("SELECT * from collections WHERE user_id=:userId")
     LiveData<List<Collection>> getCollectionForUser(int userId);
 
-    @Query("SELECT * from collections WHERE title=:title")
+    @Query("SELECT * from collections WHERE collection_title=:title")
     LiveData<List<Collection>> getCollectionByTitle(String title);
 
-    @Query("SELECT * from collections WHERE category=:category")
+    @Query("SELECT * from collections WHERE collection_category=:category")
     LiveData<List<Collection>> getCollectionByCategory(String category);
 }

@@ -25,13 +25,13 @@ public interface ItemDao {
     @Update
     void updateItems(Item... items);
 
-    @Query("DELETE FROM Items WHERE userId=:userId")
+    @Query("DELETE FROM Items WHERE user_id=:userId")
     void deleteAllItemsForUser(int userId);
 
-    @Query("SELECT * from Items WHERE userId=:userId")
+    @Query("SELECT * from Items WHERE user_id=:userId")
     LiveData<List<Item>> getItemsForUser(int userId);
 
-    @Query("SELECT * from Items WHERE title=:title")
+    @Query("SELECT * from Items WHERE item_title=:title")
     LiveData<List<Item>> getItemsByTitle(String title);
 
     @Insert

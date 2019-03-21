@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -15,6 +16,7 @@ public class User implements Serializable {
 
     @JsonProperty("user_id")
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "user_id", index = true)
     private int id;
     @JsonProperty("name")
     private String name;
@@ -27,11 +29,10 @@ public class User implements Serializable {
     @JsonProperty("password")
     private String password;
     @JsonProperty("active")
+    @ColumnInfo(name = "is_user_active")
     private boolean active;
-    @JsonIgnoreProperties("collections")
-    private List<Collection> collections;
 
-    public User(int id, String name, String age, String city, String username, String password, boolean active, List<Collection> collections) {
+    public User(int id, String name, String age, String city, String username, String password, boolean active) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -39,35 +40,42 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.active = active;
-        this.collections = collections;
     }
 
     @Ignore
     public User() {
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public List<Collection> getCollections() {
-        return collections;
-    }
-
-    public void setCollections(List<Collection> collections) {
-        this.collections = collections;
-    }
-
-    public long getId() {
+    public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getUsername() {
@@ -86,28 +94,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setActive(boolean active) {
+        this.active = active;
     }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
 }
