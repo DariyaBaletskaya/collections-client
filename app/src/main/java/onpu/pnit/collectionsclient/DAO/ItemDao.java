@@ -1,5 +1,7 @@
 package onpu.pnit.collectionsclient.DAO;
 
+import android.content.ClipData;
+
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -8,32 +10,27 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.entities.Items;
 
 
 @Dao
-public interface ItemDao {
+public interface ItemDAO {
     @Insert
-    void insertItem(Item item);
+    void insertItem(Items items);
 
     @Delete
-    void deleteItem(Item item);
+    void deleteItem(Items items);
 
     @Update
-    void updateItem(Item item);
+    void updateItem(Items... items);
 
-    @Update
-    void updateItems(Item... items);
-
-    @Query("DELETE FROM Items WHERE user_id=:userId")
+    @Query("DELETE FROM items WHERE userId=:userId")
     void deleteAllItemsForUser(int userId);
 
-    @Query("SELECT * from Items WHERE user_id=:userId")
-    LiveData<List<Item>> getItemsForUser(int userId);
+    @Query("SELECT * from items WHERE userId=:userId")
+    LiveData<List<Items>> getItemsForUser(int userId);
 
-    @Query("SELECT * from Items WHERE item_title=:title")
-    LiveData<List<Item>> getItemsByTitle(String title);
+    @Query("SELECT * from items WHERE title=:title")
+    LiveData<List<Items>> getItemsByTitle(String title);
 
-    @Insert
-    void insertAllItems(Item... items);
 }
