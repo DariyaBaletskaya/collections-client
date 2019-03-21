@@ -20,7 +20,7 @@ import onpu.pnit.collectionsclient.CollectionRestClient;
 public class CollectionListActivity extends AppCompatActivity {
 
     @BindView(R.id.list_collections)
-    private RecyclerView recyclerView;
+    RecyclerView recyclerView;
     private CollectionsListAdapter adapter;
 
     @Override

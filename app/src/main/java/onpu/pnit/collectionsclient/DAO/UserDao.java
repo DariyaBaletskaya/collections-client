@@ -16,26 +16,17 @@ public interface UserDao {
     @Insert
     void insertUser(User user);
 
-    @Insert
-    void insertUsers(User... users);
-
     @Delete
     void deleteUser(User user);
 
-    @Delete
-    void deleteUsers(User... users);
-
-    @Query("SELECT * from users WHERE id=:id")
-    User getUserById(int id);
+    @Query("SELECT * from users WHERE user_id=:userId")
+    User getUserById(int userId);
 
     @Query("SELECT * from users WHERE username=:username")
     User getUserByUsername(String username);
 
     @Update
     void updateUsers(User... users);
-
-    @Update
-    void updateUser(User user);
 
     @Query("SELECT * from users")
     LiveData<List<User>> getAllUsers();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
@@ -13,18 +14,23 @@ import androidx.room.PrimaryKey;
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "collections", foreignKeys =  @ForeignKey(entity = User.class,
-        parentColumns = "id", childColumns = "userId", onDelete = CASCADE))
+        parentColumns = "user_id", childColumns = "user_id", onDelete = CASCADE))
 public class Collection implements Serializable {
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "collection_id", index = true)
     private int id;
     @JsonProperty("title")
+    @ColumnInfo(name = "collection_title")
     private String title;
     @JsonProperty("category")
+    @ColumnInfo(name = "collection_category")
     private String category;
     @JsonProperty("description")
+    @ColumnInfo(name = "collection_description")
     private String description;
     @JsonProperty("userid")
+    @ColumnInfo(name = "user_id", index = true)
     private int userId;
 
     public Collection(int id, String title, String category, String description, int userId) {
@@ -39,7 +45,7 @@ public class Collection implements Serializable {
     public Collection() {
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

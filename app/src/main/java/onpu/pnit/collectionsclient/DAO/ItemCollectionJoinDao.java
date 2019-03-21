@@ -6,16 +6,18 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.entities.Item;
 
 
 @Dao
 public interface ItemCollectionJoinDao {
+    @Query("SELECT * FROM collections c WHERE c.collection_id IN " +
+            "(SELECT collection_id FROM item_collection_join ic " +
+            "WHERE ic.item_id=:itemId AND ic.collection_id=c.collection_id)")
+    LiveData<List<Collection>> getCollectionsForItem(int itemId);
 
-    @Query("SELECT * FROM collections INNER JOIN item_collection_join ON collections.id=item_collection_join.collectionId " +
-            "WHERE item_collection_join.collectionId=:collectionId")
-    LiveData<List<Collection>> getCollectionsForItem(int collectionId);
-
-    @Query("SELECT * FROM Items INNER JOIN item_collection_join ON Items.id=item_collection_join.itemId " +
-            "WHERE item_collection_join.itemId=:itemId")
-    LiveData<List<Collection>> getItemsForCollection(int itemId);
+    @Query("SELECT * FROM items i WHERE i.item_id IN " +
+            "(SELECT item_id FROM item_collection_join ic " +
+            "WHERE ic.collection_id=:collectionId AND ic.item_id=i.item_id)")
+    LiveData<List<Item>> getItemsForCollection(int collectionId);
 }
