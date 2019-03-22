@@ -28,9 +28,8 @@ import onpu.pnit.collectionsclient.entities.User;
 
 public class UserAddActivity extends AppCompatActivity {
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
-    private static final String AGE_PATTERN = "[0-9]*";
+
     private Pattern patternEmail = Pattern.compile(EMAIL_PATTERN);
-    private Pattern patternAge = Pattern.compile(AGE_PATTERN);
     private Matcher matcher;
     private TextInputLayout usernameWrapper;
     private TextInputLayout passwordWrapper;
@@ -46,33 +45,24 @@ public class UserAddActivity extends AppCompatActivity {
         passwordWrapper.setHint("Password");
         TextInputLayout confirmPasswordWrapper = (TextInputLayout) findViewById(R.id.confirmPasswordWrapper);
         confirmPasswordWrapper.setHint("Confirm Password");
-        TextInputLayout countryWrapper = (TextInputLayout) findViewById(R.id.countryWrapper);
-        countryWrapper.setHint("Country");
-        TextInputLayout cityWrapper = (TextInputLayout) findViewById(R.id.cityWrapper);
-        cityWrapper.setHint("City");
-        TextInputLayout ageWrapper = (TextInputLayout) findViewById(R.id.ageWrapper);
-        ageWrapper.setHint("Age");
-        TextInputLayout userInfoWrapper = (TextInputLayout) findViewById(R.id.userInfoWrapper);
-        userInfoWrapper.setHint("Info");
+
 
         Button signUpBtn = (Button) findViewById(R.id.sign_up);
         signUpBtn.setOnClickListener(v->{
             String username = usernameWrapper.getEditText().getText().toString();
             String password = passwordWrapper.getEditText().getText().toString();
             String confirmPassword = confirmPasswordWrapper.getEditText().getText().toString();
-            String age = ageWrapper.getEditText().getText().toString();
 
-//            if(!validateEmail(username)) {
-//                usernameWrapper.setError("Not a valid email address!");
-//            } else if(!validatePassword(password, confirmPassword)){
-//                passwordWrapper.setError("Passwords must be equal");
-//            } else if(!validateAge(age)) {
-//                passwordWrapper.setError("Not a valid age!");
-//            } else {
-//                usernameWrapper.setErrorEnabled(false);
-//                passwordWrapper.setErrorEnabled(false);
-//                doLogin();
-//            }
+
+            if(!validateEmail(username)) {
+                usernameWrapper.setError("Not a valid email address!");
+            } else if(!validatePassword(password, confirmPassword)){
+                passwordWrapper.setError("Passwords must be equal");
+            } else {
+                usernameWrapper.setErrorEnabled(false);
+                passwordWrapper.setErrorEnabled(false);
+                doLogin();
+            }
             doLogin();
 
         });
@@ -86,16 +76,7 @@ public class UserAddActivity extends AppCompatActivity {
     public boolean validatePassword(String password, String confirm) {
         return password.length() > 5 && password.length()<16 && password.equals(confirm);
     }
-    private boolean validateAge(String age) {
-        matcher = patternAge.matcher(age);
-        if(matcher.matches()) {
-            if(Integer.parseInt(age) > 0 && Integer.parseInt(age) < 110) {
-                return true;
-            }
-        }
 
-        return false;
-    }
 
     public void doLogin() {
         new FetchSecuredResourceTask().execute();

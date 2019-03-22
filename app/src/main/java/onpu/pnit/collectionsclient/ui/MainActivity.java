@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, UserAddActivity.class);
+                //TODO: добавить активити создания айтема
+                Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
                 startActivity(i);
             }
         });
@@ -57,6 +58,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Fragment fragment = new CollectionFragment();
+        ft.replace(R.id.screen_area, fragment);
+
+        ft.commit();
+
 
     }
 
@@ -97,18 +106,14 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragment = null;
+        //Fragment fragment = null;
 
 
         if (id == R.id.nav_search) {
 
-        } else if(id == R.id.nav_collections) {
-
-            fragment = new CollectionFragment();
-
         }else if (id == R.id.nav_profile) {
-
-            fragment = new ViewProfile();
+            Intent i = new Intent(MainActivity.this, ViewProfile.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_favorites) {
 
@@ -120,14 +125,14 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        if(fragment != null){
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.screen_area, fragment);
-
-            ft.commit();
-        }
+//        if(fragment != null){
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            FragmentTransaction ft = fragmentManager.beginTransaction();
+//
+//            ft.replace(R.id.screen_area, fragment);
+//
+//            ft.commit();
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

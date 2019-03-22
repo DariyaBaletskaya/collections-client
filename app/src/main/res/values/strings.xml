@@ -9,7 +9,7 @@
     <string name="nav_profile">Profile</string>
     <string name="nav_collections">Collections</string>
     <string name="nav_favorites">Favorites</string>
-    <string name="nav_cart">My Cart</string>
+    <string name="nav_onsale">OnSale</string>
     <string name="nav_chats">Chats</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_signout">Sign Out</string>

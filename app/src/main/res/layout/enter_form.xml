@@ -92,7 +92,7 @@
         android:textAlignment="center"
         android:textSize="@dimen/font_size_plain_text"
         android:textColor="@color/colorGreyDark"
-        android:background="@color/colorGrey" />
+        android:background="@color/colorPrimaryLight" />
 
     <TextView
         android:id="@+id/tv_logWithSocialAcc"
@@ -123,10 +123,10 @@
             android:id="@+id/im_google"
             android:layout_width="@dimen/size_image_logo"
             android:layout_height="@dimen/size_image_logo"
-            android:layout_weight="1"
-            android:layout_marginRight="@dimen/image_horizontal_margin"
             android:layout_marginLeft="@dimen/image_horizontal_margin"
-            app:srcCompat="@drawable/ic_add" />
+            android:layout_marginRight="@dimen/image_horizontal_margin"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/logo_facebook" />
     </LinearLayout>
 
     <LinearLayout

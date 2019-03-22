@@ -9,13 +9,13 @@
             android:icon="@drawable/ic_search"
             android:title="@string/nav_search" />
         <item
+            android:id="@+id/nav_onsale"
+            android:icon="@drawable/ic_cart"
+            android:title="@string/nav_onsale" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_profile"
             android:title="@string/nav_profile" />
-        <item
-            android:id="@+id/nav_collections"
-            android:icon="@drawable/ic_collections"
-            android:title="@string/nav_collections" />
         <item
             android:id="@+id/nav_favorites"
             android:icon="@drawable/ic_favorites"

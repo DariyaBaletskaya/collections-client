@@ -163,10 +163,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/profile_btn_margin"
                             android:layout_marginRight="@dimen/profile_btn_margin"
-                            android:background="@drawable/element_outline"
                             android:layout_weight="1"
+                            android:background="@drawable/element_outline"
                             android:text="@string/b_complain"
-                            android:textColor="@color/colorAccent"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textColorLink="@color/colorPrimaryDark"
                             android:textSize="@dimen/font_size_plain_text" />
 
                         <Button
