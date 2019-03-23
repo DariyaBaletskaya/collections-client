@@ -7,12 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,42 +19,53 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.NetworkReceiver;
 import onpu.pnit.collectionsclient.R;
+import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
+import onpu.pnit.collectionsclient.viewmodel.CollectionListViewModel;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     NetworkReceiver networkReceiver = new NetworkReceiver();
-    private EditorCollectionViewModel collectionListViewModel;
-    //private EditorCollectionViewModel collectionViewModel;
-    public static final int ADD_COLLECTION_REQUEST = 1;
 
+    @BindView(R.id.list_collections)
+    RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    private CollectionsListAdapter adapter;
+    private CollectionListViewModel viewModel;
+    public static final String COLLECTION_ID = "adsada";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(networkReceiver,filter);
+        registerReceiver(networkReceiver, filter);
 
-        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        /*fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: добавить активити создания айтема
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-                startActivityForResult(i, ADD_COLLECTION_REQUEST);
+                startActivity(i);
             }
-        });*/
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,14 +76,33 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        Fragment fragment = new CollectionFragment();
-        ft.replace(R.id.screen_area, fragment);
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction ft = fragmentManager.beginTransaction();
+//        Fragment fragment = new CollectionFragment();
+//        ft.replace(R.id.screen_area, fragment);
+//        ft.commit();
 
-        ft.commit();
 
+        initRecyclerView();
+        initViewModel();
 
+    }
+
+    public void initRecyclerView() {
+        adapter = new CollectionsListAdapter();
+        adapter.setOnCollectionClickListener((int collectionId, int position) -> {
+            Intent i = new Intent(MainActivity.this, MyItemDetailsActivity.class);
+            i.putExtra(COLLECTION_ID, collectionId);
+            startActivity(i);
+        });
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(CollectionListViewModel.class);
+        viewModel.getAllCollections().observe(MainActivity.this, collections -> adapter.submitList(collections));
     }
 
     @Override
@@ -119,17 +147,17 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_search) {
 
-        }else if (id == R.id.nav_profile) {
-            Intent i = new Intent(MainActivity.this, ViewProfile.class);
+        } else if (id == R.id.nav_profile) {
+            Intent i = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_favorites) {
 
-        } else if(id == R.id.nav_settings) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if(id == R.id.nav_signout) {
+        } else if (id == R.id.nav_signout) {
 
-        } else if(id== R.id.nav_help) {
+        } else if (id == R.id.nav_help) {
 
         }
 
