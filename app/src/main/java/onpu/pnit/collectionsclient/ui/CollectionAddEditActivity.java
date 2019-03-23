@@ -29,9 +29,9 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
 
     private Spinner categorySpinner;
     private ArrayAdapter<CharSequence> spinnerAdapter;
-    //@BindView(R.id.edit_text_title)
+
+    // Fields for adding new collections
     private EditText editTextTitle;
-    //@BindView(R.id.edit_text_description)
     private EditText editTextDescription;
 
 
@@ -46,6 +46,7 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(spinnerAdapter);
         categorySpinner.setOnItemSelectedListener(this);
+
         editTextDescription = findViewById(R.id.edit_text_description);
         editTextTitle = findViewById(R.id.edit_text_title);
     }
@@ -72,15 +73,14 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         switch (item.getItemId()) {
             case R.id.action_collection_save:
                 saveCollection();
-                //Toast.makeText(this, "Сохранение коллекции", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    // Add new collection and check new collection's fields
     private void saveCollection() {
-
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
         TextView textView = (TextView) categorySpinner.getSelectedView();

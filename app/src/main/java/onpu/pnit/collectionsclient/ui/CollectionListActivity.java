@@ -1,6 +1,5 @@
 package onpu.pnit.collectionsclient.ui;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -10,14 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import butterknife.BindView;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
+import onpu.pnit.collectionsclient.CollectionRestClient;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.CollectionRestClient;
 
 public class CollectionListActivity extends AppCompatActivity {
+
+
+
 
     @BindView(R.id.list_collections)
     RecyclerView recyclerView;
@@ -57,4 +58,7 @@ public class CollectionListActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 }

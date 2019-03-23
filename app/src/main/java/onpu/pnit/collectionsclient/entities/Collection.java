@@ -56,25 +56,19 @@ public class Collection implements Serializable {
     }
 
     //for test in class AppDatabase
-    @Ignore
-    public Collection(int id, String title) {
-        this.id = id;
-        this.title = title;
-        this.userId = 0;
-    }
 
     public static Collection getDefaultCollection() {
         return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID);
     }
 
-    public static List<Collection> getSampleCollections() {
+    /*public static List<Collection> getSampleCollections() {
         List<Collection> list = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             list.add(new Collection(i, "Collection" + i, DEFAULT_USER_ID));
         }
 
         return list;
-    }
+    }*/
 
     public int getId() {
         return id;
