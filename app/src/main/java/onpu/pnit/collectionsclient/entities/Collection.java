@@ -3,6 +3,8 @@ package onpu.pnit.collectionsclient.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -16,8 +18,8 @@ import static androidx.room.ForeignKey.CASCADE;
 @Entity(tableName = "collections", foreignKeys =  @ForeignKey(entity = User.class,
         parentColumns = "user_id", childColumns = "user_id", onDelete = CASCADE))
 public class Collection implements Serializable {
-    public static final int DEFAULT_COLLECTION_ID = -1;
-    public static final int DEFAULT_USER_ID = -1;
+    public static final int DEFAULT_COLLECTION_ID = 1;
+    public static final int DEFAULT_USER_ID = 1;
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "collection_id", index = true)
@@ -55,6 +57,15 @@ public class Collection implements Serializable {
     }
     public static Collection getDefaultCollection() {
         return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID);
+    }
+
+    public static List<Collection> getSampleCollections() {
+        List<Collection> list = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            list.add(new Collection(i, "Collection" + i, DEFAULT_USER_ID));
+        }
+
+        return list;
     }
 
     public int getId() {

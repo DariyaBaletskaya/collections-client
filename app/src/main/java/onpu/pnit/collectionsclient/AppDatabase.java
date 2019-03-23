@@ -19,7 +19,7 @@ import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.entities.User;
 
 @Database(entities = {Item.class, Collection.class, ItemCollectionJoin.class, User.class},
-        version = 1)
+        version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "appdb.db";
@@ -50,8 +50,10 @@ public abstract class AppDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
-                        Executors.newSingleThreadExecutor().execute(() -> getInstance(context).userDao().insertUser(User.getDefaultUser()));
-                        Executors.newSingleThreadExecutor().execute(() -> getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection()));
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            getInstance(context).userDao().insertUser(User.getDefaultUser());
+                            getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection());
+                        });
                     }
 
                 })

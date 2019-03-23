@@ -18,6 +18,9 @@ public interface CollectionDao {
     @Delete
     void deleteCollection(Collection collection);
 
+    @Insert
+    void insertCollections(List<Collection> collections);
+
     @Update
     void updateCollections(Collection... collections);
 
