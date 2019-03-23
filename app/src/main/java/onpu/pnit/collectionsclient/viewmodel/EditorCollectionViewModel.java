@@ -24,6 +24,8 @@ public class EditorCollectionViewModel extends AndroidViewModel {
         repository = new CollectionRepository(application);
     }
 
+
+
     public void insert(Collection collection) {
         executor.execute(() -> {
             repository.insertCollection(collection);
