@@ -36,6 +36,7 @@
             android:id="@+id/username"
             android:layout_width="366dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:hint="Username"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -53,6 +54,7 @@
             android:id="@+id/password"
             android:layout_width="366dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:hint="Password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -71,6 +73,7 @@
             android:id="@+id/confirm_password"
             android:layout_width="366dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:hint="Confirm Password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -81,6 +84,7 @@
         android:layout_width="379dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:fontFamily="@font/roboto_regular"
         android:text="@string/sign_up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

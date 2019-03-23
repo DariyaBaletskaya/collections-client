@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/context_block_margin"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/roboto_medium"
         android:text="@string/tv_nameProgram"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/context_block_margin"
+        android:fontFamily="@font/roboto_light_italic"
         android:text="@string/tv_taglineProgram"
         android:textAlignment="center"
         android:textColor="@color/colorGreyDark"
@@ -35,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/edit_text_vertical_margin"
+        android:fontFamily="@font/roboto_light"
         android:text="@string/tv_email"
         android:textColor="@color/colorGreyDark"
         android:textSize="@dimen/font_size_plain_text" />
@@ -58,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/edit_text_vertical_margin"
+        android:fontFamily="@font/roboto_light"
         android:text="@string/tv_password"
         android:textColor="@color/colorGreyDark"
         android:textSize="@dimen/font_size_plain_text" />
@@ -79,6 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/text_vertical_margin"
+        android:fontFamily="@font/roboto_light"
         android:text="@string/tv_forgotPassword"
         android:textAlignment="textEnd"
         android:textColor="@color/colorPrimaryDark"
@@ -88,11 +92,12 @@
         android:id="@+id/b_logIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryLight"
+        android:fontFamily="@font/roboto_light"
         android:text="@string/b_logIn"
         android:textAlignment="center"
-        android:textSize="@dimen/font_size_plain_text"
         android:textColor="@color/colorGreyDark"
-        android:background="@color/colorPrimaryLight" />
+        android:textSize="@dimen/font_size_plain_text" />
 
     <TextView
         android:id="@+id/tv_logWithSocialAcc"
@@ -100,6 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_vertical_margin"
         android:layout_marginBottom="@dimen/text_vertical_margin"
+        android:fontFamily="@font/roboto_light"
         android:text="@string/tv_logWithSocialAcc"
         android:textAlignment="center"
         android:textSize="@dimen/font_size_plain_text" />
@@ -140,6 +146,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:baselineAligned="false"
+            android:fontFamily="@font/roboto_light"
             android:paddingEnd="@dimen/text_space"
             android:text="@string/tv_noAccountYet"
             android:textAlignment="textEnd"
@@ -150,6 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/roboto_light"
             android:text="@string/tv_signUp"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/font_size_plain_text" />

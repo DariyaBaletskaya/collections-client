@@ -2,11 +2,13 @@ package onpu.pnit.collectionsclient.viewmodel;
 
 import android.app.Application;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.repos.CollectionRepository;
 
@@ -26,5 +28,9 @@ public class EditorCollectionViewModel extends AndroidViewModel {
         executor.execute(() -> {
             repository.insertCollection(collection);
         });
+    }
+
+    public LiveData<List<Collection>> getAllCollections() {
+        return repository.getAllCollections();
     }
 }
