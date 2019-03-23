@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "users")
 public class User implements Serializable {
 
-    private static final int DEFAULT_USER_ID = -1;
+    private static final int DEFAULT_USER_ID = 1;
     @JsonProperty("user_id")
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "user_id", index = true)

@@ -90,10 +90,10 @@ public class MainActivity extends AppCompatActivity
 
     public void initRecyclerView() {
         adapter = new CollectionsListAdapter();
-        adapter.setOnCollectionClickListener((int collectionId, int position) -> {
+        adapter.setOnCollectionClickListener((collectionId, position) -> {
             Intent i = new Intent(MainActivity.this, MyItemDetailsActivity.class);
             i.putExtra(COLLECTION_ID, collectionId);
-            startActivity(i);
+            MainActivity.this.startActivity(i);
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));

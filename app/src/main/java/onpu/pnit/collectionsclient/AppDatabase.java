@@ -1,8 +1,6 @@
 package onpu.pnit.collectionsclient;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.concurrent.Executors;
 
@@ -21,7 +19,7 @@ import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.entities.User;
 
 @Database(entities = {Item.class, Collection.class, ItemCollectionJoin.class, User.class},
-        version = 1, exportSchema = false)
+        version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "appdb.db";
@@ -32,7 +30,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CollectionDao collectionDao();
     public abstract ItemCollectionJoinDao itemCollectionJoinDao();
 
-    public static AppDatabase getInstance(final Context context) {
+    public static AppDatabase getInstance(Context context) {
         if (instance == null) {
             synchronized (AppDatabase.class) {
                 if (instance == null) {
@@ -52,26 +50,14 @@ public abstract class AppDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
-                        //Executors.newSingleThreadExecutor().execute(() -> getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection()));
-                        new PopularAsyncTask(instance).execute();
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            getInstance(context).userDao().insertUser(User.getDefaultUser());
+                            getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection());
+                        });
                     }
+
                 })
                 .build();
     }
 
-    private static class PopularAsyncTask extends AsyncTask<Void, Void, Void> {
-        private CollectionDao collectionDao;
-
-        private PopularAsyncTask(AppDatabase db) {
-            collectionDao = db.collectionDao();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            collectionDao.insertCollection(new Collection(1, "Cars"));
-            collectionDao.insertCollection(new Collection(2, "Birds"));
-            collectionDao.insertCollection(new Collection(3, "Monets"));
-            return null;
-        }
-    }
 }
