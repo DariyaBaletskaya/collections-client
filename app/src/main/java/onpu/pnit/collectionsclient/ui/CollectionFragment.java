@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import onpu.pnit.collectionsclient.R;
@@ -40,7 +41,7 @@ public class CollectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = view.findViewById(R.id.list_collections);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         adapter = new CollectionsListAdapter();
         recyclerView.setAdapter(adapter);
 
@@ -49,6 +50,8 @@ public class CollectionFragment extends Fragment {
 
 
     }
+
+
 
 
     private class HttpRequestAsk extends AsyncTask<Void, Void, List<Collection>> {
@@ -67,8 +70,8 @@ public class CollectionFragment extends Fragment {
     }
 
     private void initViewModel() {
-        collectionListViewModel = ViewModelProviders.of(this).get(CollectionListViewModel.class);
-        collectionListViewModel.getAllCollections().observe(this, collections -> adapter.submitList(collections));
+        collectionListViewModel = ViewModelProviders.of(getActivity()).get(CollectionListViewModel.class);
+        collectionListViewModel.getAllCollections().observe(getActivity(), collections -> adapter.submitList(collections));
     }
 
 

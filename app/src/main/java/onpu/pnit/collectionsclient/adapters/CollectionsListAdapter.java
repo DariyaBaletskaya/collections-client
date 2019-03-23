@@ -18,6 +18,8 @@ import onpu.pnit.collectionsclient.entities.Collection;
 
 public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsListAdapter.CollectionViewHolder>{
 
+    private OnCollectionClickListener listener;
+
     private static final DiffUtil.ItemCallback<Collection> DIFF_CALLBACK = new DiffUtil.ItemCallback<Collection>() {
         @Override
         public boolean areItemsTheSame(@NonNull Collection oldItem, @NonNull Collection newItem) {
@@ -29,6 +31,7 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             return oldItem.toString().contentEquals(newItem.toString());
         }
     };
+
 
     public CollectionsListAdapter() {
         super(DIFF_CALLBACK);
@@ -59,9 +62,18 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             super(itemView);
             title = itemView.findViewById(R.id.card_collection_title);
             category = itemView.findViewById(R.id.card_collection_category);
-            photo = itemView.findViewById(R.id.card_collection_photo);
+//            photo = itemView.findViewById(R.id.card_collection_photo);
         }
 
 
+    }
+
+
+    public interface OnCollectionClickListener {
+        void onCollectionClick(int collectionId, int position);
+    }
+
+    public void setOnCollectionClickListener(OnCollectionClickListener listener) {
+        this.listener = listener;
     }
 }
