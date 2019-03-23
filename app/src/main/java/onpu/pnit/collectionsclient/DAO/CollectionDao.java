@@ -28,15 +28,15 @@ public interface CollectionDao {
     void deleteAllCollectionsForUser(int userId);
 
     @Query("SELECT * from collections WHERE user_id=:userId")
-    LiveData<List<Collection>> getCollectionForUser(int userId);
+    LiveData<List<Collection>> getCollectionsForUser(int userId);
 
     @Query("SELECT * from collections WHERE collection_title=:title")
     LiveData<List<Collection>> getCollectionByTitle(String title);
 
     @Query("SELECT * from collections WHERE collection_category=:category")
-    LiveData<List<Collection>> getCollectionByCategory(String category);
+    LiveData<List<Collection>> getCollectionsByCategory(String category);
 
     @Query("SELECT * from collections")
-    LiveData<List<Collection>> getAllCollection();
+    LiveData<List<Collection>> getAllCollections();
 
 }

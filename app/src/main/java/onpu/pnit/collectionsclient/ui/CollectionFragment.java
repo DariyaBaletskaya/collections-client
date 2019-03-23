@@ -13,18 +13,22 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.CollectionRestClient;
+import onpu.pnit.collectionsclient.viewmodel.CollectionListViewModel;
 
 
 public class CollectionFragment extends Fragment {
 
-
+    private CollectionListViewModel collectionListViewModel;
     private CollectionsListAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,28 +36,25 @@ public class CollectionFragment extends Fragment {
     }
 
 
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         RecyclerView recyclerView = view.findViewById(R.id.list_collections);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-
         adapter = new CollectionsListAdapter();
         recyclerView.setAdapter(adapter);
-        new HttpRequestAsk().execute();
+
+        initViewModel();
+//        new HttpRequestAsk().execute();
 
 
     }
 
 
-
     private class HttpRequestAsk extends AsyncTask<Void, Void, List<Collection>> {
 
         @Override
-        protected List<Collection> doInBackground(Void... params){
+        protected List<Collection> doInBackground(Void... params) {
             CollectionRestClient collectionRestClient = new CollectionRestClient();
             return collectionRestClient.findAll();
         }
@@ -63,6 +64,11 @@ public class CollectionFragment extends Fragment {
             adapter.submitList(collections);
         }
 
+    }
+
+    private void initViewModel() {
+        collectionListViewModel = ViewModelProviders.of(this).get(CollectionListViewModel.class);
+        collectionListViewModel.getAllCollections().observe(this, collections -> adapter.submitList(collections));
     }
 
 

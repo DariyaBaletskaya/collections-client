@@ -16,6 +16,8 @@ import static androidx.room.ForeignKey.CASCADE;
 @Entity(tableName = "collections", foreignKeys =  @ForeignKey(entity = User.class,
         parentColumns = "user_id", childColumns = "user_id", onDelete = CASCADE))
 public class Collection implements Serializable {
+    public static final int DEFAULT_COLLECTION_ID = -1;
+    public static final int DEFAULT_USER_ID = -1;
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "collection_id", index = true)
@@ -43,6 +45,16 @@ public class Collection implements Serializable {
 
     @Ignore
     public Collection() {
+    }
+
+    @Ignore
+    public Collection(int id, String title, int userId) {
+        this.id = id;
+        this.title = title;
+        this.userId = userId;
+    }
+    public static Collection getDefaultCollection() {
+        return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID);
     }
 
     public int getId() {

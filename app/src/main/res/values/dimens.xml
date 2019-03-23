@@ -41,9 +41,8 @@
     <dimen name="profile_block_buttons_margin_bottom">80dp</dimen>
     <dimen name="profile_btn_width">125dp</dimen>
     <dimen name="profile_btn_margin">10dp</dimen>
-
-
-
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 
 </resources>

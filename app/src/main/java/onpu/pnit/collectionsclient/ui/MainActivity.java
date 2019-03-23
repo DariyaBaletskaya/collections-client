@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_search) {
 
         }else if (id == R.id.nav_profile) {
-            Intent i = new Intent(MainActivity.this, ViewProfile.class);
+            Intent i = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_favorites) {
