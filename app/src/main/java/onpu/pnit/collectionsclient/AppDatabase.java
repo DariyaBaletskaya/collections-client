@@ -1,6 +1,8 @@
 package onpu.pnit.collectionsclient;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.concurrent.Executors;
 
@@ -50,10 +52,26 @@ public abstract class AppDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
-                        Executors.newSingleThreadExecutor().execute(() -> getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection()));
+                        //Executors.newSingleThreadExecutor().execute(() -> getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection()));
+                        new PopularAsyncTask(instance).execute();
                     }
                 })
                 .build();
     }
 
+    private static class PopularAsyncTask extends AsyncTask<Void, Void, Void> {
+        private CollectionDao collectionDao;
+
+        private PopularAsyncTask(AppDatabase db) {
+            collectionDao = db.collectionDao();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            collectionDao.insertCollection(new Collection(1, "Cars"));
+            collectionDao.insertCollection(new Collection(2, "Birds"));
+            collectionDao.insertCollection(new Collection(3, "Monets"));
+            return null;
+        }
+    }
 }

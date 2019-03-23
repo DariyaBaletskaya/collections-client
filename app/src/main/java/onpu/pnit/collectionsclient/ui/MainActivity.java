@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,11 +23,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import onpu.pnit.collectionsclient.NetworkReceiver;
 import onpu.pnit.collectionsclient.R;
+import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     NetworkReceiver networkReceiver = new NetworkReceiver();
+    private EditorCollectionViewModel collectionListViewModel;
+    //private EditorCollectionViewModel collectionViewModel;
+    public static final int ADD_COLLECTION_REQUEST = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +48,15 @@ public class MainActivity extends AppCompatActivity
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver,filter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: добавить активити создания айтема
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-                startActivity(i);
+                startActivityForResult(i, ADD_COLLECTION_REQUEST);
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -112,7 +120,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_search) {
 
         }else if (id == R.id.nav_profile) {
-            Intent i = new Intent(MainActivity.this, ProfileActivity.class);
+            Intent i = new Intent(MainActivity.this, ViewProfile.class);
             startActivity(i);
 
         } else if (id == R.id.nav_favorites) {

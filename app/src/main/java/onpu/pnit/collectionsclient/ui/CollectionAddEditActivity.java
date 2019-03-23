@@ -1,8 +1,10 @@
 package onpu.pnit.collectionsclient.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
 import onpu.pnit.collectionsclient.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,12 +12,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CollectionAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    public static final String EXTRA_TITLE =
+            "onpu.pnit.collectionsclient.ui.EXTRA_TITLE";
+    public static final String EXTRA_DESCRIPTION =
+            "onpu.pnit.collectionsclient.ui.EXTRA_DESCRIPTION";
+    public static final String EXTRA_CATEGORY =
+            "onpu.pnit.collectionsclient.ui.EXTRA_CATEGORY";
+
+
     private Spinner categorySpinner;
     private ArrayAdapter<CharSequence> spinnerAdapter;
+    //@BindView(R.id.edit_text_title)
+    private EditText editTextTitle;
+    //@BindView(R.id.edit_text_description)
+    private EditText editTextDescription;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +46,8 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(spinnerAdapter);
         categorySpinner.setOnItemSelectedListener(this);
+        editTextDescription = findViewById(R.id.edit_text_description);
+        editTextTitle = findViewById(R.id.edit_text_title);
     }
 
     @Override
@@ -50,10 +71,32 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_collection_save:
-                Toast.makeText(this, "Сохранение коллекции", Toast.LENGTH_SHORT).show();
+                saveCollection();
+                //Toast.makeText(this, "Сохранение коллекции", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void saveCollection() {
+
+        String title = editTextTitle.getText().toString();
+        String description = editTextDescription.getText().toString();
+        TextView textView = (TextView) categorySpinner.getSelectedView();
+        String category = textView.getText().toString();
+
+        if(title.trim().isEmpty() || description.trim().isEmpty()) {
+            Toast.makeText(this, "Please fill all field", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent data = new Intent();
+        data.putExtra(EXTRA_TITLE, title);
+        data.putExtra(EXTRA_DESCRIPTION, description);
+        data.putExtra(EXTRA_CATEGORY, category);
+
+        setResult(RESULT_OK, data);
+        finish();
     }
 }

@@ -35,8 +35,7 @@ public class Collection implements Serializable {
     @ColumnInfo(name = "user_id", index = true)
     private int userId;
 
-    public Collection(int id, String title, String category, String description, int userId) {
-        this.id = id;
+    public Collection(String title, String category, String description, int userId) {
         this.title = title;
         this.category = category;
         this.description = description;
@@ -53,6 +52,15 @@ public class Collection implements Serializable {
         this.title = title;
         this.userId = userId;
     }
+
+    //for test in class AppDatabase
+    @Ignore
+    public Collection(int id, String title) {
+        this.id = id;
+        this.title = title;
+        this.userId = 0;
+    }
+
     public static Collection getDefaultCollection() {
         return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID);
     }
