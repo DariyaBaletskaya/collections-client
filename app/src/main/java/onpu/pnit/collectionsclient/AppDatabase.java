@@ -19,7 +19,7 @@ import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.entities.User;
 
 @Database(entities = {Item.class, Collection.class, ItemCollectionJoin.class, User.class},
-        version = 2)
+        version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "appdb.db";

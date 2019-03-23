@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient.repos;
 
+import android.app.Application;
 import android.content.Context;
 
 import java.util.List;
@@ -8,63 +9,72 @@ import java.util.concurrent.Executors;
 
 import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
+import onpu.pnit.collectionsclient.DAO.CollectionDao;
+import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
+import onpu.pnit.collectionsclient.DAO.ItemDao;
 import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 
 public class ItemRepository {
 
-    private static ItemRepository ourInstance;
-
-    private LiveData<List<Item>> items;
-
-    private AppDatabase db;
+    private ItemDao itemDao;
+    private ItemCollectionJoinDao itemCollectionJoinDao;
+    private static volatile ItemRepository instance;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
-    private ItemRepository(Context context) {
-        db = AppDatabase.getInstance(context);
-        items = getAllItems();
+    public ItemRepository(Application application) {
+        itemDao = AppDatabase.getInstance(application).itemDao();
+        itemCollectionJoinDao = AppDatabase.getInstance(application).itemCollectionJoinDao();
     }
 
-    public static ItemRepository getInstance(Context context) {
-        if (ourInstance == null) {
-            ourInstance = new ItemRepository(context);
+    public static ItemRepository getInstance(Application application) {
+        if (instance == null) {
+            synchronized (ItemRepository.class) {
+                if (instance == null) {
+                    instance = new ItemRepository (application);
+                }
+            }
         }
-        return ourInstance;
+        return instance;
     }
 
+    private LiveData<List<Item>> getItemsForCollection(int collectionId) {
+        return itemCollectionJoinDao.getItemsForCollection(collectionId);
+    }
     private LiveData<List<Item>> getAllItems() {
-        return db.itemDao().getAllItems();
+        return itemDao.getAllItems();
     }
 
     public void deleteAllItemsForUser(int userId) {
-        executor.execute(() -> db.itemDao().deleteAllItemsForUser(userId));
+        executor.execute(() -> itemDao.deleteAllItemsForUser(userId));
     }
 
     public void deleteItem(Item item) {
-        executor.execute(() -> db.itemDao().deleteItem(item));
+        executor.execute(() -> itemDao.deleteItem(item));
     }
 
     public LiveData<List<Item>> getItemsForUser(int userId) {
-        return db.itemDao().getItemsForUser(userId);
+        return itemDao.getItemsForUser(userId);
     }
 
     public LiveData<List<Item>> getItemsByTitle(String title) {
-        return db.itemDao().getItemsByTitle(title);
+        return itemDao.getItemsByTitle(title);
     }
 
     public void insertItem(Item item) {
-        executor.execute(() -> db.itemDao().insertItem(item));
+        executor.execute(() -> itemDao.insertItem(item));
     }
 
     public void insertAllItems(Item... items) {
-        executor.execute(() -> db.itemDao().insertAllItems(items));
+        executor.execute(() -> itemDao.insertAllItems(items));
     }
 
     public void updateItem(Item item) {
-        executor.execute(() -> db.itemDao().updateItem(item));
+        executor.execute(() -> itemDao.updateItem(item));
     }
 
     public void updateItems(Item... items) {
-        executor.execute(() -> db.itemDao().updateItems(items));
+        executor.execute(() -> itemDao.updateItems(items));
     }
 }
