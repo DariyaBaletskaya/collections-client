@@ -2,9 +2,13 @@ package onpu.pnit.collectionsclient;
 
 import android.content.Context;
 
+import java.util.concurrent.Executors;
+
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 import onpu.pnit.collectionsclient.DAO.CollectionDao;
 import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
 import onpu.pnit.collectionsclient.DAO.ItemDao;
@@ -30,9 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (instance == null) {
             synchronized (AppDatabase.class) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
-                            .fallbackToDestructiveMigration()
-                            .build();
+                    instance = buildDatabase(context);
                 }
             }
 
@@ -40,4 +42,18 @@ public abstract class AppDatabase extends RoomDatabase {
 
         return instance;
     }
+
+    private static AppDatabase buildDatabase(Context context) {
+        return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        Executors.newSingleThreadExecutor().execute(() -> getInstance(context).collectionDao().insertCollection(Collection.getDefaultCollection()));
+                    }
+                })
+                .build();
+    }
+
 }
