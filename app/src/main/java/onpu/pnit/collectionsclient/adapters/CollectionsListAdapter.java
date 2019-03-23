@@ -72,6 +72,11 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             title = itemView.findViewById(R.id.card_collection_title);
             category = itemView.findViewById(R.id.card_collection_category);
 //            photo = itemView.findViewById(R.id.card_collection_photo);
+            itemView.setOnClickListener(v -> {
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
+                }
+            });
         }
 
 
