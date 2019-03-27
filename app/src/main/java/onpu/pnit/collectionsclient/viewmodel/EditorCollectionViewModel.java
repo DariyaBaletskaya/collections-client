@@ -35,4 +35,12 @@ public class EditorCollectionViewModel extends AndroidViewModel {
     public LiveData<List<Collection>> getAllCollections() {
         return repository.getAllCollections();
     }
+
+    public void delete(Collection collection) {
+        repository.deleteCollection(collection);
+    }
+
+    public void deleteAll() {
+        repository.deleteAllCollections();
+    }
 }

@@ -54,6 +54,10 @@ public class CollectionRepository {
         executor.execute(() -> collectionDao.deleteAllCollectionsForUser(userId));
     }
 
+    public void deleteAllCollections() {
+        executor.execute(() -> collectionDao.deleteAllCollections());
+    }
+
     public void deleteCollection(Collection collection) {
         executor.execute(() -> collectionDao.deleteCollection(collection));
     }

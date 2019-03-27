@@ -89,4 +89,8 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     public void setOnCollectionClickListener(OnCollectionClickListener listener) {
         this.listener = listener;
     }
+
+    public Collection getCollectionAt(int position) {
+        return getItem(position);
+    }
 }

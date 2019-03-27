@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
 
     private CollectionsListAdapter adapter;
-    private CollectionListViewModel viewModel;
+    private CollectionListViewModel collectionListViewModel;
     private EditorCollectionViewModel editorCollectionListViewModel;
     public static final String COLLECTION_ID = "adsada";
 
@@ -96,6 +100,25 @@ public class MainActivity extends AppCompatActivity
         initRecyclerView();
         initViewModel();
 
+
+        // reaction on swipe in right. Collection deleted
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(MainActivity.this, "Collection deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
+
+
+
     }
 
     public void initRecyclerView() {
@@ -136,6 +159,10 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.collections_delete_all) {     //delete all collections
+            editorCollectionListViewModel.deleteAll();
+            Toast.makeText(MainActivity.this, "All collections deleted", Toast.LENGTH_SHORT).show();
             return true;
         }
 
