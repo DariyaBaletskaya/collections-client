@@ -145,15 +145,23 @@ public class MainActivity extends AppCompatActivity
                 ItemTouchHelper.RIGHT) {
             private boolean swipeRight = false;
             private void setTouchListener (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
-                recyclerView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
-                            swipeRight = true;
-                        }
-                        return false;
+                recyclerView.setOnTouchListener((v, event) -> {
+                    if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
+                        swipeRight = true;
                     }
+                    return false;
                 });
+            }
+
+            @Override
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
+                    // If it's default collection, swipes are disabled
+                    if (((CollectionsListAdapter.CollectionViewHolder) viewHolder).getId() == Collection.DEFAULT_COLLECTION_ID){
+                        return 0;
+                    }
+                }
+                return super.getSwipeDirs(recyclerView, viewHolder);
             }
 
             @Override
@@ -204,6 +212,17 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION, editCollection.getDescription());
                 intent.putExtra(CollectionAddEditActivity.EXTRA_CATEGORY, editCollection.getCategory());
                 startActivityForResult(intent, EDIT_COLLECTION_REQUEST);
+            }
+
+            @Override
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
+                    // If it's default collection, swipes are disabled
+                    if (((CollectionsListAdapter.CollectionViewHolder) viewHolder).getId() == Collection.DEFAULT_COLLECTION_ID){
+                        return 0;
+                    }
+                }
+                return super.getSwipeDirs(recyclerView, viewHolder);
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -334,15 +353,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_help) {
 
         }
-
-//        if(fragment != null){
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction ft = fragmentManager.beginTransaction();
-//
-//            ft.replace(R.id.screen_area, fragment);
-//
-//            ft.commit();
-//        }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;

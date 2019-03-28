@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
 
@@ -51,9 +52,12 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     @Override
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         Collection currentCollection = getItem(position);
+        holder.id = currentCollection.getId();
         holder.title.setText(currentCollection.getTitle());
         holder.category.setText(currentCollection.getCategory());
     }
+
+
 
 //    public void setCollectionList(List<Collection> collections) {
 //        this.collectionList = collections;
@@ -65,6 +69,7 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
         ImageView photo;
         TextView title;
         TextView category;
+        private int id;
 
         public CollectionViewHolder(View itemView){
             super(itemView);
@@ -78,8 +83,11 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             });
         }
 
-
+        public int getId() {
+            return id;
+        }
     }
+
 
     public interface OnCollectionClickListener {
         void onCollectionClick(int collectionId, int position);
