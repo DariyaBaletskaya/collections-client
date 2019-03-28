@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 public class CollectionAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    public static final String EXTRA_ID =
+            "onpu.pnit.collectionsclient.ui.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "onpu.pnit.collectionsclient.ui.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION =
@@ -39,16 +41,27 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_add_edit);
-        getSupportActionBar().setTitle(R.string.create_collection);
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         categorySpinner = findViewById(R.id.category_spinner);
         spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(spinnerAdapter);
         categorySpinner.setOnItemSelectedListener(this);
-
         editTextDescription = findViewById(R.id.edit_text_description);
         editTextTitle = findViewById(R.id.edit_text_title);
+
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)) {        // Use for edit exist collection
+            getSupportActionBar().setTitle(R.string.edit_exist_collection);
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            int spinnerPosition = spinnerAdapter.getPosition(intent.getStringExtra(EXTRA_CATEGORY));
+            categorySpinner.setSelection(spinnerPosition);
+        } else {        // Use for create new collection
+            getSupportActionBar().setTitle(R.string.create_collection);
+        }
     }
 
     @Override
@@ -95,6 +108,11 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_CATEGORY, category);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1) {
+            data.putExtra(EXTRA_ID, id);
+        }
 
         setResult(RESULT_OK, data);
         finish();

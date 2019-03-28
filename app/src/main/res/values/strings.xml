@@ -160,4 +160,5 @@
     <string name="item_price">Item price</string>
     <string name="delete_all_notes">Delete all notes</string>
     <string name="delete_all_collections">Delete all collections</string>
+    <string name="edit_exist_collection">Edit collection</string>
 </resources>

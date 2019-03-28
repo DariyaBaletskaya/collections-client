@@ -37,10 +37,20 @@ public class EditorCollectionViewModel extends AndroidViewModel {
     }
 
     public void delete(Collection collection) {
-        repository.deleteCollection(collection);
+        executor.execute(() -> {
+            repository.deleteCollection(collection);
+        });
     }
 
     public void deleteAll() {
-        repository.deleteAllCollections();
+        executor.execute(() -> {
+            repository.deleteAllCollections();
+        });
+    }
+
+    public void update(Collection collection) {
+        executor.execute(() -> {
+            repository.updateCollection(collection);
+        });
     }
 }

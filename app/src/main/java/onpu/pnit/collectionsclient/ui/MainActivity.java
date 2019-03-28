@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity
 
     // using for adding new collection
     public static final int ADD_COLLECTION_REQUEST = 1;
-
+    // using for edit exist collection
+    public static final int EDIT_COLLECTION_REQUEST = 2;
 
     @BindView(R.id.list_collections)
     RecyclerView recyclerView;
@@ -114,6 +115,26 @@ public class MainActivity extends AppCompatActivity
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(MainActivity.this, "Collection deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
+
+        // reaction on swipe in left. Collection edit
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Collection editCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
+                Intent intent = new Intent(MainActivity.this, CollectionAddEditActivity.class);
+                intent.putExtra(CollectionAddEditActivity.EXTRA_ID, editCollection.getId());
+                intent.putExtra(CollectionAddEditActivity.EXTRA_TITLE, editCollection.getTitle());
+                intent.putExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION, editCollection.getDescription());
+                intent.putExtra(CollectionAddEditActivity.EXTRA_CATEGORY, editCollection.getCategory());
+                startActivityForResult(intent, EDIT_COLLECTION_REQUEST);
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -218,8 +239,8 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //  Create new collection when you press on floating action button
-        if (requestCode == ADD_COLLECTION_REQUEST && resultCode == RESULT_OK) {
+
+        if (requestCode == ADD_COLLECTION_REQUEST && resultCode == RESULT_OK) {     //  Create new collection
             String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
             String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
             String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
@@ -227,6 +248,23 @@ public class MainActivity extends AppCompatActivity
             Collection collection = new Collection(title, category, description, 1);
             editorCollectionListViewModel.insert(collection);
             Toast.makeText(MainActivity.this, "Collection saved", Toast.LENGTH_SHORT).show();
+        } if (requestCode == EDIT_COLLECTION_REQUEST && resultCode == RESULT_OK) {      //Edit exist collection
+            int id = data.getIntExtra(CollectionAddEditActivity.EXTRA_ID, -1);
+
+            if (id == -1) {
+                Toast.makeText(MainActivity.this, "Collection can't be update", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
+            String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
+            String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
+
+            Collection updateCollection = new Collection(title, category, description, 1);
+            updateCollection.setId(id);
+            editorCollectionListViewModel.update(updateCollection);
+            Toast.makeText(MainActivity.this, "Collection update", Toast.LENGTH_SHORT).show();
+
         } else {
             Toast.makeText(MainActivity.this, "Collection not saved", Toast.LENGTH_SHORT).show();
         }
