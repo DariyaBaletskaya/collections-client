@@ -18,8 +18,6 @@ import onpu.pnit.collectionsclient.entities.Collection;
 public class CollectionListActivity extends AppCompatActivity {
 
 
-
-
     @BindView(R.id.list_collections)
     RecyclerView recyclerView;
     private CollectionsListAdapter adapter;

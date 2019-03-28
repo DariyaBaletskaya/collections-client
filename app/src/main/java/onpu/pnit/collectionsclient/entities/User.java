@@ -1,10 +1,9 @@
 package onpu.pnit.collectionsclient.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.List;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

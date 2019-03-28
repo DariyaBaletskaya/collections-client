@@ -1,7 +1,6 @@
 package onpu.pnit.collectionsclient.repos;
 
 import android.app.Application;
-import android.content.Context;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -9,11 +8,9 @@ import java.util.concurrent.Executors;
 
 import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
-import onpu.pnit.collectionsclient.DAO.CollectionDao;
 import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
 import onpu.pnit.collectionsclient.DAO.ItemDao;
 import onpu.pnit.collectionsclient.entities.Item;
-import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 
 public class ItemRepository {
 
@@ -39,10 +36,10 @@ public class ItemRepository {
         return instance;
     }
 
-    private LiveData<List<Item>> getItemsForCollection(int collectionId) {
+    public LiveData<List<Item>> getItemsForCollection(int collectionId) {
         return itemCollectionJoinDao.getItemsForCollection(collectionId);
     }
-    private LiveData<List<Item>> getAllItems() {
+    public LiveData<List<Item>> getAllItems() {
         return itemDao.getAllItems();
     }
 

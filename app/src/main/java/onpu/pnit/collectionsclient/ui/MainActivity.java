@@ -1,13 +1,17 @@
 package onpu.pnit.collectionsclient.ui;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Canvas;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,28 +41,52 @@ import onpu.pnit.collectionsclient.NetworkReceiver;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.viewmodel.CollectionListViewModel;
 import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
+import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //Broadcast receiver for internet connection
     NetworkReceiver networkReceiver = new NetworkReceiver();
 
     // using for adding new collection
     public static final int ADD_COLLECTION_REQUEST = 1;
     // using for edit exist collection
     public static final int EDIT_COLLECTION_REQUEST = 2;
+    // using for adding new item
+    public static final int ADD_ITEM_REQUEST = 3;
+
+    //control over Fab Menu
+    private boolean isFabMenuOpened = false;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
     @BindView(R.id.list_collections)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+     Toolbar toolbar;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.fab_layout_collection)
+    LinearLayout fabLayoutCollection;
+    @BindView(R.id.fab_collection)
+    FloatingActionButton fabCollection;
+    @BindView(R.id.fab_layout_item)
+    LinearLayout fabLayoutItem;
+    @BindView(R.id.fab_item)
+    FloatingActionButton fabItem;
 
     private CollectionsListAdapter adapter;
-    private CollectionListViewModel collectionListViewModel;
     private EditorCollectionViewModel editorCollectionListViewModel;
-    public static final String COLLECTION_ID = "adsada";
+    private ItemListViewModel itemListViewModel;
+    public static final String COLLECTION_ID = "collection_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,22 +101,32 @@ public class MainActivity extends AppCompatActivity
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-                startActivityForResult(i, ADD_COLLECTION_REQUEST);  // add new collection
+
+        fab.setOnClickListener(v -> {
+                if(!isFabMenuOpened){
+                    showFabMenu();
+                } else {
+                    closeFabMenu();
+                }
             }
+        );
+
+        fabCollection.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
+            startActivityForResult(i, ADD_COLLECTION_REQUEST);  // add new collection
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        fabItem.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, ItemAddEditActivity.class);
+            startActivityForResult(i, ADD_ITEM_REQUEST);  // add new collection
+        });
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 //        FragmentManager fragmentManager = getSupportFragmentManager();
@@ -105,6 +143,35 @@ public class MainActivity extends AppCompatActivity
         // reaction on swipe in right. Collection deleted
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.RIGHT) {
+            private boolean swipeRight = false;
+            private void setTouchListener (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
+                recyclerView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
+                            swipeRight = true;
+                        }
+                        return false;
+                    }
+                });
+            }
+
+            @Override
+            public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+                    setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+            @Override
+            public int convertToAbsoluteDirection(int flags, int layoutDirection) {
+                if(swipeRight) {
+                    swipeRight = false;
+                    return 0;
+                }
+                return super.convertToAbsoluteDirection(flags, layoutDirection);
+            }
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -113,8 +180,10 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, "Collection deleted", Toast.LENGTH_SHORT).show();
+                if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
+                    editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
+                    Toast.makeText(MainActivity.this, "Collection deleted", Toast.LENGTH_SHORT).show();
+                }
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -138,14 +207,65 @@ public class MainActivity extends AppCompatActivity
             }
         }).attachToRecyclerView(recyclerView);
 
-
-
     }
+
+    //control over Fab Menu
+    private void showFabMenu(){
+        isFabMenuOpened = true;
+        fabLayoutItem.setVisibility(View.VISIBLE);
+        fabLayoutCollection.setVisibility(View.VISIBLE);
+        fab.animate().rotationBy(45).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {}
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (fab.getRotation() != 45) {
+                    fab.setRotation(45);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+        fabLayoutCollection.animate().translationY(-getResources().getDimension(R.dimen.fab_collection));
+        fabLayoutItem.animate().translationY(-getResources().getDimension(R.dimen.fab_item));
+    }
+
+    private void closeFabMenu(){
+        isFabMenuOpened = false;
+        fab.animate().rotationBy(90).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {}
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (fab.getRotation() != 90) {
+                    fab.setRotation(90);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+
+        fabLayoutItem.setVisibility(View.GONE);
+        fabLayoutCollection.setVisibility(View.GONE);
+        fabLayoutCollection.animate().translationY(0);
+        fabLayoutItem.animate().translationY(0);
+    }
+
 
     public void initRecyclerView() {
         adapter = new CollectionsListAdapter();
         adapter.setOnCollectionClickListener((collectionId, position) -> {
-            Intent i = new Intent(MainActivity.this, MyItemDetailsActivity.class);
+            Intent i = new Intent(MainActivity.this, ItemsListActivity.class);
             i.putExtra(COLLECTION_ID, collectionId);
             MainActivity.this.startActivity(i);
         });
@@ -156,7 +276,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(isFabMenuOpened){
+            closeFabMenu();
+        }
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -197,7 +319,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         //Fragment fragment = null;
 
-
         if (id == R.id.nav_search) {
 
         } else if (id == R.id.nav_profile) {
@@ -223,7 +344,6 @@ public class MainActivity extends AppCompatActivity
 //            ft.commit();
 //        }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -252,7 +372,7 @@ public class MainActivity extends AppCompatActivity
             int id = data.getIntExtra(CollectionAddEditActivity.EXTRA_ID, -1);
 
             if (id == -1) {
-                Toast.makeText(MainActivity.this, "Collection can't be update", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Collection can't be updated", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -269,12 +389,25 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(MainActivity.this, "Collection not saved", Toast.LENGTH_SHORT).show();
         }
 
+        if(requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
+            String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
+            String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
+            String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);
+            Boolean isOnSale = data.getBooleanExtra(ItemAddEditActivity.EXTRA_ONSALE,false);
 
+            Item newItem = new Item(title,description,isOnSale,Float.parseFloat(price),1);
+            itemListViewModel.insert(newItem);
+            Toast.makeText(MainActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(MainActivity.this, "Item not saved", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     private void initViewModel() {
         editorCollectionListViewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
+        itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
         editorCollectionListViewModel.getAllCollections().observe(this, new Observer<List<Collection>>() {
             @Override
             public void onChanged(List<Collection> collections) {

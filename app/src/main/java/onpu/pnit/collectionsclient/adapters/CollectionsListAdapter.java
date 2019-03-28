@@ -55,10 +55,10 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
         holder.category.setText(currentCollection.getCategory());
     }
 
-    public void setCollectionList(List<Collection> collections) {
-        this.collectionList = collections;
-        notifyDataSetChanged();
-    }
+//    public void setCollectionList(List<Collection> collections) {
+//        this.collectionList = collections;
+//        notifyDataSetChanged();
+//    }
 
     public class CollectionViewHolder extends RecyclerView.ViewHolder {
         //TODO: Добавить отображение фото, возможно по URL
@@ -70,7 +70,7 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             super(itemView);
             title = itemView.findViewById(R.id.card_collection_title);
             category = itemView.findViewById(R.id.card_collection_category);
-//            photo = itemView.findViewById(R.id.card_collection_photo);
+//          photo = itemView.findViewById(R.id.card_collection_photo);
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
@@ -80,7 +80,6 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
 
 
     }
-
 
     public interface OnCollectionClickListener {
         void onCollectionClick(int collectionId, int position);

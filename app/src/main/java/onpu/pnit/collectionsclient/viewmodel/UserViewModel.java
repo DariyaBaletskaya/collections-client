@@ -2,13 +2,11 @@ package onpu.pnit.collectionsclient.viewmodel;
 
 import android.app.Application;
 
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.entities.User;
 import onpu.pnit.collectionsclient.repos.UserRepository;

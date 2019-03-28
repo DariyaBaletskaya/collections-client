@@ -44,5 +44,9 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
+    <!-- Fab dimens -->
+
+    <dimen name="fab_collection">120dp</dimen>
+    <dimen name="fab_item">60dp</dimen>
 
 </resources>

@@ -1,7 +1,6 @@
 package onpu.pnit.collectionsclient.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import butterknife.BindView;
 import onpu.pnit.collectionsclient.R;
 
 import android.content.Intent;
@@ -77,14 +76,14 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.collection_add_edit_menu, menu);
+        inflater.inflate(R.menu.add_edit_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_collection_save:
+            case R.id.action_save:
                 saveCollection();
                 return true;
             default:

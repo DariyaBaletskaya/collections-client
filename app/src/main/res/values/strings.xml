@@ -161,4 +161,6 @@
     <string name="delete_all_notes">Delete all notes</string>
     <string name="delete_all_collections">Delete all collections</string>
     <string name="edit_exist_collection">Edit collection</string>
+    <string name="tv_add_collection">Collection</string>
+    <string name="tv_add_item">Item</string>
 </resources>

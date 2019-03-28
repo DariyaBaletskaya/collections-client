@@ -25,6 +25,61 @@
         style="@style/Theme.Design.NoActionBar"
         layout="@layout/content_main" />
 
+    <LinearLayout
+        android:id="@+id/fab_layout_collection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="38dp"
+        android:layout_gravity="bottom|end"
+        >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_light"
+        android:text="@string/tv_add_collection"
+        android:textSize="15sp"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_collection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_add" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fab_layout_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="25dp"
+        android:layout_gravity="bottom|end"
+        >
+
+        <TextView
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_light"
+        android:text="@string/tv_add_item"
+            android:textAlignment="textEnd"
+        android:textSize="15sp"
+        />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_add" />
+    </LinearLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -33,5 +88,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorAccent"
         app:srcCompat="@drawable/ic_add" />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

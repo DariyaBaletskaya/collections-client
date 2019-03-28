@@ -49,6 +49,15 @@ public class Item  implements Serializable{
     public Item() {
     }
 
+    @Ignore
+    public Item(String title, String description, boolean isOnSale, float price, int userId) {
+        this.title = title;
+        this.description = description;
+        this.isOnSale = isOnSale;
+        this.price = price;
+        this.userId = userId;
+    }
+
     public int getId() {
         return id;
     }
@@ -93,5 +102,15 @@ public class Item  implements Serializable{
         return userId;
     }
 
-
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", isOnSale=" + isOnSale +
+                ", price=" + price +
+                ", userId=" + userId +
+                '}';
+    }
 }

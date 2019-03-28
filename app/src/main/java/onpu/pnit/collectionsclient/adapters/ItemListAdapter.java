@@ -30,8 +30,7 @@ public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHo
 
         @Override
         public boolean areContentsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
-            return oldItem.getTitle().equals(newItem.getTitle());
-                    //&& oldItem.isOnSale() == newItem.isOnSale(); - если будет добавление значка "НА ПРОДАЖЕ"
+            return oldItem.toString().equals(newItem.toString());
         }
     };
 
@@ -42,16 +41,15 @@ public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHo
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View itemView = layoutInflater.inflate(R.layout.item_card,parent,false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_card, parent, false);
         return new ItemViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Item thisItem = getItem(position);
-        //TODO  write changes
-
+        Item currentCollection = getItem(position);
+        holder.title.setText(currentCollection.getTitle());
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder{
@@ -64,7 +62,6 @@ public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHo
             title = itemView.findViewById(R.id.card_item_title);
             img = itemView.findViewById(R.id.card_item_photo);
 
-          /*  ButterKnife.bind(this,itemView);*/
             itemView.setOnClickListener(v ->{
                 if(listener!= null && getAdapterPosition() != RecyclerView.NO_POSITION){
                     listener.onItemClick(getItem(getAdapterPosition()).getId(),getAdapterPosition());
