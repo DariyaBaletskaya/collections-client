@@ -24,8 +24,6 @@ public class EditorCollectionViewModel extends AndroidViewModel {
         repository = new CollectionRepository(application);
     }
 
-
-
     public void insert(Collection collection) {
         executor.execute(() -> {
             repository.insertCollection(collection);
@@ -51,6 +49,11 @@ public class EditorCollectionViewModel extends AndroidViewModel {
     public void update(Collection collection) {
         executor.execute(() -> {
             repository.updateCollection(collection);
+        });
+    }
+    public void restore(Collection collection) {
+        executor.execute(() -> {
+            repository.insertCollection(collection);
         });
     }
 }

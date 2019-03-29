@@ -33,14 +33,19 @@ public class Collection implements Serializable {
     @JsonProperty("description")
     @ColumnInfo(name = "collection_description")
     private String description;
+    @JsonProperty("image")
+    @ColumnInfo(name = "image")
+    private String image;
     @JsonProperty("userid")
     @ColumnInfo(name = "user_id", index = true)
     private int userId;
 
-    public Collection(String title, String category, String description, int userId) {
+    public Collection(int id, String title, String category, String description, String image, int userId) {
+        this.id = id;
         this.title = title;
         this.category = category;
         this.description = description;
+        this.image = image;
         this.userId = userId;
     }
 
@@ -49,26 +54,25 @@ public class Collection implements Serializable {
     }
 
     @Ignore
-    public Collection(int id, String title, int userId) {
+    public Collection(int id, String title, int userId, String image) {
         this.id = id;
         this.title = title;
+        this.image = image;
         this.userId = userId;
     }
 
-    //for test in class AppDatabase
-
-    public static Collection getDefaultCollection() {
-        return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID);
+    @Ignore
+    public Collection(String title, String category, String description, int userId, String image) {
+        this.title = title;
+        this.category = category;
+        this.description = description;
+        this.userId = userId;
+        this.image = image;
     }
 
-    /*public static List<Collection> getSampleCollections() {
-        List<Collection> list = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            list.add(new Collection(i, "Collection" + i, DEFAULT_USER_ID));
-        }
-
-        return list;
-    }*/
+    public static Collection getDefaultCollection() {
+        return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
+    }
 
     public int getId() {
         return id;
@@ -104,5 +108,13 @@ public class Collection implements Serializable {
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

@@ -1,27 +1,26 @@
 package onpu.pnit.collectionsclient.adapters;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
 
 public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsListAdapter.CollectionViewHolder> {
-    private List<Collection> collectionList = new ArrayList<>();
 
+    private Context context;
     private OnCollectionClickListener listener;
 
     private static final DiffUtil.ItemCallback<Collection> DIFF_CALLBACK = new DiffUtil.ItemCallback<Collection>() {
@@ -37,8 +36,9 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     };
 
 
-    public CollectionsListAdapter() {
+    public CollectionsListAdapter(Context context) {
         super(DIFF_CALLBACK);
+        this.context = context;
     }
 
     @NonNull
@@ -55,39 +55,41 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
         holder.id = currentCollection.getId();
         holder.title.setText(currentCollection.getTitle());
         holder.category.setText(currentCollection.getCategory());
+
+        Glide.with(context)
+                .load(currentCollection.getImage())
+                .into(holder.image);
     }
 
-
-
-//    public void setCollectionList(List<Collection> collections) {
-//        this.collectionList = collections;
-//        notifyDataSetChanged();
-//    }
-
     public class CollectionViewHolder extends RecyclerView.ViewHolder {
-        //TODO: Добавить отображение фото, возможно по URL
-        ImageView photo;
-        TextView title;
-        TextView category;
+
+        public ImageView image;
+        public TextView title;
+        public TextView category;
+        public ConstraintLayout viewBackground,
+                         viewForeground;
         private int id;
 
         public CollectionViewHolder(View itemView){
             super(itemView);
             title = itemView.findViewById(R.id.card_collection_title);
             category = itemView.findViewById(R.id.card_collection_category);
-//          photo = itemView.findViewById(R.id.card_collection_photo);
+            image = itemView.findViewById(R.id.card_collection_photo);
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
                 }
             });
+
+            viewBackground = itemView.findViewById(R.id.collections_card_background);
+            viewForeground = itemView.findViewById(R.id.collections_card_foreground);
+
         }
 
         public int getId() {
             return id;
         }
     }
-
 
     public interface OnCollectionClickListener {
         void onCollectionClick(int collectionId, int position);
@@ -100,4 +102,5 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     public Collection getCollectionAt(int position) {
         return getItem(position);
     }
+
 }

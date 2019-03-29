@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -47,7 +48,7 @@ import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     //Broadcast receiver for internet connection
     NetworkReceiver networkReceiver = new NetworkReceiver();
@@ -138,93 +139,94 @@ public class MainActivity extends AppCompatActivity
 
         initRecyclerView();
         initViewModel();
+        initItemSwipes();
 
 
-        // reaction on swipe in right. Collection deleted
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.RIGHT) {
-            private boolean swipeRight = false;
-//            private void setTouchListener (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
-//                recyclerView.setOnTouchListener((v, event) -> {
-//                    if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
-//                        swipeRight = true;
+//        // reaction on swipe in right. Collection deleted
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+//                ItemTouchHelper.RIGHT) {
+//            private boolean swipeRight = false;
+////            private void setTouchListener (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
+////                recyclerView.setOnTouchListener((v, event) -> {
+////                    if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
+////                        swipeRight = true;
+////                    }
+////                    return false;
+////                });
+////            }
+//
+//            @Override
+//            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+//                if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
+//                    // If it's default collection, swipes are disabled
+//                    if (((CollectionsListAdapter.CollectionViewHolder) viewHolder).getId() == Collection.DEFAULT_COLLECTION_ID){
+//                        return 0;
 //                    }
-//                    return false;
-//                });
-//            }
-
-            @Override
-            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
-                    // If it's default collection, swipes are disabled
-                    if (((CollectionsListAdapter.CollectionViewHolder) viewHolder).getId() == Collection.DEFAULT_COLLECTION_ID){
-                        return 0;
-                    }
-                }
-                return super.getSwipeDirs(recyclerView, viewHolder);
-            }
-
-            @Override
-            public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-//                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-//                    setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 //                }
-                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-
-            @Override
-            public int convertToAbsoluteDirection(int flags, int layoutDirection) {
-                if(swipeRight) {
-                    swipeRight = false;
-                    return 0;
-                }
-                return super.convertToAbsoluteDirection(flags, layoutDirection);
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
-                    editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
-                    Toast.makeText(MainActivity.this, "Collection deleted", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).attachToRecyclerView(recyclerView);
-
-        // reaction on swipe in left. Collection edit
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Collection editCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
-                Intent intent = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-                intent.putExtra(CollectionAddEditActivity.EXTRA_ID, editCollection.getId());
-                intent.putExtra(CollectionAddEditActivity.EXTRA_TITLE, editCollection.getTitle());
-                intent.putExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION, editCollection.getDescription());
-                intent.putExtra(CollectionAddEditActivity.EXTRA_CATEGORY, editCollection.getCategory());
-                startActivityForResult(intent, EDIT_COLLECTION_REQUEST);
-            }
-
-            @Override
-            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
-                    // If it's default collection, swipes are disabled
-                    if (((CollectionsListAdapter.CollectionViewHolder) viewHolder).getId() == Collection.DEFAULT_COLLECTION_ID){
-                        return 0;
-                    }
-                }
-                return super.getSwipeDirs(recyclerView, viewHolder);
-            }
-        }).attachToRecyclerView(recyclerView);
+//                return super.getSwipeDirs(recyclerView, viewHolder);
+//            }
+//
+//            @Override
+//            public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+////                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+////                    setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+////                }
+//                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//            }
+//
+//            @Override
+//            public int convertToAbsoluteDirection(int flags, int layoutDirection) {
+//                if(swipeRight) {
+//                    swipeRight = false;
+//                    return 0;
+//                }
+//                return super.convertToAbsoluteDirection(flags, layoutDirection);
+//            }
+//
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//                if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
+//                    editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
+//                    Toast.makeText(MainActivity.this, "Collection deleted", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }).attachToRecyclerView(recyclerView);
+//
+//        // reaction on swipe in left. Collection edit
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+//                ItemTouchHelper.LEFT) {
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//                Collection editCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
+//                Intent intent = new Intent(MainActivity.this, CollectionAddEditActivity.class);
+//                intent.putExtra(CollectionAddEditActivity.EXTRA_ID, editCollection.getId());
+//                intent.putExtra(CollectionAddEditActivity.EXTRA_TITLE, editCollection.getTitle());
+//                intent.putExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION, editCollection.getDescription());
+//                intent.putExtra(CollectionAddEditActivity.EXTRA_CATEGORY, editCollection.getCategory());
+//                startActivityForResult(intent, EDIT_COLLECTION_REQUEST);
+//            }
+//
+//            @Override
+//            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+//                if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
+//                    // If it's default collection, swipes are disabled
+//                    if (((CollectionsListAdapter.CollectionViewHolder) viewHolder).getId() == Collection.DEFAULT_COLLECTION_ID){
+//                        return 0;
+//                    }
+//                }
+//                return super.getSwipeDirs(recyclerView, viewHolder);
+//            }
+//        }).attachToRecyclerView(recyclerView);
 
     }
 
@@ -282,7 +284,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void initRecyclerView() {
-        adapter = new CollectionsListAdapter();
+        adapter = new CollectionsListAdapter(getApplicationContext());
         adapter.setOnCollectionClickListener((collectionId, position) -> {
             Intent i = new Intent(MainActivity.this, ItemsListActivity.class);
             i.putExtra(COLLECTION_ID, collectionId);
@@ -291,6 +293,42 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+    }
+
+    //actions with swipes
+    public void initItemSwipes() {
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.RIGHT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+    }
+
+
+     //callback when recycler view is swiped
+     //item will be removed on swiped
+     //undo option will be provided in snackbar to restore the item
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
+            // get the removed item name to display it in snack bar
+            String title = adapter.getCollectionAt(viewHolder.getAdapterPosition()).getTitle();
+
+            // backup of removed item for undo purpose
+            final Collection deletedCollection= adapter.getCollectionAt(viewHolder.getAdapterPosition());
+
+            if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
+                // remove the item from recycler view
+                editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
+            }
+
+            // showing snack bar with Undo option
+            Snackbar snackbar = Snackbar
+                    .make(recyclerView, title + " removed!", Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO", v ->
+                    // undo is selected, restore the deleted item
+                    editorCollectionListViewModel.restore(deletedCollection)
+                );
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
+        }
     }
 
     @Override
@@ -369,13 +407,12 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if (requestCode == ADD_COLLECTION_REQUEST && resultCode == RESULT_OK) {     //  Create new collection
             String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
             String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
             String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
 
-            Collection collection = new Collection(title, category, description, 1);
+            Collection collection = new Collection(title, category, description, 1, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
             editorCollectionListViewModel.insert(collection);
             Toast.makeText(MainActivity.this, "Collection saved", Toast.LENGTH_SHORT).show();
         } if (requestCode == EDIT_COLLECTION_REQUEST && resultCode == RESULT_OK) {      //Edit exist collection
@@ -390,16 +427,12 @@ public class MainActivity extends AppCompatActivity
             String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
             String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
 
-            Collection updateCollection = new Collection(title, category, description, 1);
+            Collection updateCollection = new Collection(title, category, description,1, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
             updateCollection.setId(id);
             editorCollectionListViewModel.update(updateCollection);
             Toast.makeText(MainActivity.this, "Collection update", Toast.LENGTH_SHORT).show();
 
-        } else {
-            Toast.makeText(MainActivity.this, "Collection not saved", Toast.LENGTH_SHORT).show();
-        }
-
-        if(requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
+        } else if(requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
             String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
             String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
             String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);
@@ -410,7 +443,7 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(MainActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
 
         } else {
-            Toast.makeText(MainActivity.this, "Item not saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Not saved", Toast.LENGTH_SHORT).show();
         }
 
     }
