@@ -163,4 +163,5 @@
     <string name="edit_exist_collection">Edit collection</string>
     <string name="tv_add_collection">Collection</string>
     <string name="tv_add_item">Item</string>
+    <string name="give_title_to_collection">Please give a title to collection</string>
 </resources>

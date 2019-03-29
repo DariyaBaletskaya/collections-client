@@ -50,9 +50,9 @@ import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
+    public static final String COLLECTION_ID = "collection_id";
     //Broadcast receiver for internet connection
     NetworkReceiver networkReceiver = new NetworkReceiver();
-
     // using for adding new collection
     public static final int ADD_COLLECTION_REQUEST = 1;
     // using for edit exist collection
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.list_collections)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
-     Toolbar toolbar;
+    Toolbar toolbar;
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
     private CollectionsListAdapter adapter;
     private EditorCollectionViewModel editorCollectionListViewModel;
     private ItemListViewModel itemListViewModel;
-    public static final String COLLECTION_ID = "collection_id";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,12 +104,12 @@ public class MainActivity extends AppCompatActivity
 
 
         fab.setOnClickListener(v -> {
-                if(!isFabMenuOpened){
-                    showFabMenu();
-                } else {
-                    closeFabMenu();
+                    if (!isFabMenuOpened) {
+                        showFabMenu();
+                    } else {
+                        closeFabMenu();
+                    }
                 }
-            }
         );
 
         fabCollection.setOnClickListener(v -> {
@@ -231,13 +231,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     //control over Fab Menu
-    private void showFabMenu(){
+    private void showFabMenu() {
         isFabMenuOpened = true;
         fabLayoutItem.setVisibility(View.VISIBLE);
         fabLayoutCollection.setVisibility(View.VISIBLE);
         fab.animate().rotationBy(45).setListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animator) {}
+            public void onAnimationStart(Animator animator) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animator) {
@@ -247,20 +248,23 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {}
+            public void onAnimationCancel(Animator animator) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {}
+            public void onAnimationRepeat(Animator animator) {
+            }
         });
         fabLayoutCollection.animate().translationY(-getResources().getDimension(R.dimen.fab_collection));
         fabLayoutItem.animate().translationY(-getResources().getDimension(R.dimen.fab_item));
     }
 
-    private void closeFabMenu(){
+    private void closeFabMenu() {
         isFabMenuOpened = false;
         fab.animate().rotationBy(90).setListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animator) {}
+            public void onAnimationStart(Animator animator) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animator) {
@@ -270,10 +274,12 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {}
+            public void onAnimationCancel(Animator animator) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {}
+            public void onAnimationRepeat(Animator animator) {
+            }
         });
 
         fabLayoutItem.setVisibility(View.GONE);
@@ -288,11 +294,17 @@ public class MainActivity extends AppCompatActivity
         adapter.setOnCollectionClickListener((collectionId, position) -> {
             Intent i = new Intent(MainActivity.this, ItemsListActivity.class);
             i.putExtra(COLLECTION_ID, collectionId);
-            MainActivity.this.startActivity(i);
+            startActivity(i);
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+    }
+
+    private void initViewModel() {
+        editorCollectionListViewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
+        itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+        editorCollectionListViewModel.getAllCollections().observe(this, collections -> adapter.submitList(collections));
     }
 
     //actions with swipes
@@ -302,9 +314,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-     //callback when recycler view is swiped
-     //item will be removed on swiped
-     //undo option will be provided in snackbar to restore the item
+    //callback when recycler view is swiped
+    //item will be removed on swiped
+    //undo option will be provided in snackbar to restore the item
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
@@ -312,9 +324,9 @@ public class MainActivity extends AppCompatActivity
             String title = adapter.getCollectionAt(viewHolder.getAdapterPosition()).getTitle();
 
             // backup of removed item for undo purpose
-            final Collection deletedCollection= adapter.getCollectionAt(viewHolder.getAdapterPosition());
+            final Collection deletedCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
 
-            if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
+            if (adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
                 // remove the item from recycler view
                 editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
             }
@@ -325,7 +337,7 @@ public class MainActivity extends AppCompatActivity
             snackbar.setAction("UNDO", v ->
                     // undo is selected, restore the deleted item
                     editorCollectionListViewModel.restore(deletedCollection)
-                );
+            );
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
@@ -333,7 +345,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if(isFabMenuOpened){
+        if (isFabMenuOpened) {
             closeFabMenu();
         }
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -408,38 +420,40 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ADD_COLLECTION_REQUEST && resultCode == RESULT_OK) {     //  Create new collection
-            String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
-            String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
-
-            Collection collection = new Collection(title, category, description, 1, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
-            editorCollectionListViewModel.insert(collection);
+//            String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
+//            String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
+//            String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
+//
+//            Collection collection = new Collection(title, category, description, 1, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
+//            editorCollectionListViewModel.insert(collection);
             Toast.makeText(MainActivity.this, "Collection saved", Toast.LENGTH_SHORT).show();
-        } if (requestCode == EDIT_COLLECTION_REQUEST && resultCode == RESULT_OK) {      //Edit exist collection
-            int id = data.getIntExtra(CollectionAddEditActivity.EXTRA_ID, -1);
+        }
+        // Provide collection editing answer
+        if (requestCode == EDIT_COLLECTION_REQUEST && resultCode == RESULT_OK) {      //Edit exist collection
+//            int id = data.getIntExtra(CollectionAddEditActivity.EXTRA_ID, -1);
 
-            if (id == -1) {
-                Toast.makeText(MainActivity.this, "Collection can't be updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
+//            if (id == -1) {
+//                Toast.makeText(MainActivity.this, "Collection can't be updated", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
 
-            String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
-            String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
+//            String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
+//            String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
+//            String category = data.getStringExtra(CollectionAddEditActivity.EXTRA_CATEGORY);
 
-            Collection updateCollection = new Collection(title, category, description,1, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
-            updateCollection.setId(id);
-            editorCollectionListViewModel.update(updateCollection);
+//            Collection updateCollection = new Collection(title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID);
+//            updateCollection.setId(id);
+//            editorCollectionListViewModel.update(updateCollection);
             Toast.makeText(MainActivity.this, "Collection update", Toast.LENGTH_SHORT).show();
 
-        } else if(requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
-            String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
-            String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);
-            Boolean isOnSale = data.getBooleanExtra(ItemAddEditActivity.EXTRA_ONSALE,false);
-
-            Item newItem = new Item(title,description,isOnSale,Float.parseFloat(price),1);
-            itemListViewModel.insert(newItem);
+        } else if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
+//            String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
+//            String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
+//            String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);
+//            Boolean isOnSale = data.getBooleanExtra(ItemAddEditActivity.EXTRA_ONSALE, false);
+//
+//            Item newItem = new Item(title, description, isOnSale, Float.parseFloat(price), 1);
+//            itemListViewModel.insert(newItem);
             Toast.makeText(MainActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
 
         } else {
@@ -448,14 +462,5 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void initViewModel() {
-        editorCollectionListViewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
-        itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-        editorCollectionListViewModel.getAllCollections().observe(this, new Observer<List<Collection>>() {
-            @Override
-            public void onChanged(List<Collection> collections) {
-                adapter.submitList(collections);
-            }
-        });
-    }
+
 }

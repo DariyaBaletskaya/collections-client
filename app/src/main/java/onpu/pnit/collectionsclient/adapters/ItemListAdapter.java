@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Item;
 
-public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHolder> {
+public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewHolder> {
 
     private List<Item> itemList = new ArrayList<>();
     private OnItemClickListener listener;
@@ -34,7 +34,7 @@ public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHo
         }
     };
 
-    public ItemListAdapter (){
+    public ItemListAdapter() {
         super(DIFF_UTIL_FOR_ITEMS);
     }
 
@@ -52,7 +52,7 @@ public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHo
         holder.title.setText(currentCollection.getTitle());
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder{
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
 
         ImageView img;
         TextView title;
@@ -62,24 +62,24 @@ public class ItemListAdapter extends ListAdapter<Item,ItemListAdapter.ItemViewHo
             title = itemView.findViewById(R.id.card_item_title);
             img = itemView.findViewById(R.id.card_item_photo);
 
-            itemView.setOnClickListener(v ->{
-                if(listener!= null && getAdapterPosition() != RecyclerView.NO_POSITION){
-                    listener.onItemClick(getItem(getAdapterPosition()).getId(),getAdapterPosition());
+            itemView.setOnClickListener(v -> {
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
                 }
             });
         }
     }
 
 
-    public interface OnItemClickListener{
-        void onItemClick(int ItemId,int position);
+    public interface OnItemClickListener {
+        void onItemClick(int ItemId, int position);
     }
 
-    public void SetOnItemClickListener(OnItemClickListener listener){
+    public void SetOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public Item GetItemFrom(int position){
+    public Item GetItemFrom(int position) {
         return getItem(position);
     }
 }

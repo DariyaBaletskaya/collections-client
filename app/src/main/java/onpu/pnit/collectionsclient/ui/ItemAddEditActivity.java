@@ -1,9 +1,14 @@
 package onpu.pnit.collectionsclient.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import onpu.pnit.collectionsclient.DAO.ItemDao;
 import onpu.pnit.collectionsclient.R;
+import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,6 +56,8 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     @BindView(R.id.isItemOnSaleSwitch)
     Switch isItemOnSale;
 
+    private ItemListViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,8 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
+        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+
     }
 
     @Override
@@ -91,30 +100,36 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     private void saveItem() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
-        String price = editTextPrice.getText().toString();
-        TextView textView = (TextView) currencySpinner.getSelectedView();
-        String currency = textView.getText().toString();
+        float price;
+        if (!editTextPrice.getText().toString().isEmpty()) {
+            price = Float.parseFloat(editTextPrice.getText().toString());
+        } else {
+            price = 0;
+        }
+
+//        String currency = ((TextView) currencySpinner.getSelectedView()).getText().toString();
         Boolean isOnSale = isItemOnSale.isChecked();
 
-        if(title.trim().isEmpty() || description.trim().isEmpty()) {
-            Toast.makeText(this, "Please fill all field", Toast.LENGTH_SHORT).show();
+        if(title.trim().isEmpty()) {
+            Toast.makeText(this, "Please fill the title field", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Intent data = new Intent();
-        data.putExtra(EXTRA_TITLE, title);
-        data.putExtra(EXTRA_DESCRIPTION, description);
-        data.putExtra(EXTRA_PRICE, price);
+        viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID));
+        setResult(RESULT_OK);
+//        Intent data = new Intent();
+//        data.putExtra(EXTRA_TITLE, title);
+//        data.putExtra(EXTRA_DESCRIPTION, description);
+//        data.putExtra(EXTRA_PRICE, price);
         //data.putExtra(EXTRA_CURRENCY, currency);
-        data.putExtra(EXTRA_ONSALE, isOnSale);
+//        data.putExtra(EXTRA_ONSALE, isOnSale);
 
-
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-        if (id != -1) {
-            data.putExtra(EXTRA_ID, id);
-        }
-
-        setResult(RESULT_OK, data);
+//        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+//        if (id != -1) {
+//            data.putExtra(EXTRA_ID, id);
+//        }
+//
+//        setResult(RESULT_OK, data);
         finish();
     }
 
