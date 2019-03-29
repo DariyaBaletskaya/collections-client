@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity
                 // remove the item from recycler view
                 editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
             }
-
+            closeFabMenu();
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar
                     .make(recyclerView, title + " removed!", Snackbar.LENGTH_LONG);
