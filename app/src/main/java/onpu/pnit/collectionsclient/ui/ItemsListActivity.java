@@ -3,6 +3,8 @@ package onpu.pnit.collectionsclient.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.r0adkll.slidr.Slidr;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ public class ItemsListActivity extends AppCompatActivity {
         setContentView(R.layout.item_list);
         setTitle("My items");
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        Slidr.attach(this);
 
         ButterKnife.bind(this);
 

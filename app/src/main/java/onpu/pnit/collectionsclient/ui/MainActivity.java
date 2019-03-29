@@ -144,14 +144,14 @@ public class MainActivity extends AppCompatActivity
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.RIGHT) {
             private boolean swipeRight = false;
-            private void setTouchListener (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
-                recyclerView.setOnTouchListener((v, event) -> {
-                    if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
-                        swipeRight = true;
-                    }
-                    return false;
-                });
-            }
+//            private void setTouchListener (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
+//                recyclerView.setOnTouchListener((v, event) -> {
+//                    if(adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() == Collection.DEFAULT_COLLECTION_ID) {
+//                        swipeRight = true;
+//                    }
+//                    return false;
+//                });
+//            }
 
             @Override
             public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
@@ -166,9 +166,9 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-                    setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                }
+//                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+//                    setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//                }
                 super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
 

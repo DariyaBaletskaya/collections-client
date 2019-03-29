@@ -16,6 +16,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.r0adkll.slidr.Slidr;
+
 public class CollectionAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String EXTRA_ID =
@@ -42,6 +44,8 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         setContentView(R.layout.collection_add_edit);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        Slidr.attach(this);
+
         categorySpinner = findViewById(R.id.category_spinner);
         spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

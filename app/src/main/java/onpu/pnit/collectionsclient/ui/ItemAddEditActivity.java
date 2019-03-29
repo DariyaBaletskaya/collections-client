@@ -19,6 +19,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.r0adkll.slidr.Slidr;
+
 public class ItemAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     public static final String EXTRA_ID =
@@ -59,6 +61,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         ButterKnife.bind(this);
         setTitle(R.string.add_item);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        Slidr.attach(this);
 
         spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

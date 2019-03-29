@@ -2,17 +2,29 @@ package onpu.pnit.collectionsclient.ui;
 
 import android.os.Bundle;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.r0adkll.slidr.Slidr;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 
 
 public class ViewProfile extends AppCompatActivity {
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_profile);
+
+        getSupportActionBar().setTitle(R.string.nav_profile);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        Slidr.attach(this);
+
+
 
 
     }

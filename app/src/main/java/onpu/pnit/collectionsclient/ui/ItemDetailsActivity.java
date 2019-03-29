@@ -9,6 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.r0adkll.slidr.Slidr;
+
 public class ItemDetailsActivity extends AppCompatActivity {
 
     @Override
@@ -17,6 +19,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.item_details);
         getSupportActionBar().setTitle(R.string.item_details);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+
+        Slidr.attach(this);
     }
 
     @Override

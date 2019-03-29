@@ -79,5 +79,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation "com.github.bumptech.glide:okhttp3-integration:4.7.1"
 
+    //For swipe-back activity behavior
+    implementation 'com.r0adkll:slidableactivity:2.0.6'
 
 }

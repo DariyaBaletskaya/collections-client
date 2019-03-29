@@ -28,7 +28,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/block_vertical_margin">
+                android:layout_marginTop="@dimen/block_vertical_margin"
+                >
 
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -42,19 +43,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@color/background_material_light">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/profile_card_view_marginTop"
                         app:cardCornerRadius="@dimen/profile_card_corner_radius"
-                        app:contentPadding="@dimen/profile_content_padding">
+                        app:contentPadding="@dimen/profile_content_padding"
+                        android:background="@color/background_material_light">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            >
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -97,11 +101,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/profile_block_follower_collection_margin_top"
                         android:orientation="horizontal"
-                        android:weightSum="2">
+                        android:weightSum="2"
+                        >
 
                         <LinearLayout
-                            android:layout_width="@dimen/profile_block_follower_collection_width"
-                            android:layout_height="wrap_content"
+                            android:layout_width="190dp"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight="1"
                             android:orientation="vertical">
@@ -114,7 +119,8 @@
                                 android:fontFamily="@font/roboto_bold"
                                 android:text="@string/tv_followers_value"
                                 android:textSize="@dimen/profile_block_follower_collection_value_font_size"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -122,7 +128,8 @@
                                 android:layout_gravity="center_horizontal"
                                 android:fontFamily="@font/roboto_light"
                                 android:text="@string/tv_followers"
-                                android:textSize="@dimen/profile_block_follower_collection_font_size" />
+                                android:textSize="@dimen/profile_block_follower_collection_font_size"
+                               />
 
 
                         </LinearLayout>
@@ -171,11 +178,11 @@
                             android:layout_marginLeft="@dimen/profile_btn_margin"
                             android:layout_marginRight="@dimen/profile_btn_margin"
                             android:layout_weight="1"
-                            android:background="@drawable/element_outline1"
                             android:fontFamily="@font/roboto_regular"
                             android:text="@string/b_complain"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="@dimen/font_size_plain_text" />
+                            android:textSize="@dimen/font_size_plain_text"
+                            />
 
                         <Button
                             android:layout_width="@dimen/profile_btn_width"
@@ -183,11 +190,11 @@
                             android:layout_marginLeft="@dimen/profile_btn_margin"
                             android:layout_marginRight="@dimen/profile_btn_margin"
                             android:layout_weight="1"
-                            android:background="@drawable/element_outline1"
                             android:fontFamily="@font/roboto_regular"
                             android:text="@string/b_follow"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="@dimen/font_size_plain_text" />
+                            android:textSize="@dimen/font_size_plain_text"
+                            />
 
                     </LinearLayout>
 

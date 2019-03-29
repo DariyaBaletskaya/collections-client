@@ -28,10 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.CollectionListActivity" />
         <activity
             android:name=".ui.ItemDetailsActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.MyItemDetailsActivity"
             android:parentActivityName=".ui.MainActivity" />
@@ -40,16 +40,20 @@
             android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.ViewProfile"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.CollectionAddEditActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.ItemsListActivity"
-            android:parentActivityName=".ui.CollectionListActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.ItemAddEditActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.SliderActivityTheme"/>
     </application>
 
 </manifest>
