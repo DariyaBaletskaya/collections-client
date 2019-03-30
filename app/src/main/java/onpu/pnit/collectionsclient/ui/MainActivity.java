@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity
             } else if(direction == ItemTouchHelper.LEFT) {
 
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-                i.putExtra(COLLECTION_ID,swipedCollection.getId());// needed for setting correct title in activity Edit
+                i.putExtra(COLLECTION_ID, swipedCollection.getId());// needed for setting correct title in activity Edit
                 startActivityForResult(i, EDIT_COLLECTION_REQUEST);
 
             }

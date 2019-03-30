@@ -70,7 +70,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="TextView"
+                android:text="Detail name"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textSize="18sp"
@@ -114,7 +114,7 @@
             <TextView
                 android:id="@+id/my_item_details_description"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="108dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -126,6 +126,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <Switch
+                android:id="@+id/my_item_details_is_on_sale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/roboto_regular"
+                android:clickable="false"
+                android:text="Sale"
+                android:textOff="Not for @android:string/dialog_alert_title"
+                android:textOn="On @android:string/dialog_alert_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
             <TextView
                 android:id="@+id/my_item_details_likes"

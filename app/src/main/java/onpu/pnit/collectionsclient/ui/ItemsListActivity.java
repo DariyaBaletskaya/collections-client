@@ -2,6 +2,7 @@ package onpu.pnit.collectionsclient.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
 
@@ -68,9 +69,10 @@ public class ItemsListActivity extends AppCompatActivity {
     private void initRecyclerView(){
         adapter = new ItemListAdapter();
         adapter.SetOnItemClickListener((ItemId, position) -> {
+            //Toast.makeText(ItemsListActivity.this, String.valueOf(ItemId), Toast.LENGTH_SHORT).show();
             Intent i = new Intent(ItemsListActivity.this, MyItemDetailsActivity.class);
             i.putExtra(ITEM_ID, ItemId);
-            ItemsListActivity.this.startActivity(i);
+            startActivity(i);
         });
         recyclerViewItems.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         recyclerViewItems.setHasFixedSize(true);

@@ -20,6 +20,7 @@ public class ItemListViewModel extends AndroidViewModel {
     private ItemRepository repository;
     private CollectionRepository collectionRepository;
     private Executor executor = Executors.newSingleThreadExecutor();
+    private MutableLiveData<Item> mItem = new MutableLiveData<>();
 
     public ItemListViewModel(@NonNull Application application) {
         super(application);
@@ -33,6 +34,9 @@ public class ItemListViewModel extends AndroidViewModel {
         });
     }
 
+    public MutableLiveData<Item> getmItem() {
+        return mItem;
+    }
 
     public LiveData<List<Item>> getAllItems() {
         return repository.getAllItems();
@@ -60,8 +64,11 @@ public class ItemListViewModel extends AndroidViewModel {
         });
     }
 
-    public Item getItemById(int id) {
-        return repository.getItembyId(id);
+    public void getItemById(int id) {
+        executor.execute(() -> {
+            mItem.postValue(repository.getItemById(id));
+        });
+
     }
 
 }
