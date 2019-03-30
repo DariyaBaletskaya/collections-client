@@ -1,15 +1,29 @@
 package onpu.pnit.collectionsclient.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import butterknife.BindView;
 import onpu.pnit.collectionsclient.R;
+import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.repos.ItemRepository;
+import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
+import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MyItemDetailsActivity extends AppCompatActivity {
+
+    @BindView(R.id.my_item_details_name)
+    public TextView title;
+    @BindView(R.id.my_item_details_description)
+    public TextView description;
+    private ItemListViewModel itemListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +31,15 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.my_item_details);
         getSupportActionBar().setTitle(R.string.item_details);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+
+        Intent intent = getIntent();
+        int id = intent.getIntExtra(ItemsListActivity.ITEM_ID, -1);
+        itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+        Item item = itemListViewModel.getItemById(id);
+
+        title.setText(item.getTitle());
+        description.setText(item.getDescription());
+
     }
 
 

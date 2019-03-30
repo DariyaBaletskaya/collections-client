@@ -60,4 +60,8 @@ public class ItemListViewModel extends AndroidViewModel {
         });
     }
 
+    public Item getItemById(int id) {
+        return repository.getItembyId(id);
+    }
+
 }

@@ -74,4 +74,8 @@ public class ItemRepository {
     public void updateItems(Item... items) {
         executor.execute(() -> itemDao.updateItems(items));
     }
+
+    public Item getItembyId(int id) {
+        return itemDao.getItemById(id);
+    }
 }

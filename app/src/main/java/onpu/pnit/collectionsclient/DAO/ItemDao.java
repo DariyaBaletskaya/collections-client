@@ -38,6 +38,9 @@ public interface ItemDao {
     @Query("SELECT * from Items")
     LiveData<List<Item>> getAllItems();
 
+    @Query("SELECT * from Items WHERE item_id=:itemId")
+    Item getItemById(int itemId);
+
     @Insert
     void insertAllItems(Item... items);
 }

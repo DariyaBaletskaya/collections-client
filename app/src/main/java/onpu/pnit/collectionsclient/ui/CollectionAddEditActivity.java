@@ -104,12 +104,16 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         }
 
 
-        int id = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
-        if (id != -1) {
+        if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
+            int id = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
+            if (id != -1) {
+                viewModel.update(new Collection(id, title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
+            }
         } else {
-            viewModel.update(new Collection(id, title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
             viewModel.insert(new Collection(title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
         }
+
+
         setResult(RESULT_OK);
         finish();
     }

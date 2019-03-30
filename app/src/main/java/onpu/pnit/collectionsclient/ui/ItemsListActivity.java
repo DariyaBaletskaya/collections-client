@@ -68,7 +68,7 @@ public class ItemsListActivity extends AppCompatActivity {
     private void initRecyclerView(){
         adapter = new ItemListAdapter();
         adapter.SetOnItemClickListener((ItemId, position) -> {
-            Intent i = new Intent(ItemsListActivity.this, ItemDetailsActivity.class);
+            Intent i = new Intent(ItemsListActivity.this, MyItemDetailsActivity.class);
             i.putExtra(ITEM_ID, ItemId);
             ItemsListActivity.this.startActivity(i);
         });
