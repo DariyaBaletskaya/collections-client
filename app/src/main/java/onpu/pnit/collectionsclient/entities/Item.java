@@ -1,6 +1,5 @@
 package onpu.pnit.collectionsclient.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -32,17 +31,21 @@ public class Item  implements Serializable{
     @ColumnInfo(name = "item_price")
     @JsonProperty("price")
     private float price;
+    @ColumnInfo(name = "image")
+    @JsonProperty("image")
+    private String image;
     @JsonProperty("userId")
     @ColumnInfo(name = "user_id", index = true)
     private int userId;
 
-    public Item(int id, String title, String description, boolean isOnSale, float price, int userId) {
+    public Item(int id, String title, String description, boolean isOnSale, float price, int userId, String image) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
         this.price = price;
         this.userId = userId;
+        this.image = image;
     }
 
     @Ignore
@@ -50,12 +53,13 @@ public class Item  implements Serializable{
     }
 
     @Ignore
-    public Item(String title, String description, boolean isOnSale, float price, int userId) {
+    public Item(String title, String description, boolean isOnSale, float price, int userId, String image) {
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
         this.price = price;
         this.userId = userId;
+        this.image = image;
     }
 
     public int getId() {
@@ -102,6 +106,18 @@ public class Item  implements Serializable{
         return userId;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -110,6 +126,7 @@ public class Item  implements Serializable{
                 ", description='" + description + '\'' +
                 ", isOnSale=" + isOnSale +
                 ", price=" + price +
+                ", image='" + image + '\'' +
                 ", userId=" + userId +
                 '}';
     }

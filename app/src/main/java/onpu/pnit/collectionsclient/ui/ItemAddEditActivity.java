@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient.ui;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
@@ -11,7 +12,12 @@ import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,14 +25,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.r0adkll.slidr.Slidr;
 
-public class ItemAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+
+public class ItemAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String EXTRA_ID =
             "onpu.pnit.collectionsclient.ui.EXTRA_ID";
@@ -41,6 +53,8 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     public static final String EXTRA_CURRENCY =
             "onpu.pnit.collectionsclient.ui.EXTRA_CURRENCY";
 
+    static final int GALLERY_REQUEST = 1;
+
     @BindView(R.id.add_edit_item_currency_spinner)
     Spinner currencySpinner;
     private ArrayAdapter<CharSequence> spinnerAdapter;
@@ -52,19 +66,26 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     EditText editTextDescription;
     @BindView(R.id.item_price_input)
     EditText editTextPrice;
+
     @BindView(R.id.isItemOnSaleSwitch)
     Switch isItemOnSale;
 
+    @BindView(R.id.item_details_photo)
+    ImageView itemImage;
+
     private ItemListViewModel viewModel;
+
+    private Uri loadedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.item_add_edit);
+
         ButterKnife.bind(this);
-
-        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-
+        setTitle(R.string.add_item);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         Slidr.attach(this);
 
@@ -73,19 +94,12 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
 
-        if(getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
-            setTitle(R.string.edit_item);
-            int id = getIntent().getIntExtra(ItemsListActivity.ITEM_ID, -1);
-            viewModel.getItemById(id);
-            viewModel.getmItem().observe(this, item -> {
-                editTextTitle.setText(item.getTitle());
-                editTextDescription.setText(item.getDescription());
-                editTextPrice.setText(String.valueOf(item.getPrice()));
-                isItemOnSale.setChecked(item.isOnSale());
-            });
-        } else {
-            setTitle(R.string.add_item);
-        }
+        itemImage.setOnClickListener(v -> {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+        });
+        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
 
 
     }
@@ -120,37 +134,16 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
 
 //        String currency = ((TextView) currencySpinner.getSelectedView()).getText().toString();
-        boolean isOnSale = isItemOnSale.isChecked();
+        Boolean isOnSale = isItemOnSale.isChecked();
 
-        if(title.trim().isEmpty()) {
+        if (title.trim().isEmpty()) {
             Toast.makeText(this, "Please fill the title field", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
-        if (getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
-            int id = getIntent().getIntExtra(MyItemDetailsActivity.ITEM_ID, -1);
-            if (id != -1) {
-                viewModel.update(new Item(id, title, description, isOnSale, price, Collection.DEFAULT_USER_ID));
-                }
-        } else {
-            viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID));
-        }
+        viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
 
         setResult(RESULT_OK);
-//        Intent data = new Intent();
-//        data.putExtra(EXTRA_TITLE, title);
-//        data.putExtra(EXTRA_DESCRIPTION, description);
-//        data.putExtra(EXTRA_PRICE, price);
-        //data.putExtra(EXTRA_CURRENCY, currency);
-//        data.putExtra(EXTRA_ONSALE, isOnSale);
-
-//        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-//        if (id != -1) {
-//            data.putExtra(EXTRA_ID, id);
-//        }
-//
-//        setResult(RESULT_OK, data);
         finish();
     }
 
@@ -164,4 +157,23 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+
+        switch (requestCode) {
+            case GALLERY_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    loadedImage = imageReturnedIntent.getData();
+
+                    Glide.with(this)
+                            .load(loadedImage)
+                            .into(itemImage);
+                }
+        }
+    }
+
+
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.r0adkll.slidr.Slidr;
 
 import java.util.Objects;
@@ -47,10 +48,6 @@ public class ItemsListActivity extends AppCompatActivity {
 
         initRecyclerView();
         initViewModel();
-
-
-
-
     }
 
     private void initViewModel() {
@@ -67,7 +64,7 @@ public class ItemsListActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView(){
-        adapter = new ItemListAdapter();
+        adapter = new ItemListAdapter(getApplicationContext());
         adapter.SetOnItemClickListener((ItemId, position) -> {
             Intent i = new Intent(ItemsListActivity.this, MyItemDetailsActivity.class);
             i.putExtra(ITEM_ID, ItemId);

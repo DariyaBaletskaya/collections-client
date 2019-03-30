@@ -75,14 +75,14 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             title = itemView.findViewById(R.id.card_collection_title);
             category = itemView.findViewById(R.id.card_collection_category);
             image = itemView.findViewById(R.id.card_collection_photo);
+            viewBackground = itemView.findViewById(R.id.collections_card_background);
+            viewForeground = itemView.findViewById(R.id.collections_card_foreground);
+
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
                 }
             });
-
-            viewBackground = itemView.findViewById(R.id.collections_card_background);
-            viewForeground = itemView.findViewById(R.id.collections_card_foreground);
 
         }
 

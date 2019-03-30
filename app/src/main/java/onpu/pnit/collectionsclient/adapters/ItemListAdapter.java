@@ -1,5 +1,7 @@
 package onpu.pnit.collectionsclient.adapters;
 
+import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +23,12 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.ui.ItemAddEditActivity;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewHolder> {
 
-    private List<Item> itemList = new ArrayList<>();
+
+    private Context context;
     private OnItemClickListener listener;
 
     private static final DiffUtil.ItemCallback<Item> DIFF_UTIL_FOR_ITEMS = new DiffUtil.ItemCallback<Item>() {
@@ -34,8 +43,9 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
         }
     };
 
-    public ItemListAdapter() {
+    public ItemListAdapter(Context context) {
         super(DIFF_UTIL_FOR_ITEMS);
+        this.context = context;
     }
 
     @NonNull
@@ -48,8 +58,14 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Item currentCollection = getItem(position);
-        holder.title.setText(currentCollection.getTitle());
+        Item currentItem = getItem(position);
+        holder.title.setText(currentItem.getTitle());
+
+
+        Glide.with(context)
+                .load(Uri.parse(currentItem.getImage()))
+                .into(holder.img);
+
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
