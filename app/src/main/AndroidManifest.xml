@@ -34,7 +34,7 @@
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.MyItemDetailsActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.ItemsListActivity" />
         <activity
             android:name=".ui.UserAddActivity"
             android:parentActivityName=".ui.MainActivity" />

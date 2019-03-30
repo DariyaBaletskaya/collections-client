@@ -52,7 +52,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     EditText editTextDescription;
     @BindView(R.id.item_price_input)
     EditText editTextPrice;
-
     @BindView(R.id.isItemOnSaleSwitch)
     Switch isItemOnSale;
 
@@ -61,12 +60,11 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.item_add_edit);
-
         ButterKnife.bind(this);
-        setTitle(R.string.add_item);
+
+        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         Slidr.attach(this);
 
@@ -74,7 +72,21 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
-        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+
+        if(getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
+            setTitle(R.string.edit_item);
+            int id = getIntent().getIntExtra(ItemsListActivity.ITEM_ID, -1);
+            viewModel.getItemById(id);
+            viewModel.getmItem().observe(this, item -> {
+                editTextTitle.setText(item.getTitle());
+                editTextDescription.setText(item.getDescription());
+                editTextPrice.setText(String.valueOf(item.getPrice()));
+                isItemOnSale.setChecked(item.isOnSale());
+            });
+        } else {
+            setTitle(R.string.add_item);
+        }
+
 
     }
 
@@ -96,7 +108,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
     }
 
-    // Add new шеуь and check new item's fields
+    // Add new item and check new item's fields
     private void saveItem() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
@@ -108,14 +120,23 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
 
 //        String currency = ((TextView) currencySpinner.getSelectedView()).getText().toString();
-        Boolean isOnSale = isItemOnSale.isChecked();
+        boolean isOnSale = isItemOnSale.isChecked();
 
         if(title.trim().isEmpty()) {
             Toast.makeText(this, "Please fill the title field", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID));
+
+        if (getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
+            int id = getIntent().getIntExtra(MyItemDetailsActivity.ITEM_ID, -1);
+            if (id != -1) {
+                viewModel.update(new Item(id, title, description, isOnSale, price, Collection.DEFAULT_USER_ID));
+                }
+        } else {
+            viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID));
+        }
+
         setResult(RESULT_OK);
 //        Intent data = new Intent();
 //        data.putExtra(EXTRA_TITLE, title);

@@ -69,7 +69,6 @@ public class ItemsListActivity extends AppCompatActivity {
     private void initRecyclerView(){
         adapter = new ItemListAdapter();
         adapter.SetOnItemClickListener((ItemId, position) -> {
-            //Toast.makeText(ItemsListActivity.this, String.valueOf(ItemId), Toast.LENGTH_SHORT).show();
             Intent i = new Intent(ItemsListActivity.this, MyItemDetailsActivity.class);
             i.putExtra(ITEM_ID, ItemId);
             startActivity(i);
@@ -77,7 +76,6 @@ public class ItemsListActivity extends AppCompatActivity {
         recyclerViewItems.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         recyclerViewItems.setHasFixedSize(true);
         recyclerViewItems.setAdapter(adapter);
-        initViewModel();
     }
 
 

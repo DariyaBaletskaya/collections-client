@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient.ui;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
@@ -20,6 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MyItemDetailsActivity extends AppCompatActivity {
+
+    // using for edit exist item
+    public static final int EDIT_ITEM_REQUEST = 1;
+    public static final String ITEM_ID = "item_id";
 
     @BindView(R.id.my_item_details_name)
     TextView title;
@@ -67,7 +72,6 @@ public class MyItemDetailsActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -89,11 +93,48 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /*TODO: Пофиксить лаг
+    если мы нажимаем на иконку стрелочки назад на активити ItemAddEditActivity
+    нас перебрасывает не на MyItemDetailsActivity, а на пустой активити.
+    В манифесте parent activity установлено как ItemsListActivity
+
+    Предположительно такое может быть из-за данного кода в ItemListActivity
+        collectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
+        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+            setTitle("All items");
+        } else if (collectionId != -1) {
+            setTitle("Collection");
+        }
+    */
     private void editItem() {
-        Toast.makeText(MyItemDetailsActivity.this, "Edit item", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(MyItemDetailsActivity.this, ItemAddEditActivity.class);
+        itemListViewModel.getmItem().observe(this, item -> {
+            if (item != null) {
+               i.putExtra(ITEM_ID, item.getId());
+            }
+        });
+        startActivityForResult(i, EDIT_ITEM_REQUEST);
+        onBackPressed();
     }
 
+    //TODO: добавить возможность отмены удаления, UNDO как при удалении коллекции
     private void deleteItem() {
         Toast.makeText(MyItemDetailsActivity.this, "Delete item", Toast.LENGTH_SHORT).show();
+        itemListViewModel.getmItem().observe(this, item -> {
+            if (item != null) {
+                itemListViewModel.delete(item);
+            }
+        });
+        onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_ITEM_REQUEST && resultCode == RESULT_OK) {
+            Toast.makeText(MyItemDetailsActivity.this, "Item has been changed", Toast.LENGTH_SHORT).show();
+            initViewModel();
+        }
     }
 }
