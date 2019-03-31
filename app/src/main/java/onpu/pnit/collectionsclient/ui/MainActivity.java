@@ -259,6 +259,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        closeFabMenu();
+        super.onPause();
+    }
+
+    @Override
     public void onBackPressed() {
         if (isFabMenuOpened) {
             closeFabMenu();

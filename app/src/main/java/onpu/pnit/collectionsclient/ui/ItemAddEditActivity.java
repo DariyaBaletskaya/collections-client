@@ -134,17 +134,17 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
 
 //        String currency = ((TextView) currencySpinner.getSelectedView()).getText().toString();
-        Boolean isOnSale = isItemOnSale.isChecked();
+        boolean isOnSale = isItemOnSale.isChecked();
 
-        if (title.trim().isEmpty()) {
-            Toast.makeText(this, "Please fill the title field", Toast.LENGTH_SHORT).show();
-            return;
+        if (!title.trim().isEmpty() && loadedImage != null) {
+            viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+            setResult(RESULT_OK);
+            finish();
+        } else {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
         }
 
-        viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
 
-        setResult(RESULT_OK);
-        finish();
     }
 
 
@@ -161,7 +161,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
 
         switch (requestCode) {
             case GALLERY_REQUEST:

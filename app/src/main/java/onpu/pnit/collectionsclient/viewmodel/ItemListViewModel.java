@@ -34,7 +34,7 @@ public class ItemListViewModel extends AndroidViewModel {
         });
     }
 
-    public MutableLiveData<Item> getmItem() {
+    public MutableLiveData<Item> getItem() {
         return mItem;
     }
 

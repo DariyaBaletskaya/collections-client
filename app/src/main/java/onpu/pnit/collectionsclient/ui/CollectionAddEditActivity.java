@@ -6,9 +6,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.viewmodel.CollectionListViewModel;
 import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
+import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CollectionAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -43,9 +46,13 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         initSpinners();
         viewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
 
-        if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) { // Use for edit exist collection
+        if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {        // Use for edit exist collection
             setTitle(R.string.edit_exist_collection);
-        } else { // Use for create new collection
+//            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+//            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+//            int spinnerPosition = spinnerAdapter.getPosition(intent.getStringExtra(EXTRA_CATEGORY));
+//            categorySpinner.setSelection(spinnerPosition);
+        } else {        // Use for create new collection
             setTitle(R.string.create_collection);
         }
     }
@@ -96,14 +103,14 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
             return;
         }
 
-        int id = getIntent().getIntExtra(MainActivity.COLLECTION_ID,0);
-        Collection collection = new Collection(id, title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID);
-
-        if (id != 0) {
-          viewModel.update(collection);
+        if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
+            int id = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
+            if (id != -1) {
+                viewModel.update(new Collection(id, title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
+            }
         } else {
-          viewModel.insert(collection);
-         }
+            viewModel.insert(new Collection(title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
+        }
 
         setResult(RESULT_OK);
         finish();

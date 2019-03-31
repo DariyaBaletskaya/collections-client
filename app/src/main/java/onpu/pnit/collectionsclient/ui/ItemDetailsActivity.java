@@ -17,7 +17,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details);
-        getSupportActionBar().setTitle(R.string.item_details);
+        setTitle(R.string.item_details);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         Slidr.attach(this);

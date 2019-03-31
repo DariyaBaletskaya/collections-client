@@ -1,5 +1,8 @@
 package onpu.pnit.collectionsclient.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -14,7 +17,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "items", foreignKeys =  @ForeignKey(entity = User.class,
         parentColumns = "user_id", childColumns = "user_id", onDelete = CASCADE))
-public class Item  implements Serializable{
+public class Item  implements Parcelable {
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "item_id", index = true)
@@ -61,6 +64,28 @@ public class Item  implements Serializable{
         this.userId = userId;
         this.image = image;
     }
+
+    protected Item(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        description = in.readString();
+        isOnSale = in.readByte() != 0;
+        price = in.readFloat();
+        image = in.readString();
+        userId = in.readInt();
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -129,5 +154,21 @@ public class Item  implements Serializable{
                 ", image='" + image + '\'' +
                 ", userId=" + userId +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeByte((byte) (isOnSale ? 1 : 0));
+        dest.writeFloat(price);
+        dest.writeString(image);
+        dest.writeInt(userId);
     }
 }

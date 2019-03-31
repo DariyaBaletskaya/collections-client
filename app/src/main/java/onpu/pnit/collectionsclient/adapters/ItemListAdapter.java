@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.ui.ItemAddEditActivity;
@@ -60,23 +62,28 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item currentItem = getItem(position);
         holder.title.setText(currentItem.getTitle());
-
+//        holder.img.setImageURI(Uri.parse(currentItem.getImage()));
 
         Glide.with(context)
                 .load(Uri.parse(currentItem.getImage()))
                 .into(holder.img);
 
+
     }
+
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
+//        @BindView(R.id.card_item_photo)
         ImageView img;
+//        @BindView(R.id.card_item_title)
         TextView title;
-
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.card_item_title);
+
             img = itemView.findViewById(R.id.card_item_photo);
+            title = itemView.findViewById(R.id.card_item_title);
+//            ButterKnife.bind(itemView);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
