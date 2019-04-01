@@ -21,6 +21,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,30 +32,37 @@
         <activity
             android:name=".ui.ItemDetailsActivity"
             android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.MyItemDetailsActivity"
             android:parentActivityName=".ui.ItemsListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.UserAddActivity"
             android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.ViewProfile"
             android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.CollectionAddEditActivity"
             android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.ItemsListActivity"
             android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
         <activity
             android:name=".ui.ItemAddEditActivity"
             android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
     </application>
 

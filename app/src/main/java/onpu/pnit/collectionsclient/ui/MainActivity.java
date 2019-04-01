@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -213,11 +214,15 @@ public class MainActivity extends AppCompatActivity
         editorCollectionListViewModel.getAllCollections().observe(this, collections -> adapter.submitList(collections));
     }
 
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback;
+
     //actions with swipes
     public void initItemSwipes() {
-         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
+         itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
+
+
 
 
     //callback when recycler view is swiped
@@ -249,7 +254,7 @@ public class MainActivity extends AppCompatActivity
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
             } else if(direction == ItemTouchHelper.LEFT) {
-
+                closeFabMenu();
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
                 i.putExtra(COLLECTION_ID, swipedCollection.getId());// needed for setting correct title in activity Edit
                 startActivityForResult(i, EDIT_COLLECTION_REQUEST);
@@ -257,6 +262,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
 
     @Override
     protected void onPause() {
