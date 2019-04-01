@@ -23,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.r0adkll.slidr.Slidr;
+
 public class CollectionAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.category_spinner)
@@ -42,7 +44,7 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         setContentView(R.layout.collection_add_edit);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         ButterKnife.bind(this);
-
+        Slidr.attach(this);
         initSpinners();
         viewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
 
