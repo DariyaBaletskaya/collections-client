@@ -10,27 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.repos.CollectionRepository;
 import onpu.pnit.collectionsclient.repos.ItemRepository;
 
-public class ItemListViewModel extends AndroidViewModel {
+public class CollectionViewModel extends AndroidViewModel {
     private ItemRepository itemRepository;
     private CollectionRepository collectionRepository;
     private Executor executor = Executors.newSingleThreadExecutor();
 
-
-    public ItemListViewModel(@NonNull Application application) {
+    public CollectionViewModel(@NonNull Application application) {
         super(application);
         itemRepository = ItemRepository.getInstance(application);
         collectionRepository = CollectionRepository.getInstance(application);
-    }
-
-    public void insert(Item item) {
-        executor.execute(() -> {
-            itemRepository.insertItem(item);
-        });
     }
 
     public LiveData<List<Item>> getAllItems() {
@@ -41,35 +35,13 @@ public class ItemListViewModel extends AndroidViewModel {
         return itemRepository.getItemsForCollection(collectionId);
     }
 
-    public void delete(Item item) {
-        executor.execute(() -> {
-            itemRepository.deleteItem(item);
-        });
-    }
-
-    public void deleteAllFromCollection(int colletionId) {
-        executor.execute(() -> {
-            itemRepository.deleteAllItemsFromCollection(colletionId);
-        });
-    }
-    public void deleteAll(List<Item> items) {
-        executor.execute(() -> {
-            itemRepository.deleteAll(items);
-        });
-    }
-
-    public void update(Item item) {
-        executor.execute(() -> {
-            itemRepository.updateItem(item);
-        });
-    }
-    
-    public MutableLiveData<Item> getItemById(int id) {
+    public MutableLiveData<Item> getItemById(int itemId) {
         MutableLiveData<Item> mItem = new MutableLiveData<>();
         executor.execute(() -> {
-            mItem.postValue(itemRepository.getItemById(id));
+            mItem.postValue(itemRepository.getItemById(itemId));
         });
         return mItem;
+//        return itemRepository.getItemById(itemId);
     }
 
     public MutableLiveData<Collection> getCollectionById(int collectionId) {
@@ -78,6 +50,9 @@ public class ItemListViewModel extends AndroidViewModel {
             mCollection.postValue(collectionRepository.getCollectionById(collectionId));
         });
         return mCollection;
+//        return collectionRepository.getCollectionById(collectionId);
     }
+
+
 
 }

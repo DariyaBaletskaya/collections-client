@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.repos.CollectionRepository;
 
@@ -18,16 +19,15 @@ import onpu.pnit.collectionsclient.repos.CollectionRepository;
 public class EditorCollectionViewModel extends AndroidViewModel {
     private CollectionRepository repository;
     private Executor executor = Executors.newSingleThreadExecutor();
+    private MutableLiveData<Collection> mCollection = new MutableLiveData<>();
 
     public EditorCollectionViewModel(@NonNull Application application) {
         super(application);
-        repository = new CollectionRepository(application);
+        repository = CollectionRepository.getInstance(application);
     }
 
     public void insert(Collection collection) {
-        executor.execute(() -> {
-            repository.insertCollection(collection);
-        });
+        repository.insertCollection(collection);
     }
 
     public LiveData<List<Collection>> getAllCollections() {
@@ -35,25 +35,23 @@ public class EditorCollectionViewModel extends AndroidViewModel {
     }
 
     public void delete(Collection collection) {
-        executor.execute(() -> {
-            repository.deleteCollection(collection);
-        });
+        repository.deleteCollection(collection);
     }
 
     public void deleteAll() {
-        executor.execute(() -> {
-            repository.deleteAllCollections();
-        });
+        repository.deleteAllCollections();
     }
 
     public void update(Collection collection) {
-        executor.execute(() -> {
-            repository.updateCollection(collection);
-        });
+        repository.updateCollection(collection);
     }
-    public void restore(Collection collection) {
+
+    public MutableLiveData<Collection> getCollectionById(int collectionId) {
+        MutableLiveData<Collection> mCollection = new MutableLiveData<>();
         executor.execute(() -> {
-            repository.insertCollection(collection);
+            mCollection.postValue(repository.getCollectionById(collectionId));
         });
+        return mCollection;
     }
+
 }

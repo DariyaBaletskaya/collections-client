@@ -6,11 +6,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.viewmodel.CollectionListViewModel;
+import onpu.pnit.collectionsclient.viewmodel.CollectionViewModel;
 import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
-import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
@@ -29,32 +26,40 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
 
     @BindView(R.id.category_spinner)
     Spinner categorySpinner;
-    private ArrayAdapter<CharSequence> spinnerAdapter;
 
     // Fields for adding new collections
     @BindView(R.id.edit_text_title)
     EditText editTextTitle;
     @BindView(R.id.edit_text_description)
     EditText editTextDescription;
-    private EditorCollectionViewModel viewModel;
 
+    private EditorCollectionViewModel viewModel;
+    private ArrayAdapter<CharSequence> spinnerAdapter;
+    private Collection editableCollection;
+    private int editableCollectionId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_add_edit);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
-        ButterKnife.bind(this);
         Slidr.attach(this);
+        ButterKnife.bind(this);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         initSpinners();
+
         viewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
 
-        if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {        // Use for edit exist collection
+        if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {// Use for edit exist collection
             setTitle(R.string.edit_exist_collection);
-//            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-//            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
-//            int spinnerPosition = spinnerAdapter.getPosition(intent.getStringExtra(EXTRA_CATEGORY));
-//            categorySpinner.setSelection(spinnerPosition);
-        } else {        // Use for create new collection
+            editableCollectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
+            if (editableCollectionId != -1) {
+                viewModel.getCollectionById(editableCollectionId).observe(this, collection -> {
+                    editTextTitle.setText(collection.getTitle());
+                    editTextTitle.setSelection(editTextTitle.getText().length());
+                    categorySpinner.setSelection(spinnerAdapter.getPosition(collection.getCategory()));
+                    editTextDescription.setText(collection.getDescription());
+                });
+            }
+        } else {
             setTitle(R.string.create_collection);
         }
     }
@@ -96,8 +101,8 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
 
     // Add new collection and check new collection's fields
     private void saveCollection() {
-        String title = editTextTitle.getText().toString();
-        String description = editTextDescription.getText().toString();
+        String title = String.valueOf(editTextTitle.getText()).trim();
+        String description = String.valueOf(editTextDescription.getText()).trim();
         String category = categorySpinner.getSelectedItem().toString();
 
         if(title.trim().isEmpty()) {
@@ -106,12 +111,11 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         }
 
         if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
-            int id = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
-            if (id != -1) {
-                viewModel.update(new Collection(id, title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
+            if (editableCollectionId != -1) {
+                viewModel.update(new Collection(editableCollectionId, title.trim(), category.trim(), description.trim(), "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
             }
         } else {
-            viewModel.insert(new Collection(title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
+            viewModel.insert(new Collection(title.trim(), category.trim(), description.trim(), "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID));
         }
 
         setResult(RESULT_OK);

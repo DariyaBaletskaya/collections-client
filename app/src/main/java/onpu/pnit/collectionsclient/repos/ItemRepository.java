@@ -43,8 +43,8 @@ public class ItemRepository {
         return itemDao.getAllItems();
     }
 
-    public void deleteAllItemsForUser(int userId) {
-        executor.execute(() -> itemDao.deleteAllItemsForUser(userId));
+    public void deleteAll(List<Item> items) {
+        executor.execute(() -> itemDao.deleteAll(items));
     }
 
     public void deleteItem(Item item) {
@@ -77,5 +77,9 @@ public class ItemRepository {
 
     public Item getItemById(int id) {
          return itemDao.getItemById(id);
+    }
+
+    public void deleteAllItemsFromCollection(int colletionId) {
+        executor.execute(() -> itemCollectionJoinDao.deleteAllItemsFromCollection(colletionId));
     }
 }

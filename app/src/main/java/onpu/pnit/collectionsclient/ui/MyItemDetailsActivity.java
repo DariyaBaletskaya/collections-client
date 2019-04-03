@@ -48,7 +48,7 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_item_details);
         setTitle(R.string.item_details);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButterKnife.bind(this);
         Slidr.attach(this);
         initViewModel();
@@ -61,10 +61,9 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     private void initViewModel() {
         itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
 
-        id = getIntent().getIntExtra(ItemsListActivity.ITEM_ID, -1);
-        itemListViewModel.getItemById(id);
+        id = getIntent().getIntExtra(CollectionActivity.ITEM_ID, -1);
 
-        itemListViewModel.getItem().observe(this, item -> {
+        itemListViewModel.getItemById(id).observe(this, item -> {
             if (item != null) {
                 photo.setImageURI(Uri.parse(item.getImage()));
                 title.setText(item.getTitle());
@@ -88,6 +87,9 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.my_item_details_action_delete:
                 deleteItem();
                 return true;
@@ -101,13 +103,12 @@ public class MyItemDetailsActivity extends AppCompatActivity {
 
     private void editItem() {
         Intent i = new Intent(MyItemDetailsActivity.this, ItemAddEditActivity.class);
-        itemListViewModel.getItem().observe(this, item -> {
+        itemListViewModel.getItemById(id).observe(this, item -> {
             if (item != null) {
                i.putExtra(ITEM_ID, item.getId());
             }
         });
         startActivityForResult(i, EDIT_ITEM_REQUEST);
-        onBackPressed();
     }
 
     //TODO: добавить возможность отмены удаления, UNDO как при удалении коллекции
@@ -125,7 +126,7 @@ public class MyItemDetailsActivity extends AppCompatActivity {
 //            }
 //        });
 //        onBackPressed();
-        itemListViewModel.delete(itemListViewModel.getItem().getValue());
+        itemListViewModel.getItemById(id).observe(this, item -> itemListViewModel.delete(item));
         setResult(RESULT_OK);
         finish();
     }

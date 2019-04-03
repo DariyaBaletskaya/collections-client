@@ -3,14 +3,11 @@ package onpu.pnit.collectionsclient.ui;
 import android.animation.Animator;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -19,20 +16,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
-import java.util.List;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,8 +32,6 @@ import onpu.pnit.collectionsclient.NetworkReceiver;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.entities.Item;
-import onpu.pnit.collectionsclient.viewmodel.CollectionListViewModel;
 import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
@@ -199,9 +186,9 @@ public class MainActivity extends AppCompatActivity
     public void initRecyclerView() {
         adapter = new CollectionsListAdapter(getApplicationContext());
         adapter.setOnCollectionClickListener((collectionId, position) -> {
-            Intent i = new Intent(MainActivity.this, ItemsListActivity.class);
+            Intent i = new Intent(MainActivity.this, CollectionActivity.class);
             i.putExtra(COLLECTION_ID, collectionId);
-            startActivity(i);
+            MainActivity.this.startActivity(i);
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
@@ -249,7 +236,7 @@ public class MainActivity extends AppCompatActivity
                         .make(recyclerView, title + " removed!", Snackbar.LENGTH_LONG);
                 snackbar.setAction("UNDO", v ->
                         // undo is selected, restore the deleted item
-                        editorCollectionListViewModel.restore(swipedCollection)
+                        editorCollectionListViewModel.insert(swipedCollection)
                 );
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
@@ -285,7 +272,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.collection_list_menu, menu);
         return true;
     }
 
@@ -322,6 +309,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
 
         } else if (id == R.id.nav_favorites) {
+            Intent i = new Intent(MainActivity.this, CollectionActivity.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_settings) {
 

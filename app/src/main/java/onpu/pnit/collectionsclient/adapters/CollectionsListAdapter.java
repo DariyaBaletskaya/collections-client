@@ -52,10 +52,9 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     @Override
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         Collection currentCollection = getItem(position);
-        holder.id = currentCollection.getId();
         holder.title.setText(currentCollection.getTitle());
         holder.category.setText(currentCollection.getCategory());
-
+        holder.id = currentCollection.getId();
         Glide.with(context)
                 .load(currentCollection.getImage())
                 .into(holder.image);
@@ -78,17 +77,20 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             viewBackground = itemView.findViewById(R.id.collections_card_background);
             viewForeground = itemView.findViewById(R.id.collections_card_foreground);
 
-            itemView.setOnClickListener(v -> {
-                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
+                    }
                 }
             });
 
         }
-
-        public int getId() {
-            return id;
+        public int getId(){
+            return this.id;
         }
+
     }
 
     public interface OnCollectionClickListener {

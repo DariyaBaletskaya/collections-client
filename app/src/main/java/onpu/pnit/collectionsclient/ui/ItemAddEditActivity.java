@@ -2,6 +2,7 @@ package onpu.pnit.collectionsclient.ui;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,14 +81,12 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.item_add_edit);
-
+        Slidr.attach(this);
         ButterKnife.bind(this);
         setTitle(R.string.add_item);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
-        Slidr.attach(this);
+
 
         spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -137,7 +136,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         boolean isOnSale = isItemOnSale.isChecked();
 
         if (!title.trim().isEmpty() && loadedImage != null) {
-            viewModel.insert(new Item(title, description, isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+            viewModel.insert(new Item(title.trim(), description.trim(), isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
             setResult(RESULT_OK);
             finish();
         } else {

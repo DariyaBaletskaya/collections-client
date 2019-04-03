@@ -35,6 +35,8 @@
     <string name="add_item">Add item</string>
     <string name="edit_collection">Edit collection</string>
     <string name="edit_item">Edit item</string>
+    <string name="delete_all">Delete all</string>
+    <string name="q_delete_all_items">Delete all items?</string>
 
     <!--strings for enter_form.xml-->
     <string name="tv_nameProgram">Collections App</string>
@@ -164,4 +166,6 @@
     <string name="tv_add_collection">Collection</string>
     <string name="tv_add_item">Item</string>
     <string name="give_title_to_collection">Please give a title to collection</string>
+    <string name="title_activity_collection_scrolling">CollectionScrollingActivity</string>
+    <string name="title_activity_collection">CollectionActivity</string>
 </resources>

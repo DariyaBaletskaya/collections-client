@@ -39,6 +39,7 @@ public class Item  implements Parcelable {
     private String image;
     @JsonProperty("userId")
     @ColumnInfo(name = "user_id", index = true)
+
     private int userId;
 
     public Item(int id, String title, String description, boolean isOnSale, float price, int userId, String image) {

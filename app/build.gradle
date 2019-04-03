@@ -16,6 +16,9 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        lintOptions {
+            disable 'PrivateResource'
+        }
 
     }
     buildTypes {

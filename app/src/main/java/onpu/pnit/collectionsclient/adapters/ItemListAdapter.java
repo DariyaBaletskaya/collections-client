@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,11 +30,10 @@ import onpu.pnit.collectionsclient.ui.ItemAddEditActivity;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewHolder> {
 
-
-    private Context context;
     private OnItemClickListener listener;
+    private Context context;
 
-    private static final DiffUtil.ItemCallback<Item> DIFF_UTIL_FOR_ITEMS = new DiffUtil.ItemCallback<Item>() {
+    private static final DiffUtil.ItemCallback<Item> DIFF_CALLBACK = new DiffUtil.ItemCallback<Item>() {
         @Override
         public boolean areItemsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
             return oldItem.getId() == newItem.getId();
@@ -45,8 +45,9 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
         }
     };
 
+
     public ItemListAdapter(Context context) {
-        super(DIFF_UTIL_FOR_ITEMS);
+        super(DIFF_CALLBACK);
         this.context = context;
     }
 
@@ -95,14 +96,11 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
 
 
     public interface OnItemClickListener {
-        void onItemClick(int ItemId, int position);
+        void onItemClick(int itemId, int position);
     }
 
-    public void SetOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public Item GetItemFrom(int position) {
-        return getItem(position);
-    }
 }

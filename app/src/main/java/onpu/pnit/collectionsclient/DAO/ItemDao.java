@@ -29,6 +29,9 @@ public interface ItemDao {
     @Query("DELETE FROM Items WHERE user_id=:userId")
     void deleteAllItemsForUser(int userId);
 
+    @Delete
+    void deleteAll(List<Item> items);
+
     @Query("SELECT * from Items WHERE user_id=:userId")
     LiveData<List<Item>> getItemsForUser(int userId);
 
