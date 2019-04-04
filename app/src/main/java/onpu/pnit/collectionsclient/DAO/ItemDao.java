@@ -15,7 +15,7 @@ import onpu.pnit.collectionsclient.entities.Item;
 @Dao
 public interface ItemDao {
     @Insert
-    void insertItem(Item item);
+    long insertItem(Item item);
 
     @Delete
     void deleteItem(Item item);

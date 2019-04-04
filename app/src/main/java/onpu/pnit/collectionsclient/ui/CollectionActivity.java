@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +33,15 @@ import onpu.pnit.collectionsclient.adapters.ItemListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.viewmodel.CollectionViewModel;
+import onpu.pnit.collectionsclient.viewmodel.ItemCollectionJoinViewModel;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 public class CollectionActivity extends AppCompatActivity {
 
+    // using for adding new item
+    public static final int ADD_ITEM_REQUEST = 3;
+
+    public static final String COLLECTION_ID = "collection_id";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.items_recyclerView)
@@ -49,6 +55,7 @@ public class CollectionActivity extends AppCompatActivity {
 
     private ItemListAdapter adapter;
     private ItemListViewModel viewModel;
+    private ItemCollectionJoinViewModel itemCollectionJoinViewModel;
     private int collectionId;
     public static final String ITEM_ID = "item_id";
     public static final int DELETE_REQUEST = 1;
@@ -69,8 +76,13 @@ public class CollectionActivity extends AppCompatActivity {
         initViewModel();
         initView();
 
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        // TODO: можно еще доработать кнопку, она пока идет без всплывающего назания и не кастомизирована
+        //  добавляет айтемы из коллекций
+        fab.setOnClickListener(view -> {
+            Intent i = new Intent(CollectionActivity.this, ItemAddEditActivity.class);
+            i.putExtra(COLLECTION_ID, collectionId);
+            startActivityForResult(i, ADD_ITEM_REQUEST);
+        });
     }
 
     private void initView() {
@@ -93,10 +105,10 @@ public class CollectionActivity extends AppCompatActivity {
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-            viewModel.getAllItems().observe(this, items -> adapter.submitList(new ArrayList<>(items)));
-        } else if (collectionId != -1) {
-            viewModel.getItemsForCollection(collectionId).observe(this, items -> adapter.submitList(new ArrayList<>(items)));
+        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
+        if (collectionId != -1) {   // print items which contain in select collection
+            itemCollectionJoinViewModel.getItemsForCollection(collectionId).observe(this, items ->
+                    adapter.submitList(new ArrayList<>(items)));
         }
     }
 
@@ -126,7 +138,7 @@ public class CollectionActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_edit_collection:
                 Intent i = new Intent(CollectionActivity.this, CollectionAddEditActivity.class);
-                i.putExtra(MainActivity.COLLECTION_ID, collectionId);
+                i.putExtra(COLLECTION_ID, collectionId);
                 startActivityForResult(i, EDIT_REQUEST);
                 return true;
             case R.id.action_delete_all_items:
@@ -144,6 +156,9 @@ public class CollectionActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == EDIT_REQUEST && resultCode == RESULT_OK) {
             initView();
+        } if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
+            Toast.makeText(CollectionActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

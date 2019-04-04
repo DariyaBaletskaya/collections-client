@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity
 
         fabItem.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ItemAddEditActivity.class);
+            i.putExtra(COLLECTION_ID, Collection.DEFAULT_COLLECTION_ID);
             startActivityForResult(i, ADD_ITEM_REQUEST);  // add new collection
         });
 

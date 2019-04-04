@@ -2,23 +2,18 @@ package onpu.pnit.collectionsclient.ui;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import onpu.pnit.collectionsclient.DAO.ItemDao;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.viewmodel.ItemCollectionJoinViewModel;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,15 +24,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.r0adkll.slidr.Slidr;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
+import java.util.concurrent.ExecutionException;
 
 public class ItemAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -75,6 +67,9 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     ImageView itemImage;
 
     private ItemListViewModel viewModel;
+    private ItemCollectionJoinViewModel itemCollectionJoinViewModel;
+    private int currentCollectionId;
+    private int defaultCollectionId;
 
     private Uri loadedImage;
 
@@ -99,8 +94,9 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
         });
         viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-
-
+        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
+        currentCollectionId = getIntent().getIntExtra(CollectionActivity.COLLECTION_ID, -1);
+        defaultCollectionId = Collection.DEFAULT_COLLECTION_ID;
     }
 
     @Override
@@ -123,6 +119,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
 
     // Add new item and check new item's fields
     private void saveItem() {
+        int itemId = 0;
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
         float price;
@@ -132,11 +129,25 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
             price = 0;
         }
 
-//        String currency = ((TextView) currencySpinner.getSelectedView()).getText().toString();
         boolean isOnSale = isItemOnSale.isChecked();
 
         if (!title.trim().isEmpty() && loadedImage != null) {
-            viewModel.insert(new Item(title.trim(), description.trim(), isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+            try {   // теперь каждый раз после ввода айтема в бд мы получаем item_id, необходимо для добавления
+                itemId = (int) viewModel.insert(new Item(title.trim(), description.trim(), isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            if (currentCollectionId == defaultCollectionId) {   // Если айтем добавляется с общего окна или же из дефолтной коллекции
+                itemCollectionJoinViewModel.insertItemCollectionJoin(itemId, defaultCollectionId);
+            } else {    // Если айтем добавляется из любой другой коллекции, кроме дефолтной
+                itemCollectionJoinViewModel.insertItemCollectionJoin(itemId, defaultCollectionId);
+                itemCollectionJoinViewModel.insertItemCollectionJoin(itemId, currentCollectionId);
+            }
+
             setResult(RESULT_OK);
             finish();
         } else {

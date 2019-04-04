@@ -3,8 +3,12 @@ package onpu.pnit.collectionsclient.viewmodel;
 import android.app.Application;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -19,6 +23,7 @@ public class ItemListViewModel extends AndroidViewModel {
     private ItemRepository itemRepository;
     private CollectionRepository collectionRepository;
     private Executor executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
     public ItemListViewModel(@NonNull Application application) {
@@ -27,10 +32,15 @@ public class ItemListViewModel extends AndroidViewModel {
         collectionRepository = CollectionRepository.getInstance(application);
     }
 
-    public void insert(Item item) {
-        executor.execute(() -> {
-            itemRepository.insertItem(item);
-        });
+    public long insert(Item item) throws ExecutionException, InterruptedException {
+        Callable<Long> callable = new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                return itemRepository.insertItem(item);
+            }
+        };
+        Future<Long> future = executorService.submit(callable);
+        return  future.get();
     }
 
     public LiveData<List<Item>> getAllItems() {

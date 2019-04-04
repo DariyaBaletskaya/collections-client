@@ -3,8 +3,12 @@ package onpu.pnit.collectionsclient.repos;
 import android.app.Application;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
@@ -19,6 +23,7 @@ public class ItemRepository {
     private static volatile ItemRepository instance;
 
     private Executor executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public ItemRepository(Application application) {
         itemDao = AppDatabase.getInstance(application).itemDao();
@@ -59,8 +64,15 @@ public class ItemRepository {
         return itemDao.getItemsByTitle(title);
     }
 
-    public void insertItem(Item item) {
-        executor.execute(() -> itemDao.insertItem(item));
+    public long insertItem(Item item) throws ExecutionException, InterruptedException {
+        Callable<Long> callable = new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                return itemDao.insertItem(item);
+            }
+        };
+        Future<Long> future = executorService.submit(callable);
+        return  future.get();
     }
 
     public void insertAllItems(Item... items) {
@@ -79,7 +91,7 @@ public class ItemRepository {
          return itemDao.getItemById(id);
     }
 
-    public void deleteAllItemsFromCollection(int colletionId) {
-        executor.execute(() -> itemCollectionJoinDao.deleteAllItemsFromCollection(colletionId));
+    public void deleteAllItemsFromCollection(int collectionId) {
+        executor.execute(() -> itemCollectionJoinDao.deleteAllItemsFromCollection(collectionId));
     }
 }
