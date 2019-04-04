@@ -36,7 +36,7 @@
     <string name="edit_collection">Edit collection</string>
     <string name="edit_item">Edit item</string>
     <string name="delete_all">Delete all</string>
-    <string name="q_delete_all_items">Delete all items?</string>
+    <string name="q_delete_all_items">Delete all items from collection?</string>
 
     <!--strings for enter_form.xml-->
     <string name="tv_nameProgram">Collections App</string>

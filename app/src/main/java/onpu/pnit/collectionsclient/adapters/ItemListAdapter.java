@@ -103,4 +103,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
         this.listener = listener;
     }
 
+    public Item getItemAt(int position) {
+        return getItem(position);
+    }
 }

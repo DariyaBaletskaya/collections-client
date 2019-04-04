@@ -15,22 +15,22 @@ import onpu.pnit.collectionsclient.entities.Item;
 @Dao
 public interface ItemDao {
     @Insert
-    void insertItem(Item item);
+    void insert(Item item);
 
     @Delete
-    void deleteItem(Item item);
+    void delete(Item item);
 
     @Update
-    void updateItem(Item item);
+    void update(Item item);
 
     @Update
-    void updateItems(Item... items);
+    void update(List<Item> items);
 
-    @Query("DELETE FROM Items WHERE user_id=:userId")
+    @Query("DELETE FROM items WHERE user_id=:userId")
     void deleteAllItemsForUser(int userId);
 
     @Delete
-    void deleteAll(List<Item> items);
+    void delete(List<Item> items);
 
     @Query("SELECT * from Items WHERE user_id=:userId")
     LiveData<List<Item>> getItemsForUser(int userId);
@@ -45,5 +45,8 @@ public interface ItemDao {
     Item getItemById(int itemId);
 
     @Insert
-    void insertAllItems(Item... items);
+    void insert(List<Item> items);
+
+    @Query("DELETE FROM items")
+    void deleteAll();
 }

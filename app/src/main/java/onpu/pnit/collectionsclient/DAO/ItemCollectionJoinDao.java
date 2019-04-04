@@ -5,6 +5,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
+import androidx.room.Insert;
 import androidx.room.Query;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
@@ -24,4 +25,7 @@ public interface ItemCollectionJoinDao {
 
     @Query("DELETE FROM item_collection_join WHERE collection_id=:collectionId")
     void deleteAllItemsFromCollection(int collectionId);
+
+    @Query("INSERT INTO item_collection_join VALUES (:itemId, :collectionId)")
+    void insertInCollection(int itemId, int collectionId);
 }

@@ -29,7 +29,7 @@ public class ItemListViewModel extends AndroidViewModel {
 
     public void insert(Item item) {
         executor.execute(() -> {
-            itemRepository.insertItem(item);
+            itemRepository.insert(item);
         });
     }
 
@@ -43,16 +43,22 @@ public class ItemListViewModel extends AndroidViewModel {
 
     public void delete(Item item) {
         executor.execute(() -> {
-            itemRepository.deleteItem(item);
+            itemRepository.delete(item);
         });
     }
 
-    public void deleteAllFromCollection(int colletionId) {
+    public void deleteAllFromCollection(int сollectionId) {
         executor.execute(() -> {
-            itemRepository.deleteAllItemsFromCollection(colletionId);
+            itemRepository.deleteAllItemsFromCollection(сollectionId);
         });
     }
-    public void deleteAll(List<Item> items) {
+
+    public void insertItemsInCollection(int collectionId, List<Item> items) {
+        executor.execute(() -> {
+            itemRepository.insertInCollection(collectionId, items);
+        });
+    }
+    public void delete(List<Item> items) {
         executor.execute(() -> {
             itemRepository.deleteAll(items);
         });
@@ -60,7 +66,7 @@ public class ItemListViewModel extends AndroidViewModel {
 
     public void update(Item item) {
         executor.execute(() -> {
-            itemRepository.updateItem(item);
+            itemRepository.update(item);
         });
     }
     
@@ -80,4 +86,15 @@ public class ItemListViewModel extends AndroidViewModel {
         return mCollection;
     }
 
+    public void insert(List<Item> items) {
+        executor.execute(() -> {
+            itemRepository.insert(items);
+        });
+    }
+
+    public void deleteAll() {
+        executor.execute(() -> {
+            itemRepository.deleteAll();
+        });
+    }
 }

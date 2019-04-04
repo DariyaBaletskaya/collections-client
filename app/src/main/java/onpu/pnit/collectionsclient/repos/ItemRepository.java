@@ -44,11 +44,20 @@ public class ItemRepository {
     }
 
     public void deleteAll(List<Item> items) {
-        executor.execute(() -> itemDao.deleteAll(items));
+        executor.execute(() -> itemDao.delete(items));
     }
 
-    public void deleteItem(Item item) {
-        executor.execute(() -> itemDao.deleteItem(item));
+    public void delete(List<Item> items) {
+        executor.execute(() -> itemDao.delete(items));
+    }
+
+    public void deleteAll(){
+        executor.execute(() -> {
+            itemDao.deleteAll();
+        });
+    }
+    public void delete(Item item) {
+        executor.execute(() -> itemDao.delete(item));
     }
 
     public LiveData<List<Item>> getItemsForUser(int userId) {
@@ -59,20 +68,20 @@ public class ItemRepository {
         return itemDao.getItemsByTitle(title);
     }
 
-    public void insertItem(Item item) {
-        executor.execute(() -> itemDao.insertItem(item));
+    public void insert(Item item) {
+        executor.execute(() -> itemDao.insert(item));
     }
 
-    public void insertAllItems(Item... items) {
-        executor.execute(() -> itemDao.insertAllItems(items));
+    public void insert(List<Item> items) {
+        executor.execute(() -> itemDao.insert(items));
     }
 
-    public void updateItem(Item item) {
-        executor.execute(() -> itemDao.updateItem(item));
+    public void update(Item item) {
+        executor.execute(() -> itemDao.update(item));
     }
 
-    public void updateItems(Item... items) {
-        executor.execute(() -> itemDao.updateItems(items));
+    public void updateItems(List<Item> items) {
+        executor.execute(() -> itemDao.update(items));
     }
 
     public Item getItemById(int id) {
@@ -81,5 +90,18 @@ public class ItemRepository {
 
     public void deleteAllItemsFromCollection(int colletionId) {
         executor.execute(() -> itemCollectionJoinDao.deleteAllItemsFromCollection(colletionId));
+    }
+
+    public void insertInCollection(int collectionId, List<Item> items) {
+        executor.execute(() -> {
+            for (Item i:items) {
+                itemCollectionJoinDao.insertInCollection(i.getId(), collectionId);
+            }
+        });
+    }
+    public void insertInCollection(int collectionId, Item item) {
+        executor.execute(() -> {
+            itemCollectionJoinDao.insertInCollection(item.getId(), collectionId);
+        });
     }
 }
