@@ -1,7 +1,10 @@
 package onpu.pnit.collectionsclient.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +68,12 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
         Item currentItem = getItem(position);
         holder.title.setText(currentItem.getTitle());
 //        holder.img.setImageURI(Uri.parse(currentItem.getImage()));
-
+//String image = Environment.getExternalStorageDirectory() + "/" + "595247618";
+//File file = new File(image);
+//        Uri imageUri = Uri.fromFile(file);
+        //InputStream is = getContentResolver().openInputStream(Uri.parse(YOUR_URI_STRING)));
         Glide.with(context)
-                .load(Uri.parse(currentItem.getImage()))
+                .load(Uri.parse("content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F12/ORIGINAL/NONE/430691196"))
                 .into(holder.img);
 
 
@@ -75,16 +82,14 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-//        @BindView(R.id.card_item_photo)
         ImageView img;
-//        @BindView(R.id.card_item_title)
         TextView title;
+
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
             img = itemView.findViewById(R.id.card_item_photo);
             title = itemView.findViewById(R.id.card_item_title);
-//            ButterKnife.bind(itemView);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
@@ -106,4 +111,6 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
     public Item getItemAt(int position) {
         return getItem(position);
     }
+
+
 }

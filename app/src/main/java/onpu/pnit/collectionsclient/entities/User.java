@@ -2,6 +2,7 @@ package onpu.pnit.collectionsclient.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -25,8 +26,10 @@ public class User implements Serializable {
     @JsonProperty("city")
     private String city;
     @JsonProperty("username")
+    @SerializedName("username")
     private String username;
     @JsonProperty("password")
+    @SerializedName("password")
     private String password;
     @JsonProperty("active")
     @ColumnInfo(name = "is_user_active")
@@ -43,12 +46,17 @@ public class User implements Serializable {
     }
 
     @Ignore
-    public User() {
-    }
+    public User() {}
 
     @Ignore
     public User(int id) {
         this.id = id;
+    }
+
+    @Ignore
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public static User getDefaultUser() {

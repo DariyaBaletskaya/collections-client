@@ -9,6 +9,14 @@
     android:padding="20dp">
 
 
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/tv_nameProgram"
         android:layout_width="match_parent"
@@ -31,51 +39,38 @@
         android:textColor="@color/colorGreyDark"
         android:textSize="@dimen/font_size_plain_text" />
 
-    <TextView
-        android:id="@+id/tv_email"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/edit_text_vertical_margin"
-        android:fontFamily="@font/roboto_light"
-        android:text="@string/tv_email"
-        android:textColor="@color/colorGreyDark"
-        android:textSize="@dimen/font_size_plain_text" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/et_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/edit_text_vertical_margin"
-        android:inputType="textEmailAddress"
-        android:selectAllOnFocus="false"
-        android:singleLine="false"
-        android:textAlignment="viewStart"
-        android:textColor="@color/colorGreyDark"
-        android:textSize="@dimen/font_size_plain_text"
-        android:backgroundTint="@color/colorPrimary"
-        android:textCursorDrawable="@color/colorPrimary"/>
+        <AutoCompleteTextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="@string/prompt_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true" />
 
-    <TextView
-        android:id="@+id/tv_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/edit_text_vertical_margin"
-        android:fontFamily="@font/roboto_light"
-        android:text="@string/tv_password"
-        android:textColor="@color/colorGreyDark"
-        android:textSize="@dimen/font_size_plain_text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/et_password"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/edit_text_vertical_margin"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:textColor="@color/colorGreyDark"
-        android:textSize="@dimen/font_size_plain_text"
-        android:backgroundTint="@color/colorPrimary"
-        android:textCursorDrawable="@color/colorPrimary"/>
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="@string/prompt_password"
+            android:imeActionId="6"
+            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tv_forgotPassword"
@@ -89,7 +84,7 @@
         android:textSize="@dimen/font_size_plain_text" />
 
     <Button
-        android:id="@+id/b_logIn"
+        android:id="@+id/email_sign_in_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryLight"

@@ -11,6 +11,7 @@ import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.viewmodel.ItemCollectionJoinViewModel;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -89,8 +90,13 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         currencySpinner.setOnItemSelectedListener(this);
 
         itemImage.setOnClickListener(v -> {
-            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            Intent photoPickerIntent = new Intent();
+            photoPickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            photoPickerIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            photoPickerIntent.setFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            photoPickerIntent.setFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
             photoPickerIntent.setType("image/*");
+            photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
         });
         viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
@@ -153,7 +159,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         } else {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
