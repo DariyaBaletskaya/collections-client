@@ -26,10 +26,8 @@ public class User implements Serializable {
     @JsonProperty("city")
     private String city;
     @JsonProperty("username")
-    @SerializedName("username")
     private String username;
     @JsonProperty("password")
-    @SerializedName("password")
     private String password;
     @JsonProperty("active")
     @ColumnInfo(name = "is_user_active")

@@ -47,7 +47,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     public static final String EXTRA_CURRENCY =
             "onpu.pnit.collectionsclient.ui.EXTRA_CURRENCY";
 
-    static final int GALLERY_REQUEST = 1;
+    private static final int GALLERY_REQUEST = 1;
 
     @BindView(R.id.add_edit_item_currency_spinner)
     Spinner currencySpinner;
@@ -91,10 +91,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
 
         itemImage.setOnClickListener(v -> {
             Intent photoPickerIntent = new Intent();
-            photoPickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            photoPickerIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            photoPickerIntent.setFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            photoPickerIntent.setFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
             photoPickerIntent.setType("image/*");
             photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
@@ -188,6 +184,4 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
                 }
         }
     }
-
-
 }

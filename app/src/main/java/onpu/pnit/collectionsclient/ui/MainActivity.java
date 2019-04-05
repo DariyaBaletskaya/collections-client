@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.fab_item)
     FloatingActionButton fabItem;
 
+
+
     private CollectionsListAdapter adapter;
     private EditorCollectionViewModel editorCollectionListViewModel;
     private ItemListViewModel itemListViewModel;
@@ -90,6 +93,12 @@ public class MainActivity extends AppCompatActivity
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
 
+        //setting username in drawer
+        View headerView = navigationView.getHeaderView(0);
+        TextView drawerUsername = (TextView) headerView.findViewById(R.id.drawer_username);
+
+        Intent getUsername = getIntent();
+        drawerUsername.setText(getUsername.getStringExtra(LoginActivity.USERNAME));
 
         fab.setOnClickListener(v -> {
                     if (!isFabMenuOpened) {
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         fabItem.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ItemAddEditActivity.class);
             i.putExtra(COLLECTION_ID, Collection.DEFAULT_COLLECTION_ID);
-            startActivityForResult(i, ADD_ITEM_REQUEST);  // add new collection
+            startActivityForResult(i, ADD_ITEM_REQUEST);  // add new item
         });
 
 
@@ -118,6 +127,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+
 
         initRecyclerView();
         initViewModel();
@@ -316,7 +326,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_signout) {
-
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_help) {
 
         }
