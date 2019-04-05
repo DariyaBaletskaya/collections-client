@@ -27,7 +27,7 @@
             android:fontFamily="@font/roboto_regular"
             android:hint="@string/title"
             android:inputType="textShortMessage"
-            android:singleLine="true" />
+            android:singleLine="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

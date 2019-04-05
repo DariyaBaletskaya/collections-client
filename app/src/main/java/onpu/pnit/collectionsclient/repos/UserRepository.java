@@ -48,7 +48,7 @@ public class UserRepository {
         executor.execute(() -> db.userDao().deleteUser(user));
     }
 
-    public void deleteUsers(User... users) {
+    public void deleteUsers(List<User> users) {
         executor.execute(() -> db.userDao().deleteUsers(users));
     }
 
@@ -56,7 +56,7 @@ public class UserRepository {
         executor.execute(() -> db.userDao().insertUser(user));
     }
 
-    public void insertUsers(User... users) {
+    public void insertUsers(List<User> users) {
         executor.execute(() -> db.userDao().insertUsers(users));
     }
 
@@ -64,7 +64,7 @@ public class UserRepository {
         executor.execute(() -> db.userDao().updateUser(user));
     }
 
-    public void updateUsers(User... users) {
+    public void updateUsers(List<User> users) {
         executor.execute(() -> db.userDao().updateUsers(users));
     }
 

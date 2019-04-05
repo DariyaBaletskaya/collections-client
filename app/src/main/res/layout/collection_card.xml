@@ -18,7 +18,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/collections_card_background"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:background="@color/colorAccent">
 
             <ImageView
@@ -58,7 +58,7 @@
             android:id="@+id/collections_card_foreground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background_material_light">
+            android:background="@color/design_default_color_background">
 
             <TextView
                 android:id="@+id/card_collection_title"

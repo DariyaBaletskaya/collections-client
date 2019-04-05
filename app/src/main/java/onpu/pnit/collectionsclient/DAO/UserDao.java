@@ -17,13 +17,13 @@ public interface UserDao {
     void insertUser(User user);
 
     @Insert
-    void insertUsers(User... users);
+    void insertUsers(List<User> users);
 
     @Delete
     void deleteUser(User user);
 
     @Delete
-    void deleteUsers(User... users);
+    void deleteUsers(List<User> users);
 
     @Query("SELECT * from users WHERE user_id=:userId")
     User getUserById(int userId);
@@ -32,7 +32,7 @@ public interface UserDao {
     User getUserByUsername(String username);
 
     @Update
-    void updateUsers(User... users);
+    void updateUsers(List<User> users);
 
     @Update
     void updateUser(User user);

@@ -52,10 +52,9 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     @Override
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         Collection currentCollection = getItem(position);
-        holder.id = currentCollection.getId();
         holder.title.setText(currentCollection.getTitle());
         holder.category.setText(currentCollection.getCategory());
-
+        holder.id = currentCollection.getId();
         Glide.with(context)
                 .load(currentCollection.getImage())
                 .into(holder.image);
@@ -75,20 +74,23 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
             title = itemView.findViewById(R.id.card_collection_title);
             category = itemView.findViewById(R.id.card_collection_category);
             image = itemView.findViewById(R.id.card_collection_photo);
-            itemView.setOnClickListener(v -> {
-                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
-                }
-            });
-
             viewBackground = itemView.findViewById(R.id.collections_card_background);
             viewForeground = itemView.findViewById(R.id.collections_card_foreground);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        listener.onCollectionClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());
+                    }
+                }
+            });
+
+        }
+        public int getId(){
+            return this.id;
         }
 
-        public int getId() {
-            return id;
-        }
     }
 
     public interface OnCollectionClickListener {

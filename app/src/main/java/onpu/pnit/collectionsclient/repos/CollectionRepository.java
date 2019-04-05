@@ -1,14 +1,12 @@
 package onpu.pnit.collectionsclient.repos;
 
 import android.app.Application;
-import android.content.Context;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
 import onpu.pnit.collectionsclient.DAO.CollectionDao;
 import onpu.pnit.collectionsclient.entities.Collection;
@@ -39,6 +37,30 @@ public class CollectionRepository {
         return collectionDao.getAllCollections();
     }
 
+//    public MutableLiveData<Collection> getCollectionById(int collectionId) {
+//        AtomicReference<Collection> c = new AtomicReference<>();
+//        executor.execute(() -> {
+//            c.set(collectionDao.getCollectionById(collectionId));
+//        });
+//
+//        MutableLiveData<Collection> collection = new MutableLiveData<>();
+//        collection.postValue(c.get());
+//        return collection;
+//    }
+
+//    public Collection getCollectionById(int collectionId) {
+//        AtomicReference<Collection> c = new AtomicReference<>();
+//        executor.execute(() -> {
+//            c.set(collectionDao.getCollectionById(collectionId));
+//        });
+//
+//        return c.get();
+//    }
+
+    public Collection getCollectionById(int collectionId) {
+        return collectionDao.getCollectionById(collectionId);
+    }
+
     public LiveData<List<Collection>> getCollectionForUser(int userId) {
         return collectionDao.getCollectionsForUser(userId);
     }
@@ -63,7 +85,7 @@ public class CollectionRepository {
         executor.execute(() -> collectionDao.deleteCollection(collection));
     }
 
-    public void updateCollections(Collection... collections) {
+    public void updateCollections(List<Collection> collections) {
         executor.execute(() -> collectionDao.updateCollections(collections));
     }
 

@@ -1,5 +1,7 @@
 package onpu.pnit.collectionsclient.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,7 +17,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "items", foreignKeys =  @ForeignKey(entity = User.class,
         parentColumns = "user_id", childColumns = "user_id", onDelete = CASCADE))
-public class Item  implements Serializable{
+public class Item  implements Parcelable {
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "item_id", index = true)
@@ -32,17 +34,22 @@ public class Item  implements Serializable{
     @ColumnInfo(name = "item_price")
     @JsonProperty("price")
     private float price;
+    @ColumnInfo(name = "image")
+    @JsonProperty("image")
+    private String image;
     @JsonProperty("userId")
     @ColumnInfo(name = "user_id", index = true)
+
     private int userId;
 
-    public Item(int id, String title, String description, boolean isOnSale, float price, int userId) {
+    public Item(int id, String title, String description, boolean isOnSale, float price, int userId, String image) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
         this.price = price;
         this.userId = userId;
+        this.image = image;
     }
 
     @Ignore
@@ -50,13 +57,36 @@ public class Item  implements Serializable{
     }
 
     @Ignore
-    public Item(String title, String description, boolean isOnSale, float price, int userId) {
+    public Item(String title, String description, boolean isOnSale, float price, int userId, String image) {
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
         this.price = price;
         this.userId = userId;
+        this.image = image;
     }
+
+    protected Item(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        description = in.readString();
+        isOnSale = in.readByte() != 0;
+        price = in.readFloat();
+        image = in.readString();
+        userId = in.readInt();
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -102,6 +132,18 @@ public class Item  implements Serializable{
         return userId;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -110,7 +152,24 @@ public class Item  implements Serializable{
                 ", description='" + description + '\'' +
                 ", isOnSale=" + isOnSale +
                 ", price=" + price +
+                ", image='" + image + '\'' +
                 ", userId=" + userId +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeByte((byte) (isOnSale ? 1 : 0));
+        dest.writeFloat(price);
+        dest.writeString(image);
+        dest.writeInt(userId);
     }
 }

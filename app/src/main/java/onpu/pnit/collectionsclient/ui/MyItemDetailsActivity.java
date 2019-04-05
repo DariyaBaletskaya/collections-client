@@ -6,26 +6,31 @@ import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
-import onpu.pnit.collectionsclient.entities.Item;
-import onpu.pnit.collectionsclient.repos.ItemRepository;
-import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.r0adkll.slidr.Slidr;
 
 public class MyItemDetailsActivity extends AppCompatActivity {
 
     // using for edit exist item
     public static final int EDIT_ITEM_REQUEST = 1;
     public static final String ITEM_ID = "item_id";
+    public static final String DELETED_ITEM = "deleted_item";
 
+    @BindView(R.id.my_item_details_photo)
+    ImageView photo;
     @BindView(R.id.my_item_details_name)
     TextView title;
     @BindView(R.id.my_item_details_description)
@@ -37,15 +42,15 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     @BindView(R.id.my_item_details_is_on_sale)
     Switch isOnSale;
     private ItemListViewModel itemListViewModel;
-
+    private int id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_item_details);
-        getSupportActionBar().setTitle(R.string.item_details);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        setTitle(R.string.item_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButterKnife.bind(this);
-
+        Slidr.attach(this);
         initViewModel();
 
 
@@ -56,11 +61,11 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     private void initViewModel() {
         itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
 
-        int id = getIntent().getIntExtra(ItemsListActivity.ITEM_ID, -1);
-        itemListViewModel.getItemById(id);
+        id = getIntent().getIntExtra(CollectionActivity.ITEM_ID, -1);
 
-        itemListViewModel.getmItem().observe(this, item -> {
+        itemListViewModel.getItemById(id).observe(this, item -> {
             if (item != null) {
+                photo.setImageURI(Uri.parse(item.getImage()));
                 title.setText(item.getTitle());
                 description.setText(item.getDescription());
                 price.setText(String.valueOf(item.getPrice()));
@@ -82,6 +87,9 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.my_item_details_action_delete:
                 deleteItem();
                 return true;
@@ -93,39 +101,34 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         }
     }
 
-    /*TODO: Пофиксить лаг
-    если мы нажимаем на иконку стрелочки назад на активити ItemAddEditActivity
-    нас перебрасывает не на MyItemDetailsActivity, а на пустой активити.
-    В манифесте parent activity установлено как ItemsListActivity
-
-    Предположительно такое может быть из-за данного кода в ItemListActivity
-        collectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
-        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-            setTitle("All items");
-        } else if (collectionId != -1) {
-            setTitle("Collection");
-        }
-    */
     private void editItem() {
         Intent i = new Intent(MyItemDetailsActivity.this, ItemAddEditActivity.class);
-        itemListViewModel.getmItem().observe(this, item -> {
+        itemListViewModel.getItemById(id).observe(this, item -> {
             if (item != null) {
                i.putExtra(ITEM_ID, item.getId());
             }
         });
         startActivityForResult(i, EDIT_ITEM_REQUEST);
-        onBackPressed();
     }
 
     //TODO: добавить возможность отмены удаления, UNDO как при удалении коллекции
+    // Пока непонятно, как это сделать. Нам надо каким-то образом передавать обратно в активити списка айтемов удаленную инфу
+    // Чтобы по нажатию на снекбар айтем заново добавлялся. Это можно провернуть, если айтем будет parcelable, но для этого надо поправить вьюмодел.
     private void deleteItem() {
-        Toast.makeText(MyItemDetailsActivity.this, "Delete item", Toast.LENGTH_SHORT).show();
-        itemListViewModel.getmItem().observe(this, item -> {
-            if (item != null) {
-                itemListViewModel.delete(item);
-            }
-        });
-        onBackPressed();
+//        Toast.makeText(MyItemDetailsActivity.this, "Delete item", Toast.LENGTH_SHORT).show();
+//        Intent data = new Intent();
+//        data.putExtra(DELETED_ITEM, (Parcelable) itemListViewModel.getItem());
+//        setResult(RESULT_OK, data);
+//        finish();
+//        itemListViewModel.getItem().observe(this, item -> {
+//            if (item != null) {
+//                itemListViewModel.delete(item);
+//            }
+//        });
+//        onBackPressed();
+        itemListViewModel.getItemById(id).observe(this, item -> itemListViewModel.delete(item));
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override

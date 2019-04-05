@@ -8,8 +8,8 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "item_collection_join", primaryKeys = {"item_id", "collection_id"}, indices = {@Index("item_id"), @Index("collection_id")},
-        foreignKeys = {@ForeignKey(entity = Item.class, parentColumns = "item_id", childColumns = "item_id"),
-                @ForeignKey(entity = Collection.class, parentColumns = "collection_id", childColumns = "collection_id")})
+        foreignKeys = {@ForeignKey(entity = Item.class, parentColumns = "item_id", childColumns = "item_id", onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = Collection.class, parentColumns = "collection_id", childColumns = "collection_id", onDelete = ForeignKey.CASCADE)})
 public class ItemCollectionJoin {
     @ColumnInfo(name = "item_id")
     private int itemId;
