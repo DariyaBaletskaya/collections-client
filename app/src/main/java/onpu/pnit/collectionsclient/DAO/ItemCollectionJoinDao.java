@@ -31,5 +31,8 @@ public interface ItemCollectionJoinDao {
     @Query("DELETE FROM item_collection_join WHERE collection_id=:collectionId")
     void deleteAllItemsFromCollection(int collectionId);
 
+    @Query("INSERT INTO item_collection_join VALUES (:itemId, :collectionId)")
+    void insertItemInCollection(int itemId, int collectionId);
+
 
 }

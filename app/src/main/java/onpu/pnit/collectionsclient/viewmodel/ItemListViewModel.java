@@ -57,16 +57,18 @@ public class ItemListViewModel extends AndroidViewModel {
         });
     }
 
-    public void deleteAllFromCollection(int colletionId) {
+    public void deleteAllFromCollection(int collectionId) {
         executor.execute(() -> {
-            itemRepository.deleteAllItemsFromCollection(colletionId);
+            itemRepository.deleteAllItemsFromCollection(collectionId);
         });
     }
-    public void deleteAll(List<Item> items) {
+    
+    public void delete(List<Item> items) {
         executor.execute(() -> {
-            itemRepository.deleteAll(items);
+            itemRepository.deleteItems(items);
         });
     }
+
 
     public void update(Item item) {
         executor.execute(() -> {
@@ -90,4 +92,21 @@ public class ItemListViewModel extends AndroidViewModel {
         return mCollection;
     }
 
+    public void insert(List<Item> items) {
+        executor.execute(() -> {
+            itemRepository.insertItems(items);
+        });
+    }
+
+    public void deleteAllItems() {
+        executor.execute(() -> {
+            itemRepository.deleteAllItems();
+        });
+    }
+
+    public void insertItemsInCollection(int collectionId, List<Item> items) {
+        executor.execute(() -> {
+            itemRepository.insertInCollection(collectionId, items);
+        });
+    }
 }

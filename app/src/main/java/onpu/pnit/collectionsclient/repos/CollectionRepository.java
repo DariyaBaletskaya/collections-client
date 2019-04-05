@@ -5,10 +5,8 @@ import android.app.Application;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
 import onpu.pnit.collectionsclient.DAO.CollectionDao;
 import onpu.pnit.collectionsclient.entities.Collection;
@@ -87,7 +85,7 @@ public class CollectionRepository {
         executor.execute(() -> collectionDao.deleteCollection(collection));
     }
 
-    public void updateCollections(Collection... collections) {
+    public void updateCollections(List<Collection> collections) {
         executor.execute(() -> collectionDao.updateCollections(collections));
     }
 

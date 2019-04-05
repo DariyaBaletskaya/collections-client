@@ -48,8 +48,8 @@ public class ItemRepository {
         return itemDao.getAllItems();
     }
 
-    public void deleteAll(List<Item> items) {
-        executor.execute(() -> itemDao.deleteAll(items));
+    public void deleteItems(List<Item> items) {
+        executor.execute(() -> itemDao.deleteItems(items));
     }
 
     public void deleteItem(Item item) {
@@ -75,15 +75,15 @@ public class ItemRepository {
         return  future.get();
     }
 
-    public void insertAllItems(Item... items) {
-        executor.execute(() -> itemDao.insertAllItems(items));
+    public void insertItems(List<Item> items) {
+        executor.execute(() -> itemDao.insertItems(items));
     }
 
     public void updateItem(Item item) {
         executor.execute(() -> itemDao.updateItem(item));
     }
 
-    public void updateItems(Item... items) {
+    public void updateItems(List<Item> items) {
         executor.execute(() -> itemDao.updateItems(items));
     }
 
@@ -93,5 +93,24 @@ public class ItemRepository {
 
     public void deleteAllItemsFromCollection(int collectionId) {
         executor.execute(() -> itemCollectionJoinDao.deleteAllItemsFromCollection(collectionId));
+    }
+
+    public void deleteAllItems() {
+        executor.execute(() -> {
+            itemDao.deleteAllItems();
+        });
+    }
+
+    public void insertInCollection(int collectionId, List<Item> items) {
+        executor.execute(() -> {
+            for (Item i:items) {
+                itemCollectionJoinDao.insertItemInCollection(i.getId(), collectionId);
+            }
+        });
+    }
+    public void insertInCollection(int collectionId, Item item) {
+        executor.execute(() -> {
+            itemCollectionJoinDao.insertItemInCollection(item.getId(), collectionId);
+        });
     }
 }

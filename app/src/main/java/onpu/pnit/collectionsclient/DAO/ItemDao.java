@@ -14,6 +14,8 @@ import onpu.pnit.collectionsclient.entities.Item;
 
 @Dao
 public interface ItemDao {
+    /* НЕЛЬЗЯ НАЗЫВАТЬ МЕТОД INSERT(LIST<ITEM> ITEMS) - INSERTALL, НАДО INSERT. */
+    /* С DELETE ТА ЖЕ ИСТОРИЯ, DELETEALL УДАЛЯЕТ ВСЁ*/
     @Insert
     long insertItem(Item item);
 
@@ -24,13 +26,14 @@ public interface ItemDao {
     void updateItem(Item item);
 
     @Update
-    void updateItems(Item... items);
+    void updateItems(List<Item> items);
 
     @Query("DELETE FROM Items WHERE user_id=:userId")
     void deleteAllItemsForUser(int userId);
 
     @Delete
-    void deleteAll(List<Item> items);
+    void deleteItems(List<Item> items);
+
 
     @Query("SELECT * from Items WHERE user_id=:userId")
     LiveData<List<Item>> getItemsForUser(int userId);
@@ -45,5 +48,8 @@ public interface ItemDao {
     Item getItemById(int itemId);
 
     @Insert
-    void insertAllItems(Item... items);
+    void insertItems(List<Item> items);
+
+    @Query("DELETE FROM items")
+    void deleteAllItems();
 }

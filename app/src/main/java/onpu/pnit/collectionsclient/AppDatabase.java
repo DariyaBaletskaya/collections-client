@@ -13,13 +13,14 @@ import onpu.pnit.collectionsclient.DAO.CollectionDao;
 import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
 import onpu.pnit.collectionsclient.DAO.ItemDao;
 import onpu.pnit.collectionsclient.DAO.UserDao;
+import onpu.pnit.collectionsclient.auth.BusProvider;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.entities.User;
 
 @Database(entities = {Item.class, Collection.class, ItemCollectionJoin.class, User.class},
-        version = 2, exportSchema = false)
+        version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "appdb.db";

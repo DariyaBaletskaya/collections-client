@@ -23,7 +23,7 @@ public interface CollectionDao {
     void insertCollections(List<Collection> collections);
 
     @Update
-    void updateCollections(Collection... collections);
+    void updateCollections(List<Collection> collections);
 
     @Update
     void updateCollection(Collection collection);
