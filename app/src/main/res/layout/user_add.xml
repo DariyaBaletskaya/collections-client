@@ -64,9 +64,9 @@
         android:layout_width="366dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/sign_up"
+        app:layout_constraintBottom_toTopOf="@+id/save_changes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/sign_up"
+        app:layout_constraintStart_toStartOf="@+id/save_changes"
         app:layout_constraintTop_toBottomOf="@+id/passwordWrapper">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -79,7 +79,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/sign_up"
+        android:id="@+id/save_changes"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="379dp"
         android:layout_height="wrap_content"

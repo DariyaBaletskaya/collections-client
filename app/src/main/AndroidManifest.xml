@@ -54,6 +54,10 @@
             android:name=".ui.ItemAddEditActivity"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.SliderActivityTheme"/>
+        <activity
+            android:name=".ui.UserEditActivity"
+            android:parentActivityName=".ui.ViewProfile"
+            android:theme="@style/AppTheme.SliderActivityTheme"/>
     </application>
 
 </manifest>

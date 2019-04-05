@@ -47,7 +47,7 @@ public class UserAddActivity extends AppCompatActivity {
         confirmPasswordWrapper.setHint("Confirm Password");
 
 
-        Button signUpBtn = (Button) findViewById(R.id.sign_up);
+        Button signUpBtn = (Button) findViewById(R.id.save_changes);
         signUpBtn.setOnClickListener(v->{
             String username = usernameWrapper.getEditText().getText().toString();
             String password = passwordWrapper.getEditText().getText().toString();

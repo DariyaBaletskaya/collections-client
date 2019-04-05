@@ -1,8 +1,5 @@
 package onpu.pnit.collectionsclient.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import onpu.pnit.collectionsclient.R;
-
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +7,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
+
+import androidx.appcompat.app.AppCompatActivity;
+import onpu.pnit.collectionsclient.R;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 

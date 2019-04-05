@@ -28,11 +28,11 @@ public interface CollectionDao {
     @Update
     void updateCollection(Collection collection);
 
-    @Query("DELETE FROM collections WHERE user_id=:userId")
+    @Query("DELETE FROM collections WHERE (user_id=:userId and collection_id > 1)")
     void deleteAllCollectionsForUser(int userId);
 
-    @Query("DELETE FROM collections")
-    void deleteAllCollections();
+    @Query("DELETE FROM collections WHERE  collection_id > 1")
+    void deleteAllCollections( );
 
     @Query("SELECT * from collections WHERE user_id=:userId")
     LiveData<List<Collection>> getCollectionsForUser(int userId);
