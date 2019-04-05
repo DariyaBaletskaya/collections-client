@@ -23,7 +23,7 @@ public interface CollectionDao {
     void insertCollections(List<Collection> collections);
 
     @Update
-    void updateCollections(Collection... collections);
+    void updateCollections(List<Collection> collections);
 
     @Update
     void updateCollection(Collection collection);
@@ -47,4 +47,6 @@ public interface CollectionDao {
     LiveData<List<Collection>> getAllCollections();
 
 
+    @Query("SELECT * FROM collections WHERE collection_id=:collectionId")
+    Collection getCollectionById(int collectionId);
 }

@@ -34,20 +34,24 @@ public class Item  implements Parcelable {
     @ColumnInfo(name = "item_price")
     @JsonProperty("price")
     private float price;
+    @JsonProperty("currency")
+    @ColumnInfo(name = "currency")
+    private String currency;
     @ColumnInfo(name = "image")
     @JsonProperty("image")
     private String image;
     @JsonProperty("userId")
     @ColumnInfo(name = "user_id", index = true)
-
     private int userId;
 
-    public Item(int id, String title, String description, boolean isOnSale, float price, int userId, String image) {
+
+    public Item(int id, String title, String description, boolean isOnSale, float price, String currency, int userId, String image) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
         this.price = price;
+        this.currency = currency;
         this.userId = userId;
         this.image = image;
     }
@@ -57,11 +61,12 @@ public class Item  implements Parcelable {
     }
 
     @Ignore
-    public Item(String title, String description, boolean isOnSale, float price, int userId, String image) {
+    public Item(String title, String description, boolean isOnSale, float price, String currency, int userId, String image) {
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
         this.price = price;
+        this.currency = currency;
         this.userId = userId;
         this.image = image;
     }
@@ -72,8 +77,23 @@ public class Item  implements Parcelable {
         description = in.readString();
         isOnSale = in.readByte() != 0;
         price = in.readFloat();
+        currency = in.readString();
         image = in.readString();
         userId = in.readInt();
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", isOnSale=" + isOnSale +
+                ", price=" + price +
+                ", currency='" + currency + '\'' +
+                ", image='" + image + '\'' +
+                ", userId=" + userId +
+                '}';
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -144,18 +164,13 @@ public class Item  implements Parcelable {
         this.userId = userId;
     }
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", isOnSale=" + isOnSale +
-                ", price=" + price +
-                ", image='" + image + '\'' +
-                ", userId=" + userId +
-                '}';
+    public String getCurrency() {
+        return currency;
     }
+    public void setCurrency(String currency){
+        this.currency = currency;
+    }
+
 
     @Override
     public int describeContents() {
@@ -169,7 +184,10 @@ public class Item  implements Parcelable {
         dest.writeString(description);
         dest.writeByte((byte) (isOnSale ? 1 : 0));
         dest.writeFloat(price);
+        dest.writeString(currency);
         dest.writeString(image);
         dest.writeInt(userId);
     }
+
+
 }

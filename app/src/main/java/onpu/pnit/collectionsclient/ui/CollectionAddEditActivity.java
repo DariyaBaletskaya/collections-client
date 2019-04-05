@@ -6,7 +6,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
-import onpu.pnit.collectionsclient.viewmodel.CollectionViewModel;
 import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
 
 import android.os.Bundle;
@@ -35,7 +34,6 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
 
     private EditorCollectionViewModel viewModel;
     private ArrayAdapter<CharSequence> spinnerAdapter;
-    private Collection editableCollection;
     private int editableCollectionId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +41,8 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         setContentView(R.layout.collection_add_edit);
         Slidr.attach(this);
         ButterKnife.bind(this);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
-        initSpinners();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initSpinner();
 
         viewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
 
@@ -64,7 +62,7 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         }
     }
 
-    private void initSpinners() {
+    private void initSpinner() {
         spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(spinnerAdapter);
@@ -94,6 +92,9 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
             case R.id.action_save:
                 saveCollection();
                 return true;
+            case android.R.id.home:
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -105,7 +106,7 @@ public class CollectionAddEditActivity extends AppCompatActivity implements Adap
         String description = String.valueOf(editTextDescription.getText()).trim();
         String category = categorySpinner.getSelectedItem().toString();
 
-        if(title.trim().isEmpty()) {
+        if(title.isEmpty()) {
             Toast.makeText(this, "Please enter the title", Toast.LENGTH_SHORT).show();
             return;
         }

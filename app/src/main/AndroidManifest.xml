@@ -70,8 +70,9 @@
             android:theme="@style/AppTheme.SliderActivityTheme" />
         <activity
             android:name=".ui.CollectionAddEditActivity"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.SliderActivityTheme"/>
+            android:theme="@style/AppTheme.SliderActivityTheme"
+            android:parentActivityName=".ui.MainActivity" />
+
         <activity
             android:name=".ui.ItemAddEditActivity"
             android:parentActivityName=".ui.MainActivity"
