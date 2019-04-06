@@ -23,16 +23,22 @@ public interface CollectionDao {
     void insertCollections(List<Collection> collections);
 
     @Update
-    void updateCollections(List<Collection> collections);
+    void updateCollections(Collection... collections);
 
     @Update
     void updateCollection(Collection collection);
+
+    @Update
+    void updateCollections(List<Collection> collections);
 
     @Query("DELETE FROM collections WHERE (user_id=:userId and collection_id > 1)")
     void deleteAllCollectionsForUser(int userId);
 
     @Query("DELETE FROM collections WHERE  collection_id > 1")
     void deleteAllCollections( );
+
+    @Query("SELECT * from collections WHERE collection_id=:collectionId")
+    Collection getCollectionById(int collectionId);
 
     @Query("SELECT * from collections WHERE user_id=:userId")
     LiveData<List<Collection>> getCollectionsForUser(int userId);
@@ -46,7 +52,4 @@ public interface CollectionDao {
     @Query("SELECT * from collections")
     LiveData<List<Collection>> getAllCollections();
 
-
-    @Query("SELECT * FROM collections WHERE collection_id=:collectionId")
-    Collection getCollectionById(int collectionId);
 }

@@ -2,12 +2,16 @@ package onpu.pnit.collectionsclient.ui;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.r0adkll.slidr.Slidr;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,48 +26,77 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import onpu.pnit.collectionsclient.R;
+import onpu.pnit.collectionsclient.auth.BusProvider;
+import onpu.pnit.collectionsclient.auth.ErrorEvent;
+import onpu.pnit.collectionsclient.auth.ServerEvent;
+import onpu.pnit.collectionsclient.auth.UserClient;
 import onpu.pnit.collectionsclient.entities.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserAddActivity extends AppCompatActivity {
+
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
+    private static final int GALLERY_REQUEST = 1;
 
     private Pattern patternEmail = Pattern.compile(EMAIL_PATTERN);
     private Matcher matcher;
-    private TextInputLayout usernameWrapper;
-    private TextInputLayout passwordWrapper;
+
+    @BindView(R.id.usernameWrapper)
+    TextInputLayout usernameWrapper;
+    @BindView(R.id.passwordWrapper)
+    TextInputLayout passwordWrapper;
+    @BindView(R.id.confirmPasswordWrapper)
+    TextInputLayout confirmPasswordWrapper;
+    @BindView(R.id.add_user_photo)
+    CircleImageView profilePhoto;
+
+    private String username, password;
+    private UserClient userClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.user_add);
+        ButterKnife.bind(this);
+        Slidr.attach(this);
 
-        usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
         usernameWrapper.setHint("Username");
-        passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
         passwordWrapper.setHint("Password");
-        TextInputLayout confirmPasswordWrapper = (TextInputLayout) findViewById(R.id.confirmPasswordWrapper);
         confirmPasswordWrapper.setHint("Confirm Password");
+
+        profilePhoto.setOnClickListener(v -> {
+            Intent photoPickerIntent = new Intent();
+            photoPickerIntent.setType("image/*");
+            photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+        });
 
 
         Button signUpBtn = (Button) findViewById(R.id.save_changes);
-        signUpBtn.setOnClickListener(v->{
-            String username = usernameWrapper.getEditText().getText().toString();
-            String password = passwordWrapper.getEditText().getText().toString();
+        signUpBtn.setOnClickListener(v -> {
+             username = usernameWrapper.getEditText().getText().toString();
+             password = passwordWrapper.getEditText().getText().toString();
             String confirmPassword = confirmPasswordWrapper.getEditText().getText().toString();
 
 
-            if(!validateEmail(username)) {
+            if (!validateEmail(username)) {
                 usernameWrapper.setError("Not a valid email address!");
-            } else if(!validatePassword(password, confirmPassword)){
+            } else if (!validatePassword(password, confirmPassword)) {
                 passwordWrapper.setError("Passwords must be equal");
             } else {
                 usernameWrapper.setErrorEnabled(false);
                 passwordWrapper.setErrorEnabled(false);
-                doLogin();
+                doRegister(username,password);
             }
-            doLogin();
 
         });
     }
@@ -74,82 +107,44 @@ public class UserAddActivity extends AppCompatActivity {
     }
 
     public boolean validatePassword(String password, String confirm) {
-        return password.length() > 5 && password.length()<16 && password.equals(confirm);
+        return password.length() > 5 && password.length() < 16 && password.equals(confirm);
     }
 
 
-    public void doLogin() {
-        new FetchSecuredResourceTask().execute();
+    public void doRegister(String username, String password) {
+        Call<User> call = userClient.registerUser(username,password);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                BusProvider.getInstance().post(new ServerEvent(response.body()));
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // handle execution failures like no internet connectivity
+                BusProvider.getInstance().post(new ErrorEvent(-2,t.getMessage()));
+            }
+        });
+
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
     }
 
-    private void displayResponse(User response) {
-        Toast.makeText(this, response.toString(), Toast.LENGTH_LONG).show();
-    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
+        switch (requestCode) {
+            case GALLERY_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    Uri loadedImage = imageReturnedIntent.getData();
 
-    private class FetchSecuredResourceTask extends AsyncTask<Void, Void, User> {
-
-        private String username;
-
-        private String password;
-
-        private ProgressDialog progressDialog;
-
-        private boolean destroyed = false;
-
-        @Override
-        protected void onPreExecute() {
-            //showLoadingProgressDialog();
-
-            this.username = usernameWrapper.getEditText().getText().toString();
-            this.password = passwordWrapper.getEditText().getText().toString();
+                    Glide.with(this)
+                            .load(loadedImage)
+                            .into(profilePhoto);
+                }
         }
-
-        @Override
-        protected User doInBackground(Void... params) {
-            final String url = getString(R.string.base_uri) + "/registration";
-
-            HttpHeaders requestHeaders = new HttpHeaders();
-            requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            try {
-                ResponseEntity<User> responseEntity = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestHeaders),User.class);
-                return responseEntity.getBody();
-            } catch (HttpClientErrorException e) {
-                e.printStackTrace();;
-                return new User();
-
-            }
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            //dismissProgressDialog();
-            //displayResponse(user);
-        }
-        public void showLoadingProgressDialog() {
-            this.showProgressDialog("Loading. Please wait...");
-        }
-
-        public void showProgressDialog(CharSequence message) {
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(getApplicationContext());
-                progressDialog.setIndeterminate(true);
-            }
-
-            progressDialog.setMessage(message);
-            progressDialog.show();
-        }
-
-        public void dismissProgressDialog() {
-            if (progressDialog != null && !destroyed) {
-                progressDialog.dismiss();
-            }
-        }
-
     }
 
 

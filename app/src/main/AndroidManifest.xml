@@ -60,7 +60,7 @@
             android:theme="@style/AppTheme.SliderActivityTheme" />
         <activity
             android:name=".ui.UserAddActivity"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".ui.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SliderActivityTheme" />
         <activity

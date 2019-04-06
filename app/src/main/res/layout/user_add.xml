@@ -6,31 +6,35 @@
     android:layout_height="match_parent"
     android:background="@color/background_material_light">
 
-    <ImageView
-        android:id="@+id/user_photo"
-        android:layout_width="204dp"
-        android:layout_height="136dp"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/add_user_photo"
+        android:layout_width="@dimen/profile_image"
+        android:layout_height="@dimen/profile_image"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="user photo"
+        android:layout_marginBottom="32dp"
+        android:elevation="1dp"
+        android:src="@drawable/ic_profile_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_profile" />
+        app:layout_constraintVertical_bias="0.042" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameWrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/passwordWrapper"
+        android:layout_width="391dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/passwordWrapper"
-        app:layout_constraintTop_toBottomOf="@+id/user_photo">
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.368">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username"
@@ -43,17 +47,20 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordWrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/confirmPasswordWrapper"
+        android:layout_width="371dp"
+        android:layout_height="63dp"
+        app:layout_constraintBottom_toTopOf="@+id/save_changes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/confirmPasswordWrapper"
-        app:layout_constraintTop_toBottomOf="@+id/usernameWrapper">
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameWrapper"
+        app:layout_constraintVertical_bias="0.641">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:layout_width="366dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/roboto_regular"
             android:hint="Password"
             android:inputType="textPassword" />
@@ -61,18 +68,20 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/confirmPasswordWrapper"
-        android:layout_width="366dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_width="376dp"
+        android:layout_height="58dp"
         app:layout_constraintBottom_toTopOf="@+id/save_changes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/save_changes"
-        app:layout_constraintTop_toBottomOf="@+id/passwordWrapper">
+        app:layout_constraintHorizontal_bias="0.685"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordWrapper"
+        app:layout_constraintVertical_bias="0.426">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirm_password"
             android:layout_width="366dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/roboto_regular"
             android:hint="Confirm Password"
             android:inputType="textPassword" />
@@ -80,15 +89,20 @@
 
     <Button
         android:id="@+id/save_changes"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="379dp"
+        style="@android:style/Widget.Holo.Button"
+        android:layout_width="366dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
         android:fontFamily="@font/roboto_regular"
         android:text="@string/sign_up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmPasswordWrapper" />
+        app:layout_constraintTop_toBottomOf="@+id/add_user_photo"
+        app:layout_constraintVertical_bias="0.924" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

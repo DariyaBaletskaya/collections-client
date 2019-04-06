@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,7 +29,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import onpu.pnit.collectionsclient.NetworkReceiver;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
@@ -63,15 +63,17 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
 
     @BindView(R.id.fab)
-    FloatingActionButton addFab;
+    FloatingActionButton fab;
     @BindView(R.id.fab_layout_collection)
     LinearLayout fabLayoutCollection;
     @BindView(R.id.fab_collection)
-    FloatingActionButton addCollectionFab;
+    FloatingActionButton fabCollection;
     @BindView(R.id.fab_layout_item)
     LinearLayout fabLayoutItem;
     @BindView(R.id.fab_item)
-    FloatingActionButton addItemFab;
+    FloatingActionButton fabItem;
+
+
 
     private CollectionsListAdapter adapter;
     private EditorCollectionViewModel editorCollectionListViewModel;
@@ -91,6 +93,33 @@ public class MainActivity extends AppCompatActivity
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
 
+        //setting username in drawer
+        View headerView = navigationView.getHeaderView(0);
+        TextView drawerUsername = (TextView) headerView.findViewById(R.id.drawer_username);
+
+        Intent getUsername = getIntent();
+        drawerUsername.setText(getUsername.getStringExtra(LoginActivity.USERNAME));
+
+        fab.setOnClickListener(v -> {
+                    if (!isFabMenuOpened) {
+                        showFabMenu();
+                    } else {
+                        closeFabMenu();
+                    }
+                }
+        );
+
+        fabCollection.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
+            startActivityForResult(i, ADD_COLLECTION_REQUEST);  // add new collection
+        });
+
+        fabItem.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, ItemAddEditActivity.class);
+            i.putExtra(COLLECTION_ID, Collection.DEFAULT_COLLECTION_ID);
+            startActivityForResult(i, ADD_ITEM_REQUEST);  // add new item
+        });
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -99,49 +128,27 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+
         initRecyclerView();
         initViewModel();
         initItemSwipes();
 
     }
 
-    @OnClick(R.id.fab)
-    public void handleMainFabClick() {
-        if (!isFabMenuOpened) {
-            showFabMenu();
-        } else {
-            closeFabMenu();
-        }
-    }
-
-    @OnClick(R.id.fab_collection)
-    public void handleCollectionFabClick() {
-        Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-        startActivityForResult(i, ADD_COLLECTION_REQUEST);  // add new collection
-    }
-
-    @OnClick(R.id.fab_item)
-    public void handleItemFabClick() {
-        Intent i = new Intent(MainActivity.this, ItemAddEditActivity.class);
-        i.putExtra(COLLECTION_ID, Collection.DEFAULT_COLLECTION_ID);
-        startActivityForResult(i, ADD_ITEM_REQUEST);  // add new collection
-    }
-
-
     //control over Fab Menu
     private void showFabMenu() {
         isFabMenuOpened = true;
         fabLayoutItem.setVisibility(View.VISIBLE);
         fabLayoutCollection.setVisibility(View.VISIBLE);
-        addFab.animate().rotationBy(45).setListener(new Animator.AnimatorListener() {
+        fab.animate().rotationBy(45).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (addFab.getRotation() != 45) {
-                    addFab.setRotation(45);
+                if (fab.getRotation() != 45) {
+                    fab.setRotation(45);
                 }
             }
 
@@ -159,15 +166,15 @@ public class MainActivity extends AppCompatActivity
 
     private void closeFabMenu() {
         isFabMenuOpened = false;
-        addFab.animate().rotationBy(90).setListener(new Animator.AnimatorListener() {
+        fab.animate().rotationBy(90).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (addFab.getRotation() != 90) {
-                    addFab.setRotation(90);
+                if (fab.getRotation() != 90) {
+                    fab.setRotation(90);
                 }
             }
 
@@ -209,9 +216,11 @@ public class MainActivity extends AppCompatActivity
 
     //actions with swipes
     public void initItemSwipes() {
-        itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
+         itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
+
+
 
 
     //callback when recycler view is swiped
@@ -227,7 +236,7 @@ public class MainActivity extends AppCompatActivity
             final Collection swipedCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
 
             //for deleting
-            if (direction == ItemTouchHelper.RIGHT) {
+            if(direction == ItemTouchHelper.RIGHT) {
                 if (adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
                     // remove the item from recycler view
                     editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
@@ -235,18 +244,16 @@ public class MainActivity extends AppCompatActivity
                 closeFabMenu();
                 // showing snack bar with Undo option
                 Snackbar snackbar = Snackbar
-                        .make(recyclerView, title + " deleted!", Snackbar.LENGTH_LONG);
+                        .make(recyclerView, title + " removed!", Snackbar.LENGTH_LONG);
                 snackbar.setAction("UNDO", v ->
                         // undo is selected, restore the deleted item
                         editorCollectionListViewModel.insert(swipedCollection)
                 );
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
-                // for updating
-            } else if (direction == ItemTouchHelper.LEFT) {
+            } else if(direction == ItemTouchHelper.LEFT) {
                 closeFabMenu();
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
-                itemTouchHelperCallback.clearView(recyclerView, viewHolder);
                 i.putExtra(COLLECTION_ID, swipedCollection.getId());// needed for setting correct title in activity Edit
                 startActivityForResult(i, EDIT_COLLECTION_REQUEST);
 
@@ -292,7 +299,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.collections_delete_all) {     //delete all collections
             editorCollectionListViewModel.deleteAll();
-            Toast.makeText(MainActivity.this, "All collections deleted!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "All collections deleted", Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -319,7 +326,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_signout) {
-
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_help) {
 
         }
@@ -346,7 +354,7 @@ public class MainActivity extends AppCompatActivity
 //
 //            Collection collection = new Collection(title, category, description, 1, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
 //            editorCollectionListViewModel.insert(collection);
-            Toast.makeText(MainActivity.this, "Collection saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Collection saved", Toast.LENGTH_SHORT).show();
         } else if (requestCode == EDIT_COLLECTION_REQUEST && resultCode == RESULT_OK) {      //Edit exist collection
 //            int id = data.getIntExtra(CollectionAddEditActivity.EXTRA_ID, -1);
 
@@ -362,11 +370,18 @@ public class MainActivity extends AppCompatActivity
 //            Collection updateCollection = new Collection(title, category, description, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472", Collection.DEFAULT_USER_ID);
 //            updateCollection.setId(id);
 //            editorCollectionListViewModel.update(updateCollection);
-            Toast.makeText(MainActivity.this, "Collection updated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Collection updated", Toast.LENGTH_SHORT).show();
         } else if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
-            Toast.makeText(MainActivity.this, "Item saved!", Toast.LENGTH_SHORT).show();
+//            String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
+//            String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
+//            String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);
+//            Boolean isOnSale = data.getBooleanExtra(ItemAddEditActivity.EXTRA_ONSALE, false);
+//
+//            Item newItem = new Item(title, description, isOnSale, Float.parseFloat(price), 1);
+//            itemListViewModel.insert(newItem);
+            Toast.makeText(MainActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
         }
 
     }

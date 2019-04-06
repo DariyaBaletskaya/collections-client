@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
@@ -48,10 +47,12 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     public static final String EXTRA_CURRENCY =
             "onpu.pnit.collectionsclient.ui.EXTRA_CURRENCY";
 
-    static final int GALLERY_REQUEST = 1;
+    private static final int GALLERY_REQUEST = 1;
 
     @BindView(R.id.add_edit_item_currency_spinner)
     Spinner currencySpinner;
+    private ArrayAdapter<CharSequence> spinnerAdapter;
+
     // Fields for adding new items
     @BindView(R.id.item_title_input)
     EditText editTextTitle;
@@ -61,18 +62,17 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     EditText editTextPrice;
 
     @BindView(R.id.isItemOnSaleSwitch)
-    Switch isItemOnSaleSwitch;
+    Switch isItemOnSale;
 
     @BindView(R.id.item_details_photo)
     ImageView itemImage;
 
     private ItemListViewModel viewModel;
     private ItemCollectionJoinViewModel itemCollectionJoinViewModel;
+    private int currentCollectionId;
+    private int defaultCollectionId;
 
     private Uri loadedImage;
-    private ArrayAdapter<CharSequence> spinnerAdapter;
-    private int collectionId = 0;
-    private int editableItemId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,55 +80,25 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         setContentView(R.layout.item_add_edit);
         Slidr.attach(this);
         ButterKnife.bind(this);
+        setTitle(R.string.add_item);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
-
-        initView();
-
-    }
-
-    private void initView() {
-        initSpinner();
-        if (getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
-            // Если это изменение айтема
-            setTitle(R.string.edit_item);
-            editableItemId = getIntent().getIntExtra(MyItemDetailsActivity.ITEM_ID, -1);
-            viewModel.getItemById(editableItemId).observe(this, item -> {
-                editTextTitle.setText(item.getTitle());
-                editTextTitle.setSelection(editTextTitle.getText().length());
-                editTextDescription.setText(item.getDescription());
-                editTextPrice.setText(String.valueOf(item.getPrice()));
-                isItemOnSaleSwitch.setChecked(item.isOnSale());
-                currencySpinner.setSelection(spinnerAdapter.getPosition(item.getCurrency()));
-            });
-
-        } else if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
-            // если это добавление
-            setTitle(R.string.add_item);
-            collectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
-        }
-    }
-
-    @OnClick(R.id.item_details_photo)
-    void handleImageClick() {
-        Intent photoPickerIntent = new Intent();
-        photoPickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        photoPickerIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        photoPickerIntent.setFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        photoPickerIntent.setFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
-    }
-
-    private void initSpinner() {
-        spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.currencies_array, android.R.layout.simple_spinner_item);
+        spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
+
+        itemImage.setOnClickListener(v -> {
+            Intent photoPickerIntent = new Intent();
+            photoPickerIntent.setType("image/*");
+            photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+        });
+        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
+        currentCollectionId = getIntent().getIntExtra(CollectionActivity.COLLECTION_ID, -1);
+        defaultCollectionId = Collection.DEFAULT_COLLECTION_ID;
     }
 
     @Override
@@ -144,50 +114,46 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
             case R.id.action_save:
                 saveItem();
                 return true;
-            case android.R.id.home:
-                finish();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    //     Add new item and check new item's fields
+    // Add new item and check new item's fields
     private void saveItem() {
-        String title = editTextTitle.getText().toString().trim();
-        String description = editTextDescription.getText().toString().trim();
+        int itemId = 0;
+        String title = editTextTitle.getText().toString();
+        String description = editTextDescription.getText().toString();
         float price;
         if (!editTextPrice.getText().toString().isEmpty()) {
             price = Float.parseFloat(editTextPrice.getText().toString());
         } else {
             price = 0;
         }
-        String currency = currencySpinner.getSelectedItem().toString();
-        boolean isOnSale = isItemOnSaleSwitch.isChecked();
-        if (!title.isEmpty() && loadedImage != null) {
-            if (getIntent().hasExtra(CollectionActivity.ITEM_ID)) {
-                viewModel.update(new Item(editableItemId, title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
-            } else if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
-                int addedItemId = 0;
-                try {
-                    addedItemId = ((int) viewModel.insert(new Item(title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, loadedImage.getPath())));
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                    itemCollectionJoinViewModel.insertItemCollectionJoin(addedItemId, Collection.DEFAULT_COLLECTION_ID);
-                } else {
-                    itemCollectionJoinViewModel.insertItemCollectionJoin(addedItemId, Collection.DEFAULT_COLLECTION_ID);
-                    itemCollectionJoinViewModel.insertItemCollectionJoin(addedItemId, collectionId);
-                }
+
+        boolean isOnSale = isItemOnSale.isChecked();
+
+        if (!title.trim().isEmpty() && loadedImage != null) {
+            try {   // теперь каждый раз после ввода айтема в бд мы получаем item_id, необходимо для добавления
+                itemId = (int) viewModel.insert(new Item(title.trim(), description.trim(), isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            if (currentCollectionId == defaultCollectionId) {   // Если айтем добавляется с общего окна или же из дефолтной коллекции
+                itemCollectionJoinViewModel.insertItemCollectionJoin(itemId, defaultCollectionId);
+            } else {    // Если айтем добавляется из любой другой коллекции, кроме дефолтной
+                itemCollectionJoinViewModel.insertItemCollectionJoin(itemId, defaultCollectionId);
+                itemCollectionJoinViewModel.insertItemCollectionJoin(itemId, currentCollectionId);
             }
 
             setResult(RESULT_OK);
             finish();
         } else {
-            Toast.makeText(this, "Please enter title and choose image!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -218,6 +184,4 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
                 }
         }
     }
-
-
 }
