@@ -1,42 +1,14 @@
 package onpu.pnit.collectionsclient.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,15 +30,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String SERVER_URL = "https://collections-blue.herokuapp.com";
+    public static final String USERNAME = "username";
 
     @BindView(R.id.email)
-    AutoCompleteTextView mEmailView;
+    AutoCompleteTextView emailField;
     @BindView(R.id.password)
-    EditText mPasswordView;
-    @BindView(R.id.login_progress)
-    View mProgressView;
+    EditText passwordField;
     @BindView(R.id.email_sign_in_button)
-    Button mEmailSignInButton;
+    Button signInButton;
+    @BindView(R.id.tv_signUp)
+    TextView signUpButton;
 
     private String username, password;
     private UserClient userClient;
@@ -91,36 +64,69 @@ public class LoginActivity extends AppCompatActivity {
 
         userClient = retrofit.create(UserClient.class);
 
-        mEmailSignInButton.setOnClickListener(v -> {
-            username = mEmailView.getText().toString();
-            password = mPasswordView.getText().toString();
-            createPost(username,password);
+        signInButton.setOnClickListener(v -> {
+            username = emailField.getText().toString();
+            password = passwordField.getText().toString();
 
+
+                doLogin(username,password);
+                acceptLogin(username);
+
+
+        });
+
+        signUpButton.setOnClickListener(v -> {
+            Intent i = new Intent(this, UserAddActivity.class);
+            startActivity(i);
         });
 
     }
 
-    private void createPost(String username, String password) {
-        Call<User> call = userClient.registerUser(username,password);
+    //login existing user
+    private void doLogin(String username, String password) {
 
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                BusProvider.getInstance().post(new ServerEvent(response.body()));
+            Call<User> callPost = userClient.loginUser(username, password);
 
-            }
+            callPost.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    BusProvider.getInstance().post(new ServerEvent(response.body()));
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // handle execution failures like no internet connectivity
-                BusProvider.getInstance().post(new ErrorEvent(-2,t.getMessage()));
-            }
-    });
-     userClient.loginUser(username,password);
-        Intent login = new Intent(this, MainActivity.class);
-        startActivity(login);
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    // handle execution failures like no internet connectivity
+                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
+                }
+            });
 
     }
 
+    //getting user from the DB to accept credentials
+    private void acceptLogin(String username) {
+        synchronized (LoginActivity.class) {
+            Call<User> callGet = userClient.getUser(username);
+
+            callGet.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    BusProvider.getInstance().post(new ServerEvent(response.body()));
+                    System.out.println(response);
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    // handle execution failures like no internet connectivity
+                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
+
+                }
+            });
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.putExtra(USERNAME, username);
+            startActivity(i);
+        }
+
+    }
 }
 

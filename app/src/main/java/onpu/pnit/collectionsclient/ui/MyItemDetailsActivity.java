@@ -11,7 +11,6 @@ import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,14 +34,13 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     TextView title;
     @BindView(R.id.my_item_details_description)
     TextView description;
-    @BindView(R.id.my_item_details_category)
-    TextView category;
     @BindView(R.id. my_item_details_price)
     TextView price;
     @BindView(R.id.my_item_details_is_on_sale)
     Switch isOnSale;
     private ItemListViewModel itemListViewModel;
-    private int id;
+    private int itemId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,22 +51,19 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         Slidr.attach(this);
         initViewModel();
 
-
-
-
     }
 
     private void initViewModel() {
         itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
 
-        id = getIntent().getIntExtra(CollectionActivity.ITEM_ID, -1);
+        itemId = getIntent().getIntExtra(CollectionActivity.ITEM_ID, -1);
 
-        itemListViewModel.getItemById(id).observe(this, item -> {
+        itemListViewModel.getItemById(itemId).observe(this, item -> {
             if (item != null) {
                 photo.setImageURI(Uri.parse(item.getImage()));
                 title.setText(item.getTitle());
                 description.setText(item.getDescription());
-                price.setText(String.valueOf(item.getPrice()));
+                price.setText(String.valueOf(item.getPrice()) + " " + item.getCurrency());
                 isOnSale.setChecked(item.isOnSale());
             }
         });
@@ -103,11 +98,7 @@ public class MyItemDetailsActivity extends AppCompatActivity {
 
     private void editItem() {
         Intent i = new Intent(MyItemDetailsActivity.this, ItemAddEditActivity.class);
-        itemListViewModel.getItemById(id).observe(this, item -> {
-            if (item != null) {
-               i.putExtra(ITEM_ID, item.getId());
-            }
-        });
+        i.putExtra(ITEM_ID, itemId);
         startActivityForResult(i, EDIT_ITEM_REQUEST);
     }
 
@@ -126,7 +117,7 @@ public class MyItemDetailsActivity extends AppCompatActivity {
 //            }
 //        });
 //        onBackPressed();
-        itemListViewModel.getItemById(id).observe(this, item -> itemListViewModel.delete(item));
+        itemListViewModel.getItemById(itemId).observe(this, item -> itemListViewModel.delete(item));
         setResult(RESULT_OK);
         finish();
     }
@@ -136,8 +127,11 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == EDIT_ITEM_REQUEST && resultCode == RESULT_OK) {
-            Toast.makeText(MyItemDetailsActivity.this, "Item has been changed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyItemDetailsActivity.this, "Item changed!", Toast.LENGTH_SHORT).show();
+            // TODO: починить обновление вьюшки после изменения, инициировать вьюмодел каждый раз не оч
             initViewModel();
+        } else {
+            Toast.makeText(MyItemDetailsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
     }
 }

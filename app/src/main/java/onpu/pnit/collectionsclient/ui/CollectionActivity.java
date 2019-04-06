@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.ItemListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
@@ -41,14 +42,12 @@ public class CollectionActivity extends AppCompatActivity {
 
     // using for adding new item
     public static final int ADD_ITEM_REQUEST = 3;
-
-    public static final String COLLECTION_ID = "collection_id";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.items_recyclerView)
     RecyclerView rv;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    @BindView(R.id.collection_add_item_fab)
+    FloatingActionButton addItemFab;
     @BindView(R.id.collection_details_description)
     TextView description;
     @BindView(R.id.collection_details_category)
@@ -79,13 +78,13 @@ public class CollectionActivity extends AppCompatActivity {
         initViewModel();
         initView();
 
-        // TODO: можно еще доработать кнопку, она пока идет без всплывающего назания и не кастомизирована
-        //  добавляет айтемы из коллекций
-        fab.setOnClickListener(view -> {
-            Intent i = new Intent(CollectionActivity.this, ItemAddEditActivity.class);
-            i.putExtra(COLLECTION_ID, collectionId);
-            startActivityForResult(i, ADD_ITEM_REQUEST);
-        });
+    }
+
+    @OnClick(R.id.collection_add_item_fab)
+    void handleFabClick() {
+        Intent i = new Intent(CollectionActivity.this, ItemAddEditActivity.class);
+        i.putExtra(MainActivity.COLLECTION_ID, collectionId);
+        startActivityForResult(i, ADD_ITEM_REQUEST);
     }
 
     private void initView() {
@@ -141,13 +140,14 @@ public class CollectionActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_edit_collection:
                 Intent i = new Intent(CollectionActivity.this, CollectionAddEditActivity.class);
-                i.putExtra(COLLECTION_ID, collectionId);
+                i.putExtra(MainActivity.COLLECTION_ID, collectionId);
                 startActivityForResult(i, EDIT_REQUEST);
                 return true;
             case R.id.action_delete_all_items:
-                // TODO: AlertDialog with buttons
                 deleteAllItems();
-//                viewModel.getAllItems().observe(this, items -> viewModel.deleteAll(items));
+                return true;
+            case android.R.id.home:
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -175,7 +175,7 @@ public class CollectionActivity extends AppCompatActivity {
                             viewModel.deleteAllFromCollection(collectionId);
                         }
                         // Снекбар для отмены действия
-                        Snackbar.make(findViewById(R.id.collection_frame_layout), "Deleted", Snackbar.LENGTH_LONG)
+                        Snackbar.make(findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
                                 .setAction("Undo", v -> {
                                     if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                                         // Вставляем обратно все айтемы
@@ -190,7 +190,7 @@ public class CollectionActivity extends AppCompatActivity {
                                     public void onDismissed(Snackbar transientBottomBar, int event) {
                                         super.onDismissed(transientBottomBar, event);
                                         if (event != DISMISS_EVENT_ACTION)
-                                            Toast.makeText(CollectionActivity.this, "All items deleted", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CollectionActivity.this, "All items deleted!", Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .show();
@@ -200,7 +200,7 @@ public class CollectionActivity extends AppCompatActivity {
                     .create();
             confirmationDialog.show();
         } else {
-            Toast.makeText(CollectionActivity.this, "Nothing to delete", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CollectionActivity.this, "Nothing to delete!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -208,9 +208,13 @@ public class CollectionActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == EDIT_REQUEST && resultCode == RESULT_OK) {
+            Toast.makeText(CollectionActivity.this, "Item updated!", Toast.LENGTH_SHORT).show();
             initView();
         } if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
-            Toast.makeText(CollectionActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CollectionActivity.this, "Item saved!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(CollectionActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+
         }
     }
 
