@@ -13,6 +13,8 @@ import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,6 +32,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.r0adkll.slidr.Slidr;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 public class ItemAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -97,7 +101,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         });
         viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
         itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
-        currentCollectionId = getIntent().getIntExtra(CollectionActivity.COLLECTION_ID, -1);
+        currentCollectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
         defaultCollectionId = Collection.DEFAULT_COLLECTION_ID;
     }
 
@@ -132,10 +136,10 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
 
         boolean isOnSale = isItemOnSale.isChecked();
-
+        String currency = currencySpinner.getSelectedItem().toString();
         if (!title.trim().isEmpty() && loadedImage != null) {
             try {   // теперь каждый раз после ввода айтема в бд мы получаем item_id, необходимо для добавления
-                itemId = (int) viewModel.insert(new Item(title.trim(), description.trim(), isOnSale, price, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+                itemId = (int) viewModel.insert(new Item(title.trim(), description.trim(), isOnSale, price, currency, Collection.DEFAULT_USER_ID, imageViewToByte(itemImage)));
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -183,5 +187,15 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
                             .into(itemImage);
                 }
         }
+    }
+
+
+    // Method convert img to byte[], we have to save image in byte[], and after use bitmap format for display img
+    private byte[] imageViewToByte(ImageView image) {
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
     }
 }
