@@ -16,12 +16,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.repos.CollectionRepository;
+import onpu.pnit.collectionsclient.repos.ItemCollectionJoinRepository;
 import onpu.pnit.collectionsclient.repos.ItemRepository;
 
 public class ItemListViewModel extends AndroidViewModel {
     private ItemRepository itemRepository;
     private CollectionRepository collectionRepository;
+    private ItemCollectionJoinRepository itemCollectionJoinRepository;
     private Executor executor = Executors.newSingleThreadExecutor();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -30,9 +33,10 @@ public class ItemListViewModel extends AndroidViewModel {
         super(application);
         itemRepository = ItemRepository.getInstance(application);
         collectionRepository = CollectionRepository.getInstance(application);
+        itemCollectionJoinRepository = ItemCollectionJoinRepository.getInstance(application);
     }
 
-    public long insert(Item item) throws ExecutionException, InterruptedException {
+    public long insertItem(Item item) throws ExecutionException, InterruptedException {
         Callable<Long> callable = new Callable<Long>() {
             @Override
             public Long call() throws Exception {
@@ -40,7 +44,7 @@ public class ItemListViewModel extends AndroidViewModel {
             }
         };
         Future<Long> future = executorService.submit(callable);
-        return  future.get();
+        return future.get();
     }
 
     public LiveData<List<Item>> getAllItems() {
@@ -51,31 +55,29 @@ public class ItemListViewModel extends AndroidViewModel {
         return itemRepository.getItemsForCollection(collectionId);
     }
 
-    public void delete(Item item) {
+    public void deleteItem(Item item) {
         executor.execute(() -> {
             itemRepository.deleteItem(item);
         });
     }
 
     public void deleteAllFromCollection(int collectionId) {
-        executor.execute(() -> {
-            itemRepository.deleteAllItemsFromCollection(collectionId);
-        });
+        itemRepository.deleteAllItemsFromCollection(collectionId);
     }
-    
-    public void delete(List<Item> items) {
+
+    public void deleteItems(List<Item> items) {
         executor.execute(() -> {
             itemRepository.deleteItems(items);
         });
     }
 
 
-    public void update(Item item) {
+    public void updateItem(Item item) {
         executor.execute(() -> {
             itemRepository.updateItem(item);
         });
     }
-    
+
     public MutableLiveData<Item> getItemById(int id) {
         MutableLiveData<Item> mItem = new MutableLiveData<>();
         executor.execute(() -> {
@@ -92,7 +94,7 @@ public class ItemListViewModel extends AndroidViewModel {
         return mCollection;
     }
 
-    public void insert(List<Item> items) {
+    public void insertItems(List<Item> items) {
         executor.execute(() -> {
             itemRepository.insertItems(items);
         });
@@ -104,9 +106,27 @@ public class ItemListViewModel extends AndroidViewModel {
         });
     }
 
+    public void deleteItemFromCollection(int itemId, int collectionId) {
+        itemCollectionJoinRepository.deleteItemFromCollection(itemId, collectionId);
+    }
+
     public void insertItemsInCollection(int collectionId, List<Item> items) {
-        executor.execute(() -> {
-            itemRepository.insertInCollection(collectionId, items);
-        });
+        itemRepository.insertInCollection(collectionId, items);
+    }
+
+    public List<ItemCollectionJoin> getAllJoinsForItem(int itemId) {
+        return itemRepository.getAllJoinsForItem(itemId);
+    }
+
+    public void insertJoins(List<ItemCollectionJoin> joins) {
+        itemRepository.insertJoins(joins);
+    }
+
+    public List<ItemCollectionJoin> getAllJoins() {
+        return itemCollectionJoinRepository.getAllJoins();
+    }
+
+    public void insertItemInCollection(int itemId, int collectionId) {
+        itemCollectionJoinRepository.insertItemCollectionJoin(itemId, collectionId);
     }
 }

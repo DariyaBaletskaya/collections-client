@@ -23,9 +23,6 @@ public interface CollectionDao {
     void insertCollections(List<Collection> collections);
 
     @Update
-    void updateCollections(Collection... collections);
-
-    @Update
     void updateCollection(Collection collection);
 
     @Update
@@ -51,5 +48,6 @@ public interface CollectionDao {
 
     @Query("SELECT * from collections")
     LiveData<List<Collection>> getAllCollections();
+
 
 }

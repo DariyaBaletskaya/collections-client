@@ -1,6 +1,7 @@
 package onpu.pnit.collectionsclient.ui;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
@@ -34,7 +35,7 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     TextView title;
     @BindView(R.id.my_item_details_description)
     TextView description;
-    @BindView(R.id. my_item_details_price)
+    @BindView(R.id.my_item_details_price)
     TextView price;
     @BindView(R.id.my_item_details_is_on_sale)
     Switch isOnSale;
@@ -69,7 +70,6 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     @Override
@@ -102,24 +102,19 @@ public class MyItemDetailsActivity extends AppCompatActivity {
         startActivityForResult(i, EDIT_ITEM_REQUEST);
     }
 
-    //TODO: добавить возможность отмены удаления, UNDO как при удалении коллекции
-    // Пока непонятно, как это сделать. Нам надо каким-то образом передавать обратно в активити списка айтемов удаленную инфу
-    // Чтобы по нажатию на снекбар айтем заново добавлялся. Это можно провернуть, если айтем будет parcelable, но для этого надо поправить вьюмодел.
+
     private void deleteItem() {
-//        Toast.makeText(MyItemDetailsActivity.this, "Delete item", Toast.LENGTH_SHORT).show();
-//        Intent data = new Intent();
-//        data.putExtra(DELETED_ITEM, (Parcelable) itemListViewModel.getItem());
-//        setResult(RESULT_OK, data);
-//        finish();
-//        itemListViewModel.getItem().observe(this, item -> {
-//            if (item != null) {
-//                itemListViewModel.delete(item);
-//            }
-//        });
-//        onBackPressed();
-        itemListViewModel.getItemById(itemId).observe(this, item -> itemListViewModel.delete(item));
-        setResult(RESULT_OK);
-        finish();
+        AlertDialog confirmationDialog = new AlertDialog.Builder(MyItemDetailsActivity.this)
+                .setMessage("Delete item?")
+                // пользователь подтверждает удаление
+                .setPositiveButton(R.string.delete, (dialog, which) -> {
+                    dialog.dismiss();
+                    setResult(RESULT_OK);
+                    finish();
+                })
+                .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
+                .create();
+        confirmationDialog.show();
     }
 
     @Override

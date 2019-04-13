@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,15 +16,15 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -34,14 +35,14 @@ import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.ItemListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
-import onpu.pnit.collectionsclient.viewmodel.CollectionViewModel;
-import onpu.pnit.collectionsclient.viewmodel.ItemCollectionJoinViewModel;
+import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 public class CollectionActivity extends AppCompatActivity {
 
     // using for adding new item
     public static final int ADD_ITEM_REQUEST = 3;
+    public static final int DELETE_ITEM_REQUEST = 4;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.items_recyclerView)
@@ -57,11 +58,12 @@ public class CollectionActivity extends AppCompatActivity {
 
     private ItemListAdapter adapter;
     private ItemListViewModel viewModel;
-    private ItemCollectionJoinViewModel itemCollectionJoinViewModel;
     private int collectionId;
     public static final String ITEM_ID = "item_id";
-    public static final int DELETE_REQUEST = 1;
-    public static final int EDIT_REQUEST = 2;
+    public static final int DELETE_COLLECTION_REQUEST = 1;
+    public static final int EDIT_COLLECTION_REQUEST = 2;
+    private Item cachedItem;
+    List<ItemCollectionJoin> cachedJoins = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,9 @@ public class CollectionActivity extends AppCompatActivity {
 
         collectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
 
-        initRecyclerView();
+        initAdapter();
         initViewModel();
+        initRecyclerView();
         initView();
 
     }
@@ -107,22 +110,39 @@ public class CollectionActivity extends AppCompatActivity {
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
         if (collectionId != -1) {   // print items which contain in select collection
-            itemCollectionJoinViewModel.getItemsForCollection(collectionId).observe(this, items ->
-                    adapter.submitList(new ArrayList<>(items)));
+            viewModel.getItemsForCollection(collectionId).observe(this, items -> adapter.submitList(items));
+//            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+//                viewModel.getAllItems().observe(this, items -> {
+//                    adapter.submitList(items);
+//                });
+//            } else {
+//                viewModel.getItemsForCollection(collectionId).observe(this, items -> {
+//                    adapter.submitList(items);
+//                });
+//                itemCollectionJoinViewModel.getItemsForCollection(collectionId).observe(this, items ->
+//                        adapter.submitList(items));
         }
+
+    }
+
+
+    private void initAdapter() {
+        adapter = new ItemListAdapter(getApplicationContext());
+        adapter.setOnItemClickListener(new ItemListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int itemId, int position) {
+                cachedItem = adapter.getItemAt(position);
+                cachedJoins = viewModel.getAllJoinsForItem(itemId);
+                Intent i = new Intent(CollectionActivity.this, MyItemDetailsActivity.class);
+                i.putExtra(ITEM_ID, itemId);
+                CollectionActivity.this.startActivityForResult(i, DELETE_ITEM_REQUEST);
+            }
+        });
     }
 
     private void initRecyclerView() {
-        adapter = new ItemListAdapter(getApplicationContext());
-        adapter.setOnItemClickListener((ItemId, position) -> {
-            Intent i = new Intent(CollectionActivity.this, MyItemDetailsActivity.class);
-            i.putExtra(ITEM_ID, ItemId);
-            startActivityForResult(i, DELETE_REQUEST);
-        });
         rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-//        rv.setHasFixedSize(true);
         rv.setAdapter(adapter);
     }
 
@@ -141,7 +161,7 @@ public class CollectionActivity extends AppCompatActivity {
             case R.id.action_edit_collection:
                 Intent i = new Intent(CollectionActivity.this, CollectionAddEditActivity.class);
                 i.putExtra(MainActivity.COLLECTION_ID, collectionId);
-                startActivityForResult(i, EDIT_REQUEST);
+                startActivityForResult(i, EDIT_COLLECTION_REQUEST);
                 return true;
             case R.id.action_delete_all_items:
                 deleteAllItems();
@@ -156,45 +176,55 @@ public class CollectionActivity extends AppCompatActivity {
     }
 
     /*Обработка действия "Удалить все" в меню*/
+    // TODO: FIX
     private void deleteAllItems() {
-        /*Кеш удаляемых предметов*/
-        List<Item> cashedItems = new ArrayList<>();
+        /*Кеш всех удаляемых предметов*/
+        List<Item> cachedItems = new ArrayList<>();
+        /*Кеш удаляемых связей для всех предметов*/
         /*Проверяем, не пустая ли коллекция*/
         if (adapter.getItemCount() > 0) {
             // Создаем диалог для подтверждения действия
             AlertDialog confirmationDialog = new AlertDialog.Builder(CollectionActivity.this)
                     .setMessage(R.string.q_delete_all_items)
                     // пользователь подтверждает удаление
-                    .setPositiveButton(R.string.delete, (dialog, which) -> {
-                        cashedItems.addAll(adapter.getCurrentList()); //кешируем список
-                        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                            // Если это all items, удаляем вообще все айтемы
-                            viewModel.deleteAllItems();
-                        } else {
-                            // Если это кастомная коллекция, удаляем айтемы только из нее
-                            viewModel.deleteAllFromCollection(collectionId);
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { // Удаление
+                            cachedItems.addAll(adapter.getCurrentList()); // Кешируем список предметов (ОК)
+                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) { // если удаляем из дефолтной коллекции
+                                /*так как удаляем все айтемы, кешируем все связи*/
+                                /*не работает*/
+                                cachedJoins.addAll(viewModel.getAllJoins());
+                                // Если это all items, удаляем вообще все айтемы
+                                // используем viewmodel, тк в дефолтной коллекции список айтемов определяется ей
+                                viewModel.deleteAllItems();
+                            } else {
+                                // Если это кастомная коллекция, удаляем айтемы только из нее (удаление связей)
+                                viewModel.deleteAllFromCollection(collectionId);
+                            }
+                            // Снекбар для отмены действия
+                            Snackbar.make(CollectionActivity.this.findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
+                                    .setAction("Undo", v -> { // отмена удаления
+                                        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                                            viewModel.insertItems(cachedItems);
+                                            viewModel.insertJoins(cachedJoins);
+                                            cachedJoins.clear();
+                                        } else {
+                                            viewModel.insertItemsInCollection(collectionId, cachedItems);
+                                        }
+                                        cachedItems.clear();
+                                    })
+                                    .addCallback(new Snackbar.Callback() {
+                                        @Override
+                                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                                            super.onDismissed(transientBottomBar, event);
+                                            if (event != DISMISS_EVENT_ACTION)
+                                                Toast.makeText(CollectionActivity.this, "All items deleted!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .show();
+                            dialog.dismiss();
                         }
-                        // Снекбар для отмены действия
-                        Snackbar.make(findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
-                                .setAction("Undo", v -> {
-                                    if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                                        // Вставляем обратно все айтемы
-                                        viewModel.insert(cashedItems);
-                                    } else {
-                                        // Вставляем обратно айтемы в кастомную коллекцию
-                                        viewModel.insertItemsInCollection(collectionId, cashedItems);
-                                    }
-                                })
-                                .addCallback(new Snackbar.Callback() {
-                                    @Override
-                                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                                        super.onDismissed(transientBottomBar, event);
-                                        if (event != DISMISS_EVENT_ACTION)
-                                            Toast.makeText(CollectionActivity.this, "All items deleted!", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .show();
-                        dialog.dismiss();
                     })
                     .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
                     .create();
@@ -204,18 +234,37 @@ public class CollectionActivity extends AppCompatActivity {
         }
     }
 
+    /*Удаление конкретного айтема*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == EDIT_REQUEST && resultCode == RESULT_OK) {
-            Toast.makeText(CollectionActivity.this, "Item updated!", Toast.LENGTH_SHORT).show();
-            initView();
-        } if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
-            Toast.makeText(CollectionActivity.this, "Item saved!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(CollectionActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+        if (requestCode == DELETE_ITEM_REQUEST && resultCode == RESULT_OK) {
+            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                viewModel.deleteItem(cachedItem);
+            } else {
+                viewModel.deleteItemFromCollection(cachedItem.getId(), collectionId);
+            }
 
+            // Снекбар для отмены действия
+            Snackbar.make(findViewById(R.id.collection_frame_layout), "Deleted", Snackbar.LENGTH_LONG)
+                    .setAction("Undo", v -> {
+                        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                            try {
+                                viewModel.insertItem(cachedItem);
+                                viewModel.insertJoins(cachedJoins);
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            viewModel.insertItemInCollection(cachedItem.getId(), collectionId);
+                        }
+                        cachedJoins.clear();
+                    })
+                    .show();
         }
+
     }
 
 }

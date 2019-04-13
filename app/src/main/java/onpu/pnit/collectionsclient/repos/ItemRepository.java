@@ -2,6 +2,7 @@ package onpu.pnit.collectionsclient.repos;
 
 import android.app.Application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -15,6 +16,7 @@ import onpu.pnit.collectionsclient.AppDatabase;
 import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
 import onpu.pnit.collectionsclient.DAO.ItemDao;
 import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 
 public class ItemRepository {
 
@@ -104,13 +106,27 @@ public class ItemRepository {
     public void insertInCollection(int collectionId, List<Item> items) {
         executor.execute(() -> {
             for (Item i:items) {
-                itemCollectionJoinDao.insertItemInCollection(i.getId(), collectionId);
+                itemCollectionJoinDao.insert(new ItemCollectionJoin(i.getId(), collectionId));
             }
         });
     }
+
     public void insertInCollection(int collectionId, Item item) {
         executor.execute(() -> {
-            itemCollectionJoinDao.insertItemInCollection(item.getId(), collectionId);
+            itemCollectionJoinDao.insert(new ItemCollectionJoin(item.getId(), collectionId));
         });
+    }
+
+    public List<ItemCollectionJoin> getAllJoinsForItem(int itemId) {
+        List<ItemCollectionJoin> joins = new ArrayList<>();
+        executor.execute(() -> {
+            joins.addAll(itemCollectionJoinDao.getJoinsForItem(itemId));
+        });
+
+        return joins;
+    }
+
+    public void insertJoins(List<ItemCollectionJoin> joins) {
+        executor.execute(() -> itemCollectionJoinDao.insert(joins));
     }
 }
