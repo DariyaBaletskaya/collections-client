@@ -14,6 +14,8 @@ import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,10 +33,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.r0adkll.slidr.Slidr;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 public class ItemAddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
     static final int GALLERY_REQUEST = 1;
 
     @BindView(R.id.add_edit_item_currency_spinner)
@@ -114,6 +117,21 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
+        spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        currencySpinner.setAdapter(spinnerAdapter);
+        currencySpinner.setOnItemSelectedListener(this);
+
+        itemImage.setOnClickListener(v -> {
+            Intent photoPickerIntent = new Intent();
+            photoPickerIntent.setType("image/*");
+            photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+        });
+        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
+        currentCollectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
+        defaultCollectionId = Collection.DEFAULT_COLLECTION_ID;
     }
 
     @Override
@@ -148,14 +166,14 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
             price = 0;
         }
         String currency = currencySpinner.getSelectedItem().toString();
-        boolean isOnSale = isItemOnSaleSwitch.isChecked();
+        boolean isOnSale = isItemOnSaleSwitch.isChecked();String currency = currencySpinner.getSelectedItem().toString();
         if (!title.isEmpty() && loadedImage != null) {
             if (getIntent().hasExtra(CollectionActivity.ITEM_ID)) {
                 viewModel.updateItem(new Item(editableItemId, title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
             } else if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
                 int addedItemId = 0;
                 try {
-                    addedItemId = ((int) viewModel.insertItem(new Item(title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, loadedImage.getPath())));
+                    addedItemId = ((int) viewModel.insertItem(new Item(title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, imageViewToByte(itemImage))));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -204,4 +222,14 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     }
 
 
+
+
+    // Method convert img to byte[], we have to save image in byte[], and after use bitmap format for display img
+    private byte[] imageViewToByte(ImageView image) {
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
+    }
 }

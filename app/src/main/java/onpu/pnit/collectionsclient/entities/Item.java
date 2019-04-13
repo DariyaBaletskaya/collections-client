@@ -39,13 +39,14 @@ public class Item  implements Parcelable {
     private String currency;
     @ColumnInfo(name = "image")
     @JsonProperty("image")
-    private String image;
+    private byte[] image;
     @JsonProperty("userId")
     @ColumnInfo(name = "user_id", index = true)
     private int userId;
 
 
-    public Item(int id, String title, String description, boolean isOnSale, float price, String currency, int userId, String image) {
+    @Ignore
+    public Item(int id, String title, String description, boolean isOnSale, float price, String currency, int userId, byte[] image) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -60,8 +61,8 @@ public class Item  implements Parcelable {
     public Item() {
     }
 
-    @Ignore
-    public Item(String title, String description, boolean isOnSale, float price, String currency, int userId, String image) {
+
+    public Item(String title, String description, boolean isOnSale, float price, String currency, int userId, byte[] image) {
         this.title = title;
         this.description = description;
         this.isOnSale = isOnSale;
@@ -78,7 +79,7 @@ public class Item  implements Parcelable {
         isOnSale = in.readByte() != 0;
         price = in.readFloat();
         currency = in.readString();
-        image = in.readString();
+        //image = in.readString();
         userId = in.readInt();
     }
 
@@ -152,11 +153,11 @@ public class Item  implements Parcelable {
         return userId;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -185,7 +186,7 @@ public class Item  implements Parcelable {
         dest.writeByte((byte) (isOnSale ? 1 : 0));
         dest.writeFloat(price);
         dest.writeString(currency);
-        dest.writeString(image);
+        //dest.writeString(image);
         dest.writeInt(userId);
     }
 

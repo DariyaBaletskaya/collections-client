@@ -20,6 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.r0adkll.slidr.Slidr;
 
 public class MyItemDetailsActivity extends AppCompatActivity {
@@ -61,7 +62,11 @@ public class MyItemDetailsActivity extends AppCompatActivity {
 
         itemListViewModel.getItemById(itemId).observe(this, item -> {
             if (item != null) {
-                photo.setImageURI(Uri.parse(item.getImage()));
+                Glide.with(this)
+                        .asBitmap()
+                        .load(item.getImage())
+                        .error(R.drawable.ic_profile)
+                        .into(photo);
                 title.setText(item.getTitle());
                 description.setText(item.getDescription());
                 price.setText(String.valueOf(item.getPrice()) + " " + item.getCurrency());
