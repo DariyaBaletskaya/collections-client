@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity
 //            updateCollection.setId(id);
 //            editorCollectionListViewModel.update(updateCollection);
             Toast.makeText(MainActivity.this, "Collection updated", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
+            } else if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
 //            String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
 //            String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
 //            String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);

@@ -80,6 +80,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
 
     private void initView() {
         initSpinner();
+
         if (getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
             // Если это изменение айтема
             setTitle(R.string.edit_item);
@@ -91,6 +92,12 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
                 editTextPrice.setText(String.valueOf(item.getPrice()));
                 isItemOnSaleSwitch.setChecked(item.isOnSale());
                 currencySpinner.setSelection(spinnerAdapter.getPosition(item.getCurrency()));
+                Glide.with(this)
+                        .asBitmap()
+                        .load(item.getImage())
+                        .error(R.drawable.ic_profile)
+                        .into(itemImage);
+
             });
 
         } else if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
@@ -121,17 +128,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
-
-        itemImage.setOnClickListener(v -> {
-            Intent photoPickerIntent = new Intent();
-            photoPickerIntent.setType("image/*");
-            photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
-        });
-        viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-        itemCollectionJoinViewModel = ViewModelProviders.of(this).get(ItemCollectionJoinViewModel.class);
-        currentCollectionId = getIntent().getIntExtra(MainActivity.COLLECTION_ID, -1);
-        defaultCollectionId = Collection.DEFAULT_COLLECTION_ID;
     }
 
     @Override
@@ -166,10 +162,10 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
             price = 0;
         }
         String currency = currencySpinner.getSelectedItem().toString();
-        boolean isOnSale = isItemOnSaleSwitch.isChecked();String currency = currencySpinner.getSelectedItem().toString();
+        boolean isOnSale = isItemOnSaleSwitch.isChecked();
         if (!title.isEmpty() && loadedImage != null) {
             if (getIntent().hasExtra(CollectionActivity.ITEM_ID)) {
-                viewModel.updateItem(new Item(editableItemId, title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, loadedImage.getPath()));
+                viewModel.updateItem(new Item(editableItemId, title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, imageViewToByte(itemImage)));
             } else if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
                 int addedItemId = 0;
                 try {
@@ -229,7 +225,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        return byteArray;
+        return stream.toByteArray();
     }
 }

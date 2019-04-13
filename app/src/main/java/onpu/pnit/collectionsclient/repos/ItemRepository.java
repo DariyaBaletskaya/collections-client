@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
 import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
 import onpu.pnit.collectionsclient.DAO.ItemDao;
+import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 
@@ -46,6 +47,13 @@ public class ItemRepository {
     public LiveData<List<Item>> getItemsForCollection(int collectionId) {
         return itemCollectionJoinDao.getItemsForCollection(collectionId);
     }
+
+    public List<Collection> getCollectionsForItem(int itemId) {
+        List<Collection> collections = new ArrayList<>();
+        executor.execute(() -> collections.addAll(itemCollectionJoinDao.getCollectionsForItem(itemId)));
+        return collections;
+    }
+
     public LiveData<List<Item>> getAllItems() {
         return itemDao.getAllItems();
     }
@@ -67,12 +75,7 @@ public class ItemRepository {
     }
 
     public long insertItem(Item item) throws ExecutionException, InterruptedException {
-        Callable<Long> callable = new Callable<Long>() {
-            @Override
-            public Long call() throws Exception {
-                return itemDao.insertItem(item);
-            }
-        };
+        Callable<Long> callable = () -> itemDao.insertItem(item);
         Future<Long> future = executorService.submit(callable);
         return  future.get();
     }

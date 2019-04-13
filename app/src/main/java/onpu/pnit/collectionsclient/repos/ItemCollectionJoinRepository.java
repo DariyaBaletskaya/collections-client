@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
 import onpu.pnit.collectionsclient.DAO.ItemCollectionJoinDao;
+import onpu.pnit.collectionsclient.entities.Collection;
 import onpu.pnit.collectionsclient.entities.Item;
 import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 

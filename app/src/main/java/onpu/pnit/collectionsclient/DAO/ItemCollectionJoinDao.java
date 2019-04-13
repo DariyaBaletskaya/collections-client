@@ -24,7 +24,7 @@ public interface ItemCollectionJoinDao {
     @Query("SELECT * FROM collections c WHERE c.collection_id IN " +
             "(SELECT collection_id FROM item_collection_join ic " +
             "WHERE ic.item_id=:itemId)")
-    LiveData<List<Collection>> getCollectionsForItem(int itemId);
+    List<Collection> getCollectionsForItem(int itemId);
 
     @Query("SELECT * FROM items i WHERE i.item_id IN " +
             "(SELECT item_id FROM item_collection_join ic " +

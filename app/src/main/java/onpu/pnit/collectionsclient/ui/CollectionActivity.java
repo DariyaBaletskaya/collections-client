@@ -112,16 +112,6 @@ public class CollectionActivity extends AppCompatActivity {
         viewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
         if (collectionId != -1) {   // print items which contain in select collection
             viewModel.getItemsForCollection(collectionId).observe(this, items -> adapter.submitList(items));
-//            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-//                viewModel.getAllItems().observe(this, items -> {
-//                    adapter.submitList(items);
-//                });
-//            } else {
-//                viewModel.getItemsForCollection(collectionId).observe(this, items -> {
-//                    adapter.submitList(items);
-//                });
-//                itemCollectionJoinViewModel.getItemsForCollection(collectionId).observe(this, items ->
-//                        adapter.submitList(items));
         }
 
     }
@@ -129,15 +119,12 @@ public class CollectionActivity extends AppCompatActivity {
 
     private void initAdapter() {
         adapter = new ItemListAdapter(getApplicationContext());
-        adapter.setOnItemClickListener(new ItemListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int itemId, int position) {
-                cachedItem = adapter.getItemAt(position);
-                cachedJoins = viewModel.getAllJoinsForItem(itemId);
-                Intent i = new Intent(CollectionActivity.this, MyItemDetailsActivity.class);
-                i.putExtra(ITEM_ID, itemId);
-                CollectionActivity.this.startActivityForResult(i, DELETE_ITEM_REQUEST);
-            }
+        adapter.setOnItemClickListener((itemId, position) -> {
+            cachedItem = adapter.getItemAt(position);
+            cachedJoins = viewModel.getAllJoinsForItem(itemId);
+            Intent i = new Intent(CollectionActivity.this, MyItemDetailsActivity.class);
+            i.putExtra(ITEM_ID, itemId);
+            CollectionActivity.this.startActivityForResult(i, DELETE_ITEM_REQUEST);
         });
     }
 
@@ -244,12 +231,13 @@ public class CollectionActivity extends AppCompatActivity {
             } else {
                 viewModel.deleteItemFromCollection(cachedItem.getId(), collectionId);
             }
-
             // Снекбар для отмены действия
             Snackbar.make(findViewById(R.id.collection_frame_layout), "Deleted", Snackbar.LENGTH_LONG)
                     .setAction("Undo", v -> {
+                        Toast.makeText(this, String.valueOf(cachedJoins.size()), Toast.LENGTH_SHORT).show();
                         if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                             try {
+                                /*ошибка где-то тут. cachedItem и cachedJoins - в порядке, вьюмодел их не добавляет в бд*/
                                 viewModel.insertItem(cachedItem);
                                 viewModel.insertJoins(cachedJoins);
                             } catch (ExecutionException e) {
@@ -257,6 +245,7 @@ public class CollectionActivity extends AppCompatActivity {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
+
                         } else {
                             viewModel.insertItemInCollection(cachedItem.getId(), collectionId);
                         }

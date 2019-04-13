@@ -37,12 +37,7 @@ public class ItemListViewModel extends AndroidViewModel {
     }
 
     public long insertItem(Item item) throws ExecutionException, InterruptedException {
-        Callable<Long> callable = new Callable<Long>() {
-            @Override
-            public Long call() throws Exception {
-                return itemRepository.insertItem(item);
-            }
-        };
+        Callable<Long> callable = () -> itemRepository.insertItem(item);
         Future<Long> future = executorService.submit(callable);
         return future.get();
     }
@@ -53,6 +48,10 @@ public class ItemListViewModel extends AndroidViewModel {
 
     public LiveData<List<Item>> getItemsForCollection(int collectionId) {
         return itemRepository.getItemsForCollection(collectionId);
+    }
+
+    public List<Collection> getCollectionsForItem(int itemId) {
+        return itemRepository.getCollectionsForItem(itemId);
     }
 
     public void deleteItem(Item item) {
