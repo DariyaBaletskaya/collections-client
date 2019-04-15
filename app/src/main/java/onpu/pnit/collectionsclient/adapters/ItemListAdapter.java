@@ -1,41 +1,23 @@
 package onpu.pnit.collectionsclient.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Item;
-import onpu.pnit.collectionsclient.ui.CollectionActivity;
-import onpu.pnit.collectionsclient.ui.ItemAddEditActivity;
-import onpu.pnit.collectionsclient.ui.MainActivity;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewHolder> {
 
@@ -77,23 +59,32 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemViewH
                 .asBitmap()
                 .load(currentItem.getImage())
                 .error(R.drawable.ic_profile)
-                .into(holder.img);
+                .into(holder.image);
 
+        /*Настраиваем картинку по размеру, иначе при карточка будет сначала маленькой (только текст),
+        * а при подгрузке картинки она будет резко меняться, подстраиваясь под нее. А так карточка изначально будет по размеру
+        * и если картинка будет долго подгружаться, вьюшка скакать не будет*/
+        ConstraintSet set = new ConstraintSet();
+        String ratio = String.format("%d:%d", currentItem.getWidth(), currentItem.getHeigth());
+        set.clone(holder.constraintLayout);
+        set.setDimensionRatio(holder.image.getId(), ratio);
+        set.applyTo(holder.constraintLayout);
 
     }
 
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView img;
+        ImageView image;
         TextView title;
+        ConstraintLayout constraintLayout;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            img = itemView.findViewById(R.id.card_item_photo);
+            image = itemView.findViewById(R.id.card_item_photo);
             title = itemView.findViewById(R.id.card_item_title);
-
+            constraintLayout = itemView.findViewById(R.id.item_card_constrainlayout);
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onItemClick(getItem(getAdapterPosition()).getId(), getAdapterPosition());

@@ -1,5 +1,6 @@
 package onpu.pnit.collectionsclient.entities;
 
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -43,7 +44,6 @@ public class Item  implements Parcelable {
     @JsonProperty("userId")
     @ColumnInfo(name = "user_id", index = true)
     private int userId;
-
 
     @Ignore
     public Item(int id, String title, String description, boolean isOnSale, float price, String currency, int userId, byte[] image) {
@@ -92,7 +92,6 @@ public class Item  implements Parcelable {
                 ", isOnSale=" + isOnSale +
                 ", price=" + price +
                 ", currency='" + currency + '\'' +
-                ", image='" + image + '\'' +
                 ", userId=" + userId +
                 '}';
     }
@@ -190,5 +189,12 @@ public class Item  implements Parcelable {
         dest.writeInt(userId);
     }
 
+    /*Методы для предварительной настройки вьюхолдера под загружаемую картинку*/
+    public int getWidth() {
+        return BitmapFactory.decodeByteArray(image, 0, image.length).getWidth();
+    }
+    public int getHeigth() {
+        return BitmapFactory.decodeByteArray(image, 0, image.length).getHeight();
+    }
 
 }
