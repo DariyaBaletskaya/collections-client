@@ -27,10 +27,11 @@ public interface UserClient {
             @Field("password") String password
     );
 
-    @Headers("Content-type:application/json")
+    @GET("/registration")
+    Call<User> getRegistrationPage();
+
     @GET("/users/{username}")
     Call<User> getUser(@Path("username") String username);
-
 
 
 }
