@@ -1,6 +1,8 @@
 package onpu.pnit.collectionsclient.auth;
 
 
+import java.util.List;
+
 import onpu.pnit.collectionsclient.entities.User;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -30,8 +32,8 @@ public interface UserClient {
     @GET("/registration")
     Call<User> getRegistrationPage();
 
-    @GET("/users/{username}")
-    Call<User> getUser(@Path("username") String username);
+    @GET("/users")
+    Call<List<User>> getUsers();
 
 
 }

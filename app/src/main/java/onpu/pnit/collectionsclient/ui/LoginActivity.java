@@ -9,8 +9,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,94 +90,33 @@ public class LoginActivity extends AppCompatActivity {
     //login existing user
     private void doLogin(String username, String password) {
 
-        Call<User> callGet = userClient.getRegistrationPage();
-        callGet.enqueue(new Callback<User>() {
+
+
+        Call<List<User>> callGetUsername = userClient.getUsers();
+
+        callGetUsername.enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                BusProvider.getInstance().post(new ServerEvent(response.body()));
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                List<User> users = response.body();
+                for(User u : users){
+                    if(u.getUsername().equals(username)){
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                        i.putExtra(USERNAME, username);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Try again!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // handle execution failures like no internet connectivity
-                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
+            public void onFailure(Call<List<User>>call, Throwable t) {
+                BusProvider.getInstance().post(new ErrorEvent(-2,t.getMessage()));
             }
+
         });
-
-
-        Call<User> callPost = userClient.registerUser(username, password);
-
-            callPost.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    BusProvider.getInstance().post(new ServerEvent(response.body()));
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    // handle execution failures like no internet connectivity
-                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-                }
-            });
-
-            Call<User> callGetUsername = userClient.getUser(username);
-
-            callGetUsername.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-
-                    System.out.println(response.body().getUsername());
-                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                    i.putExtra(USERNAME, username);
-                    startActivity(i);
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    // handle execution failures like no internet connectivity
-                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-                }
-            });
-
-        Call<User> callLogin = userClient.loginUser(username,password);
-        callLogin.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                BusProvider.getInstance().post(new ServerEvent(response.body()));
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // handle execution failures like no internet connectivity
-                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-            }
-        });
-
-
-
 
     }
-
-    //getting user from the DB to accept credentials
-//    private void acceptLogin(String username)  {
-//
-//        Call<User> callGet = userClient.getUser(username);
-//        callGet.enqueue(new Callback<User>() {
-//        @Override
-//        public void onResponse(Call<User> call, Response<User> response) {
-//            BusProvider.getInstance().post(new ServerEvent(response.body()));
-//            System.out.println(response.body());
-//        }
-//
-//        @Override
-//        public void onFailure(Call<User> call, Throwable t) {
-//            // handle execution failures like no internet connectivity
-//            BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-//
-//        }
-//    });
-
-
 
 }
 
