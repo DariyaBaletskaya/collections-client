@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CollectionsApp</string>
+    <string name="app_name">Sammler</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">John Doe</string>
@@ -169,7 +169,7 @@
     <string name="give_title_to_collection">Please give a title to collection</string>
     <string name="title_activity_collection_scrolling">CollectionScrollingActivity</string>
     <string name="title_activity_collection">CollectionActivity</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Sammler</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
