@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity
                 closeFabMenu();
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
                 i.putExtra(COLLECTION_ID, swipedCollection.getId());// needed for setting correct title in activity Edit
+                adapter.notifyItemChanged(position); // to reset viewholder after swiping (otherwise if we close editing window we'll see an option viewholder
                 startActivityForResult(i, EDIT_COLLECTION_REQUEST);
 
             }
@@ -346,7 +347,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == ADD_COLLECTION_REQUEST && resultCode == RESULT_OK) {     //  Create new collection
 //            String title = data.getStringExtra(CollectionAddEditActivity.EXTRA_TITLE);
 //            String description = data.getStringExtra(CollectionAddEditActivity.EXTRA_DESCRIPTION);
