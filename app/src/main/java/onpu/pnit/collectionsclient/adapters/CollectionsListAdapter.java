@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,9 +20,12 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.viewmodel.CollectionViewModel;
+import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
 
 public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsListAdapter.CollectionViewHolder> {
 
+    private EditorCollectionViewModel viewmodel;
     private Context context;
     private OnCollectionClickListener listener;
 
@@ -36,9 +42,10 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     };
 
 
-    public CollectionsListAdapter(Context context) {
+    public CollectionsListAdapter(Context context, EditorCollectionViewModel viewmodel) {
         super(DIFF_CALLBACK);
         this.context = context;
+        this.viewmodel = viewmodel;
     }
 
     @NonNull
@@ -49,16 +56,30 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
         return new CollectionViewHolder(itemView);
     }
 
+    @NonNull
+    @Override
+    public List<Collection> getCurrentList() {
+        return super.getCurrentList();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         Collection currentCollection = getItem(position);
         holder.title.setText(currentCollection.getTitle());
         holder.category.setText(currentCollection.getCategory());
         holder.id = currentCollection.getId();
-        Glide.with(context)
-                .load(currentCollection.getImage())
-                .into(holder.image);
+        /*Doesn't work. Maybe we can't use viewmodel in adapter.
+        * methods in dao and repo return the first item of collection correctly,
+        * viewmodel method doensn't
+        * Maybe we can use android data binding
+        * NOW IMAGE OF COLLECTION IS HIDDEN
+        * TODO: fix it*/
+//        Glide.with(context)
+//                .load(viewmodel.getFirstItemOfCollection(currentCollection.getId()).getImage())
+//                .into(holder.image);
     }
+
+
 
     public class CollectionViewHolder extends RecyclerView.ViewHolder {
 

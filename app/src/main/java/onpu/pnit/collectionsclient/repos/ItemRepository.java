@@ -10,6 +10,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
@@ -46,6 +47,12 @@ public class ItemRepository {
 
     public LiveData<List<Item>> getItemsForCollection(int collectionId) {
         return itemCollectionJoinDao.getItemsForCollection(collectionId);
+    }
+
+    public Item getFirstItemForCollection(int collectionId) {
+        AtomicReference<Item> item = new AtomicReference<>();
+        executor.execute(() -> item.set(itemCollectionJoinDao.getFirstItemForCollection(collectionId)));
+        return item.get();
     }
 
     public List<Collection> getCollectionsForItem(int itemId) {
@@ -129,7 +136,34 @@ public class ItemRepository {
         return joins;
     }
 
+    public List<ItemCollectionJoin> getAllJoinsForCollection(int collectionId) {
+        List<ItemCollectionJoin> joins = new ArrayList<>();
+        executor.execute(() -> {
+            joins.addAll(itemCollectionJoinDao.getAllJoinsForCollection(collectionId));
+        });
+
+        return joins;
+    }
+
     public void insertJoins(List<ItemCollectionJoin> joins) {
         executor.execute(() -> itemCollectionJoinDao.insert(joins));
+    }
+
+    public List<ItemCollectionJoin> getAllJoinsForNotDefaultCollections() {
+        List<ItemCollectionJoin> joins = new ArrayList<>();
+        executor.execute(() -> {
+            joins.addAll(itemCollectionJoinDao.getAllJoinsForNotDefaultCollections());
+        });
+
+        return joins;
+    }
+
+    public List<ItemCollectionJoin> getAllJoins() {
+        List<ItemCollectionJoin> joins = new ArrayList<>();
+        executor.execute(() -> {
+            joins.addAll(itemCollectionJoinDao.getAllJoins());
+        });
+
+        return joins;
     }
 }

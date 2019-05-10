@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import onpu.pnit.collectionsclient.AppDatabase;
 import onpu.pnit.collectionsclient.DAO.CollectionDao;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.entities.Item;
 
 public class CollectionRepository {
 
@@ -96,5 +97,10 @@ public class CollectionRepository {
     public void insertCollection(Collection collection) {
         executor.execute(() -> collectionDao.insertCollection(collection));
     }
+
+    public void insertCollections(List<Collection> collections) {
+        executor.execute(() -> collectionDao.insertCollections(collections));
+    }
+
 
 }

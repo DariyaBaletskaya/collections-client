@@ -31,6 +31,8 @@ public interface ItemCollectionJoinDao {
             "WHERE ic.collection_id=:collectionId)")
     LiveData<List<Item>> getItemsForCollection(int collectionId);
 
+    @Query("SELECT * FROM items i WHERE i.item_id =(SELECT item_id FROM item_collection_join WHERE collection_id=:collectionId  LIMIT 1)")
+    Item getFirstItemForCollection(int collectionId);
 
     @Query("DELETE FROM item_collection_join WHERE collection_id=:collectionId")
     void deleteAllItemsFromCollection(int collectionId);
@@ -44,6 +46,12 @@ public interface ItemCollectionJoinDao {
     @Query("SELECT * FROM item_collection_join WHERE item_id=:itemId")
     List<ItemCollectionJoin> getJoinsForItem(int itemId);
 
+    @Query("SELECT * FROM item_collection_join WHERE collection_id!=1")
+    List<ItemCollectionJoin> getAllJoinsForNotDefaultCollections();
+
     @Query("SELECT * FROM item_collection_join")
     List<ItemCollectionJoin> getAllJoins();
+
+    @Query("SELECT * FROM item_collection_join WHERE collection_id=:collectionId")
+    List<ItemCollectionJoin> getAllJoinsForCollection(int collectionId);
 }

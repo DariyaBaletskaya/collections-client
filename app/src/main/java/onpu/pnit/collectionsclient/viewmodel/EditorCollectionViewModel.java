@@ -11,47 +11,76 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.entities.Item;
+import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.repos.CollectionRepository;
+import onpu.pnit.collectionsclient.repos.ItemCollectionJoinRepository;
+import onpu.pnit.collectionsclient.repos.ItemRepository;
 
 /*
 * Class which use for creating new collection in DB
 * */
 public class EditorCollectionViewModel extends AndroidViewModel {
-    private CollectionRepository repository;
+    private CollectionRepository collectionRepository;
+    private ItemRepository itemRepository;
     private Executor executor = Executors.newSingleThreadExecutor();
     private MutableLiveData<Collection> mCollection = new MutableLiveData<>();
 
     public EditorCollectionViewModel(@NonNull Application application) {
         super(application);
-        repository = CollectionRepository.getInstance(application);
+        collectionRepository = CollectionRepository.getInstance(application);
+        itemRepository = ItemRepository.getInstance(application);
     }
 
-    public void insert(Collection collection) {
-        repository.insertCollection(collection);
+    public void insertCollection(Collection collection) {
+        collectionRepository.insertCollection(collection);
+    }
+
+    public void insertCollections(List<Collection> collections) {
+        collectionRepository.insertCollections(collections);
+    }
+    public void insertJoins(List<ItemCollectionJoin> joins) {
+        itemRepository.insertJoins(joins);
     }
 
     public LiveData<List<Collection>> getAllCollections() {
-        return repository.getAllCollections();
+        return collectionRepository.getAllCollections();
     }
 
-    public void delete(Collection collection) {
-        repository.deleteCollection(collection);
+    public void deleteCollection(Collection collection) {
+        collectionRepository.deleteCollection(collection);
     }
 
-    public void deleteAll() {
-        repository.deleteAllCollections();
+    public void deleteAllCollections() {
+        collectionRepository.deleteAllCollections();
     }
 
-    public void update(Collection collection) {
-        repository.updateCollection(collection);
+    public void updateCollection(Collection collection) {
+        collectionRepository.updateCollection(collection);
     }
 
     public MutableLiveData<Collection> getCollectionById(int collectionId) {
         MutableLiveData<Collection> mCollection = new MutableLiveData<>();
         executor.execute(() -> {
-            mCollection.postValue(repository.getCollectionById(collectionId));
+            mCollection.postValue(collectionRepository.getCollectionById(collectionId));
         });
         return mCollection;
+    }
+
+    public Item getFirstItemOfCollection(int collectionId) {
+        return itemRepository.getFirstItemForCollection(collectionId);
+    }
+
+    public List<ItemCollectionJoin> getAllJoinsForCollection(int collectionId) {
+        return itemRepository.getAllJoinsForCollection(collectionId);
+    }
+
+    public List<ItemCollectionJoin> getAllJoins() {
+        return itemRepository.getAllJoins();
+    }
+
+    public List<ItemCollectionJoin> getAllJoinsForNotDefaultCollections() {
+        return itemRepository.getAllJoinsForNotDefaultCollections();
     }
 
 }

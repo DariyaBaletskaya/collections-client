@@ -1,6 +1,7 @@
 package onpu.pnit.collectionsclient.ui;
 
 import android.animation.Animator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -17,8 +18,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -33,8 +38,8 @@ import onpu.pnit.collectionsclient.NetworkReceiver;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.adapters.CollectionsListAdapter;
 import onpu.pnit.collectionsclient.entities.Collection;
+import onpu.pnit.collectionsclient.entities.ItemCollectionJoin;
 import onpu.pnit.collectionsclient.viewmodel.EditorCollectionViewModel;
-import onpu.pnit.collectionsclient.viewmodel.ItemListViewModel;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
@@ -74,11 +79,8 @@ public class MainActivity extends AppCompatActivity
     FloatingActionButton fabItem;
 
 
-
     private CollectionsListAdapter adapter;
-    private EditorCollectionViewModel editorCollectionListViewModel;
-    private ItemListViewModel itemListViewModel;
-
+    private EditorCollectionViewModel viewmodel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +131,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        initRecyclerView();
-        initViewModel();
+        initRecyclerViewAndViewModel();
         initItemSwipes();
 
     }
@@ -194,8 +195,10 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void initRecyclerView() {
-        adapter = new CollectionsListAdapter(getApplicationContext());
+    public void initRecyclerViewAndViewModel() {
+        viewmodel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
+        adapter = new CollectionsListAdapter(getApplicationContext(), viewmodel);
+        viewmodel.getAllCollections().observe(this, collections -> adapter.submitList(collections));
         adapter.setOnCollectionClickListener((collectionId, position) -> {
             Intent i = new Intent(MainActivity.this, CollectionActivity.class);
             i.putExtra(COLLECTION_ID, collectionId);
@@ -204,25 +207,20 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-    }
 
-    private void initViewModel() {
-        editorCollectionListViewModel = ViewModelProviders.of(this).get(EditorCollectionViewModel.class);
-        itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
-        editorCollectionListViewModel.getAllCollections().observe(this, collections -> adapter.submitList(collections));
+
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback;
 
     //actions with swipes
     public void initItemSwipes() {
-         itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
+        itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
 
-
-
+    // Works OK!
     //callback when recycler view is swiped
     //item will be removed on swiped
     //undo option will be provided in snackbar to restore the item
@@ -233,25 +231,27 @@ public class MainActivity extends AppCompatActivity
             String title = adapter.getCollectionAt(viewHolder.getAdapterPosition()).getTitle();
 
             // backup of removed item for undo purpose
-            final Collection swipedCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
-
+            Collection swipedCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
+            List<ItemCollectionJoin> cachedJoins = viewmodel.getAllJoinsForCollection(swipedCollection.getId());
             //for deleting
-            if(direction == ItemTouchHelper.RIGHT) {
+            if (direction == ItemTouchHelper.RIGHT) {
                 if (adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
                     // remove the item from recycler view
-                    editorCollectionListViewModel.delete(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
+                    viewmodel.deleteCollection(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
                 }
                 closeFabMenu();
                 // showing snack bar with Undo option
                 Snackbar snackbar = Snackbar
                         .make(recyclerView, title + " removed!", Snackbar.LENGTH_LONG);
-                snackbar.setAction("UNDO", v ->
-                        // undo is selected, restore the deleted item
-                        editorCollectionListViewModel.insert(swipedCollection)
+                snackbar.setAction("UNDO", v -> {
+                            viewmodel.insertCollection(swipedCollection);
+                            viewmodel.insertJoins(cachedJoins);
+                        }
+
                 );
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
-            } else if(direction == ItemTouchHelper.LEFT) {
+            } else if (direction == ItemTouchHelper.LEFT) {
                 closeFabMenu();
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
                 i.putExtra(COLLECTION_ID, swipedCollection.getId());// needed for setting correct title in activity Edit
@@ -293,20 +293,61 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.collections_delete_all) {     //delete all collections
-            editorCollectionListViewModel.deleteAll();
-            Toast.makeText(MainActivity.this, "All collections deleted", Toast.LENGTH_SHORT).show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.collections_delete_all:
+                deleteAllCollections();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
+    private void deleteCollection() {
+
+    }
+
+    /*Удаление всех коллекций (кроме дефолтной, работает полностью правильно)*/
+    private void deleteAllCollections() {
+        if (adapter.getItemCount() > 1) {
+            List<Collection> cachedCollections = new ArrayList<>(adapter.getCurrentList());
+            cachedCollections.remove(0); // remove default collection to avoid sql conflict
+            List<ItemCollectionJoin> cachedJoins = viewmodel.getAllJoinsForNotDefaultCollections();
+            // Создаем диалог для подтверждения действия
+            AlertDialog confirmationDialog = new AlertDialog.Builder(MainActivity.this)
+                    .setMessage("Delete all collections?")
+                    // пользователь подтверждает удаление
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { // Удаление
+
+                            viewmodel.deleteAllCollections();
+                            // Снекбар для отмены действия
+                            Snackbar.make(findViewById(R.id.main_constrainlayout), "Deleted!", Snackbar.LENGTH_LONG)
+                                    .setAction("Undo", v -> { // отмена удаления
+                                        viewmodel.insertCollections(cachedCollections);
+                                        viewmodel.insertJoins(cachedJoins);
+                                    })
+                                    .addCallback(new Snackbar.Callback() {
+                                        @Override
+                                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                                            super.onDismissed(transientBottomBar, event);
+                                            if (event != DISMISS_EVENT_ACTION) {
+                                                viewmodel.deleteAllCollections();
+                                                Toast.makeText(MainActivity.this, "All collections deleted!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    })
+                                    .show();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
+                    .create();
+            confirmationDialog.show();
+        } else {
+            Toast.makeText(MainActivity.this, "Nothing to delete!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -317,12 +358,12 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_search) {
 
         } else if (id == R.id.nav_profile) {
-            Intent i = new Intent(MainActivity.this, ViewProfile.class);
-            startActivity(i);
+//            Intent i = new Intent(MainActivity.this, ViewProfile.class);
+//            startActivity(i);
 
         } else if (id == R.id.nav_favorites) {
-            Intent i = new Intent(MainActivity.this, CollectionActivity.class);
-            startActivity(i);
+//            Intent i = new Intent(MainActivity.this, CollectionActivity.class);
+//            startActivity(i);
 
         } else if (id == R.id.nav_settings) {
 
@@ -371,7 +412,7 @@ public class MainActivity extends AppCompatActivity
 //            updateCollection.setId(id);
 //            editorCollectionListViewModel.update(updateCollection);
             Toast.makeText(MainActivity.this, "Collection updated", Toast.LENGTH_SHORT).show();
-            } else if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
+        } else if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) { //create new items
 //            String title = data.getStringExtra(ItemAddEditActivity.EXTRA_TITLE);
 //            String description = data.getStringExtra(ItemAddEditActivity.EXTRA_DESCRIPTION);
 //            String price = data.getStringExtra(ItemAddEditActivity.EXTRA_PRICE);
@@ -381,7 +422,7 @@ public class MainActivity extends AppCompatActivity
 //            itemListViewModel.insert(newItem);
             Toast.makeText(MainActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(MainActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
         }
 
     }

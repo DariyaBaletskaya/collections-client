@@ -128,4 +128,8 @@ public class ItemListViewModel extends AndroidViewModel {
     public void insertItemInCollection(int itemId, int collectionId) {
         itemCollectionJoinRepository.insertItemCollectionJoin(itemId, collectionId);
     }
+
+    public List<ItemCollectionJoin> getAllJoinsForCollection(int collectionId) {
+        return itemRepository.getAllJoinsForCollection(collectionId);
+    }
 }

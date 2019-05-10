@@ -162,44 +162,37 @@ public class CollectionActivity extends AppCompatActivity {
 
     }
 
-    /*Обработка действия "Удалить все" в меню*/
-    // TODO: FIX
+    // удаление из кастомной коллекции работает нормально
+    //   TODO: удаление из дефолтной (вылетает при  undo)
     private void deleteAllItems() {
-        /*Кеш всех удаляемых предметов*/
-        List<Item> cachedItems = new ArrayList<>();
+
         /*Кеш удаляемых связей для всех предметов*/
         /*Проверяем, не пустая ли коллекция*/
         if (adapter.getItemCount() > 0) {
             // Создаем диалог для подтверждения действия
             AlertDialog confirmationDialog = new AlertDialog.Builder(CollectionActivity.this)
-                    .setMessage(R.string.q_delete_all_items)
+                    .setMessage("Delete all collections?")
                     // пользователь подтверждает удаление
                     .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { // Удаление
-                            cachedItems.addAll(adapter.getCurrentList()); // Кешируем список предметов (ОК)
-                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) { // если удаляем из дефолтной коллекции
-                                /*так как удаляем все айтемы, кешируем все связи*/
-                                /*не работает*/
-                                cachedJoins.addAll(viewModel.getAllJoins());
-                                // Если это all items, удаляем вообще все айтемы
-                                // используем viewmodel, тк в дефолтной коллекции список айтемов определяется ей
+                            List<Item> cachedItems = new ArrayList<>(adapter.getCurrentList());
+                            List<ItemCollectionJoin> cachedJoins = new ArrayList<>();
+                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                                cachedJoins = viewModel.getAllJoins();
                                 viewModel.deleteAllItems();
                             } else {
-                                // Если это кастомная коллекция, удаляем айтемы только из нее (удаление связей)
+                                cachedJoins = viewModel.getAllJoinsForCollection(collectionId);
                                 viewModel.deleteAllFromCollection(collectionId);
                             }
                             // Снекбар для отмены действия
+                            List<ItemCollectionJoin> finalCachedJoins = cachedJoins;
                             Snackbar.make(CollectionActivity.this.findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
                                     .setAction("Undo", v -> { // отмена удаления
                                         if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                                             viewModel.insertItems(cachedItems);
-                                            viewModel.insertJoins(cachedJoins);
-                                            cachedJoins.clear();
-                                        } else {
-                                            viewModel.insertItemsInCollection(collectionId, cachedItems);
                                         }
-                                        cachedItems.clear();
+                                        viewModel.insertJoins(finalCachedJoins);
                                     })
                                     .addCallback(new Snackbar.Callback() {
                                         @Override
@@ -219,9 +212,11 @@ public class CollectionActivity extends AppCompatActivity {
         } else {
             Toast.makeText(CollectionActivity.this, "Nothing to delete!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
-    /*Удаление конкретного айтема*/
+    /*Удаление конкретного айтема
+    * работает нормально*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -229,27 +224,26 @@ public class CollectionActivity extends AppCompatActivity {
             if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                 viewModel.deleteItem(cachedItem);
             } else {
+
                 viewModel.deleteItemFromCollection(cachedItem.getId(), collectionId);
             }
             // Снекбар для отмены действия
             Snackbar.make(findViewById(R.id.collection_frame_layout), "Deleted", Snackbar.LENGTH_LONG)
                     .setAction("Undo", v -> {
-                        Toast.makeText(this, String.valueOf(cachedJoins.size()), Toast.LENGTH_SHORT).show();
                         if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                             try {
                                 /*ошибка где-то тут. cachedItem и cachedJoins - в порядке, вьюмодел их не добавляет в бд*/
                                 viewModel.insertItem(cachedItem);
-                                viewModel.insertJoins(cachedJoins);
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-
+                            viewModel.insertJoins(cachedJoins);
                         } else {
                             viewModel.insertItemInCollection(cachedItem.getId(), collectionId);
                         }
-                        cachedJoins.clear();
+
                     })
                     .show();
         }

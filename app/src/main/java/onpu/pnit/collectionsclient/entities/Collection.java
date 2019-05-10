@@ -50,14 +50,19 @@ public class Collection implements Serializable {
     }
 
     @Ignore
-    public Collection() {
+    public Collection(int id, String title, String category, String description, int userId) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.description = description;
+        this.userId = userId;
     }
 
     @Ignore
-    public Collection(int id, String title, int userId, String image) {
-        this.id = id;
+    public Collection(String title, String category, String description, int userId) {
         this.title = title;
-        this.image = image;
+        this.category = category;
+        this.description = description;
         this.userId = userId;
     }
 
@@ -70,10 +75,16 @@ public class Collection implements Serializable {
         this.image = image;
     }
 
+    @Ignore
+    public Collection(int id, String title, int userId) {
+        this.id = id;
+        this.title = title;
+        this.userId = userId;
+    }
     //for test in class AppDatabase
 
     public static Collection getDefaultCollection() {
-        return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID, "https://cdn.shopify.com/s/files/1/0414/6957/products/2018_2_Unc_Coin_OBV1_a63e6dae-0c68-4455-889f-5992224da64a_2048x.jpg?v=1532311472");
+        return new Collection(DEFAULT_COLLECTION_ID, "All items", DEFAULT_USER_ID);
     }
 
     /*public static List<Collection> getSampleCollections() {
@@ -128,4 +139,5 @@ public class Collection implements Serializable {
     public void setImage(String image) {
         this.image = image;
     }
+
 }
