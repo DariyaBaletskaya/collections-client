@@ -18,8 +18,8 @@ import onpu.pnit.collectionsclient.repos.ItemCollectionJoinRepository;
 import onpu.pnit.collectionsclient.repos.ItemRepository;
 
 /*
-* Class which use for creating new collection in DB
-* */
+ * Class which use for creating new collection in DB
+ * */
 public class EditorCollectionViewModel extends AndroidViewModel {
     private CollectionRepository collectionRepository;
     private ItemRepository itemRepository;
@@ -33,14 +33,15 @@ public class EditorCollectionViewModel extends AndroidViewModel {
     }
 
     public void insertCollection(Collection collection) {
-        collectionRepository.insertCollection(collection);
+        executor.execute(() -> collectionRepository.insertCollection(collection));
     }
 
     public void insertCollections(List<Collection> collections) {
         collectionRepository.insertCollections(collections);
     }
+
     public void insertJoins(List<ItemCollectionJoin> joins) {
-        itemRepository.insertJoins(joins);
+        executor.execute(() -> itemRepository.insertJoins(joins));
     }
 
     public LiveData<List<Collection>> getAllCollections() {
@@ -48,7 +49,7 @@ public class EditorCollectionViewModel extends AndroidViewModel {
     }
 
     public void deleteCollection(Collection collection) {
-        collectionRepository.deleteCollection(collection);
+        executor.execute(() -> collectionRepository.deleteCollection(collection));
     }
 
     public void deleteAllCollections() {
@@ -83,4 +84,7 @@ public class EditorCollectionViewModel extends AndroidViewModel {
         return itemRepository.getAllJoinsForNotDefaultCollections();
     }
 
+    public void deleteAllItemsFromCollection(int collectionId) {
+        executor.execute(() -> itemRepository.deleteAllItemsFromCollection(collectionId));
+    }
 }

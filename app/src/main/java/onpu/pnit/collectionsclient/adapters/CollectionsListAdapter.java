@@ -66,7 +66,15 @@ public class CollectionsListAdapter extends ListAdapter<Collection, CollectionsL
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         Collection currentCollection = getItem(position);
         holder.title.setText(currentCollection.getTitle());
-        holder.category.setText(currentCollection.getCategory());
+
+        // to set up a default collection view
+        if (currentCollection.getCategory() == null || currentCollection.getCategory().isEmpty()) {
+            holder.category.setVisibility(View.GONE);
+
+            holder.viewBackground.setVisibility(View.INVISIBLE);
+        } else {
+            holder.category.setText(currentCollection.getCategory());
+        }
         holder.id = currentCollection.getId();
         /*Doesn't work. Maybe we can't use viewmodel in adapter.
         * methods in dao and repo return the first item of collection correctly,

@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             username = emailField.getText().toString();
             password = passwordField.getText().toString();
 
-            doLogin(username,password);
+            doLogin(username, password);
         });
 
 
@@ -91,18 +91,18 @@ public class LoginActivity extends AppCompatActivity {
     private void doLogin(String username, String password) {
 
 
-
         Call<List<User>> callGetUsername = userClient.getUsers();
 
         callGetUsername.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 List<User> users = response.body();
-                for(User u : users){
-                    if(u.getUsername().equals(username)){
+                for (User u : users) {
+                    if (u.getUsername().equals(username) /*&& u.getPassword().equals(password)*/) {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         i.putExtra(USERNAME, username);
                         startActivity(i);
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), "Try again!", Toast.LENGTH_SHORT).show();
                     }
@@ -110,8 +110,8 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<User>>call, Throwable t) {
-                BusProvider.getInstance().post(new ErrorEvent(-2,t.getMessage()));
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
             }
 
         });

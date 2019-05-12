@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -169,41 +170,55 @@ public class CollectionActivity extends AppCompatActivity {
         /*Кеш удаляемых связей для всех предметов*/
         /*Проверяем, не пустая ли коллекция*/
         if (adapter.getItemCount() > 0) {
+            int title;
+            int message;
+            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                title = R.string.q_delete_completely_all_items;
+                message = R.string.action_cannot_be_undone;
+            } else {
+                title = R.string.delete_all;
+                message = R.string.q_delete_all_items;
+            }
             // Создаем диалог для подтверждения действия
             AlertDialog confirmationDialog = new AlertDialog.Builder(CollectionActivity.this)
-                    .setMessage("Delete all collections?")
+                    .setTitle(title)
+                    .setMessage(message)
                     // пользователь подтверждает удаление
                     .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { // Удаление
-                            List<Item> cachedItems = new ArrayList<>(adapter.getCurrentList());
+//                            List<Item> cachedItems = new ArrayList<>(adapter.getCurrentList());
                             List<ItemCollectionJoin> cachedJoins = new ArrayList<>();
                             if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                                cachedJoins = viewModel.getAllJoins();
+                                // Doesn't work
+//                                cachedJoins = viewModel.getAllJoins();
                                 viewModel.deleteAllItems();
                             } else {
                                 cachedJoins = viewModel.getAllJoinsForCollection(collectionId);
                                 viewModel.deleteAllFromCollection(collectionId);
                             }
                             // Снекбар для отмены действия
-                            List<ItemCollectionJoin> finalCachedJoins = cachedJoins;
-                            Snackbar.make(CollectionActivity.this.findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
-                                    .setAction("Undo", v -> { // отмена удаления
-                                        if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                                            viewModel.insertItems(cachedItems);
-                                        }
-                                        viewModel.insertJoins(finalCachedJoins);
-                                    })
-                                    .addCallback(new Snackbar.Callback() {
-                                        @Override
-                                        public void onDismissed(Snackbar transientBottomBar, int event) {
-                                            super.onDismissed(transientBottomBar, event);
-                                            if (event != DISMISS_EVENT_ACTION)
-                                                Toast.makeText(CollectionActivity.this, "All items deleted!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .show();
-                            dialog.dismiss();
+                            if (collectionId != Collection.DEFAULT_COLLECTION_ID) {
+                                List<ItemCollectionJoin> finalCachedJoins = cachedJoins;
+                                Snackbar.make(CollectionActivity.this.findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
+                                        .setAction("Undo", v -> { // отмена удаления
+//                                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+//                                                viewModel.insertItems(cachedItems);
+//                                            }
+                                            viewModel.insertJoins(finalCachedJoins);
+                                        })
+                                        .addCallback(new Snackbar.Callback() {
+                                            @Override
+                                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                                super.onDismissed(transientBottomBar, event);
+                                                if (event != DISMISS_EVENT_ACTION)
+                                                    Toast.makeText(CollectionActivity.this, "All items deleted!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .show();
+                                dialog.dismiss();
+                            }
+
                         }
                     })
                     .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
@@ -216,7 +231,7 @@ public class CollectionActivity extends AppCompatActivity {
     }
 
     /*Удаление конкретного айтема
-    * работает нормально*/
+     * работает нормально*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

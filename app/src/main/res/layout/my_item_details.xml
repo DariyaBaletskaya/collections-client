@@ -30,28 +30,26 @@
                 android:layout_marginEnd="8dp"
                 android:gravity="end"
                 android:text="100USD"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/my_item_details_price_textview" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/my_item_details_price_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Price"
                 app:layout_constraintStart_toStartOf="@+id/my_item_details_price"
                 app:layout_constraintTop_toBottomOf="@+id/my_item_details_name" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/my_item_details_description_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/description"
                 app:layout_constraintStart_toStartOf="@+id/my_item_details_description"
@@ -91,13 +89,12 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_light"
-                android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/my_item_details_description_textview" />
 
             <Switch
                 android:id="@+id/my_item_details_is_on_sale"
@@ -123,6 +120,7 @@
                 android:fontFamily="@font/roboto_light"
                 android:gravity="center"
                 android:text="@string/likes"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/my_item_details_is_on_sale"
                 app:layout_constraintEnd_toStartOf="@+id/my_item_details_is_on_sale"
                 app:layout_constraintHorizontal_bias="0.5"

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import onpu.pnit.collectionsclient.R;
 import onpu.pnit.collectionsclient.entities.Collection;
@@ -22,8 +23,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -31,6 +34,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputLayout;
 import com.r0adkll.slidr.Slidr;
 
 import java.io.ByteArrayOutputStream;
@@ -49,7 +53,8 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     EditText editTextDescription;
     @BindView(R.id.item_price_input)
     EditText editTextPrice;
-
+    @BindView(R.id.item_add_edit_textInputLayout_price)
+    TextInputLayout priceInputLayout;
     @BindView(R.id.isItemOnSaleSwitch)
     Switch isItemOnSaleSwitch;
 
@@ -62,6 +67,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
     private ArrayAdapter<CharSequence> spinnerAdapter;
     private int collectionId = 0;
     private int editableItemId = 0;
+    private boolean hasImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +86,12 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
 
     private void initView() {
         initSpinner();
-
+        onItemOnSaleSwitchChanged(isItemOnSaleSwitch, isItemOnSaleSwitch.isChecked()); // pre-setup sale fields
         if (getIntent().hasExtra(MyItemDetailsActivity.ITEM_ID)) {
             // Если это изменение айтема
             setTitle(R.string.edit_item);
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // remove focus
+            hasImage = true;
             editableItemId = getIntent().getIntExtra(MyItemDetailsActivity.ITEM_ID, -1);
             viewModel.getItemById(editableItemId).observe(this, item -> {
                 editTextTitle.setText(item.getTitle());
@@ -107,6 +115,17 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
     }
 
+    @OnCheckedChanged(R.id.isItemOnSaleSwitch)
+    public void onItemOnSaleSwitchChanged(CompoundButton button, boolean on) {
+        if (on) {
+            currencySpinner.setVisibility(View.VISIBLE);
+            priceInputLayout.setVisibility(View.VISIBLE);
+        } else {
+            currencySpinner.setVisibility(View.GONE);
+            priceInputLayout.setVisibility(View.GONE);
+        }
+    }
+
     @OnClick(R.id.item_details_photo)
     void handleImageClick() {
         Intent photoPickerIntent = new Intent();
@@ -121,10 +140,6 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
 
     private void initSpinner() {
         spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.currencies_array, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        currencySpinner.setAdapter(spinnerAdapter);
-        currencySpinner.setOnItemSelectedListener(this);
-        spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(spinnerAdapter);
         currencySpinner.setOnItemSelectedListener(this);
@@ -163,7 +178,7 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
         }
         String currency = currencySpinner.getSelectedItem().toString();
         boolean isOnSale = isItemOnSaleSwitch.isChecked();
-        if (!title.isEmpty() && loadedImage != null) {
+        if (!title.isEmpty() && hasImage) {
             if (getIntent().hasExtra(CollectionActivity.ITEM_ID)) {
                 viewModel.updateItem(new Item(editableItemId, title, description, isOnSale, price, currency, Collection.DEFAULT_USER_ID, imageViewToByte(itemImage)));
             } else if (getIntent().hasExtra(MainActivity.COLLECTION_ID)) {
@@ -209,10 +224,10 @@ public class ItemAddEditActivity extends AppCompatActivity implements AdapterVie
             case GALLERY_REQUEST:
                 if (resultCode == RESULT_OK) {
                     loadedImage = imageReturnedIntent.getData();
-
                     Glide.with(this)
                             .load(loadedImage)
                             .into(itemImage);
+                    hasImage = true;
                 }
         }
     }

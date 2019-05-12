@@ -228,29 +228,16 @@ public class MainActivity extends AppCompatActivity
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof CollectionsListAdapter.CollectionViewHolder) {
             // get the removed item name to display it in snack bar
-            String title = adapter.getCollectionAt(viewHolder.getAdapterPosition()).getTitle();
-
-            // backup of removed item for undo purpose
             Collection swipedCollection = adapter.getCollectionAt(viewHolder.getAdapterPosition());
-            List<ItemCollectionJoin> cachedJoins = viewmodel.getAllJoinsForCollection(swipedCollection.getId());
             //for deleting
             if (direction == ItemTouchHelper.RIGHT) {
                 if (adapter.getCollectionAt(viewHolder.getAdapterPosition()).getId() != Collection.DEFAULT_COLLECTION_ID) {
                     // remove the item from recycler view
-                    viewmodel.deleteCollection(adapter.getCollectionAt(viewHolder.getAdapterPosition()));
-                }
-                closeFabMenu();
-                // showing snack bar with Undo option
-                Snackbar snackbar = Snackbar
-                        .make(recyclerView, title + " removed!", Snackbar.LENGTH_LONG);
-                snackbar.setAction("UNDO", v -> {
-                            viewmodel.insertCollection(swipedCollection);
-                            viewmodel.insertJoins(cachedJoins);
-                        }
 
-                );
-                snackbar.setActionTextColor(Color.YELLOW);
-                snackbar.show();
+                    deleteCollection(swipedCollection);
+
+                }
+
             } else if (direction == ItemTouchHelper.LEFT) {
                 closeFabMenu();
                 Intent i = new Intent(MainActivity.this, CollectionAddEditActivity.class);
@@ -302,8 +289,22 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void deleteCollection() {
+    private void deleteCollection(Collection collection) {
+        List<ItemCollectionJoin> cachedJoins = viewmodel.getAllJoinsForCollection(collection.getId());
+        viewmodel.deleteAllItemsFromCollection(collection.getId()); // not sure if it's needed.
+        viewmodel.deleteCollection(collection);
+        closeFabMenu();
+        // showing snack bar with Undo option
+        Snackbar snackbar = Snackbar
+                .make(recyclerView, collection.getTitle()+ " removed!", Snackbar.LENGTH_LONG);
+        snackbar.setAction("UNDO", v -> {
+                    viewmodel.insertCollection(collection);
+                    viewmodel.insertJoins(cachedJoins);
+                }
 
+        );
+        snackbar.setActionTextColor(Color.YELLOW);
+        snackbar.show();
     }
 
     /*Удаление всех коллекций (кроме дефолтной, работает полностью правильно)*/

@@ -37,7 +37,8 @@
     <string name="edit_item">Edit item</string>
     <string name="delete_all">Delete all</string>
     <string name="q_delete_all_items">Delete all items from collection?</string>
-
+    <string name="q_delete_completely_all_items">Delete completely all items from all collections?</string>
+    <string name="action_cannot_be_undone">This action cannot be undone!</string>
     <!--strings for enter_form.xml-->
     <string name="tv_nameProgram">Collections App</string>
     <string name="tv_taglineProgram">Collect anytime, anywhere</string>

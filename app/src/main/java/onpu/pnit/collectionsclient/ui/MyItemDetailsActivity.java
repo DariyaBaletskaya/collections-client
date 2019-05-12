@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -40,6 +41,11 @@ public class MyItemDetailsActivity extends AppCompatActivity {
     TextView price;
     @BindView(R.id.my_item_details_is_on_sale)
     Switch isOnSale;
+    @BindView(R.id.my_item_details_price_textview)
+    TextView priceTextView;
+    @BindView(R.id.my_item_details_description_textview)
+    TextView descriptionTextView;
+
     private ItemListViewModel itemListViewModel;
     private int itemId;
 
@@ -68,8 +74,20 @@ public class MyItemDetailsActivity extends AppCompatActivity {
                         .error(R.drawable.ic_profile)
                         .into(photo);
                 title.setText(item.getTitle());
-                description.setText(item.getDescription());
-                price.setText(String.valueOf(item.getPrice()) + " " + item.getCurrency());
+                if (item.getDescription() == null || item.getDescription().isEmpty()) {
+                    descriptionTextView.setVisibility(View.GONE);
+                } else {
+                    descriptionTextView.setVisibility(View.VISIBLE);
+                    description.setText(item.getDescription());
+                }
+                if (!item.isOnSale()) {
+                    priceTextView.setVisibility(View.GONE);
+                    price.setVisibility(View.GONE);
+                } else {
+                    priceTextView.setVisibility(View.VISIBLE);
+                    price.setVisibility(View.VISIBLE);
+                    price.setText(String.valueOf(item.getPrice()) + " " + item.getCurrency());
+                }
                 isOnSale.setChecked(item.isOnSale());
             }
         });
@@ -131,7 +149,7 @@ public class MyItemDetailsActivity extends AppCompatActivity {
             // TODO: починить обновление вьюшки после изменения, инициировать вьюмодел каждый раз не оч
             initViewModel();
         } else {
-            Toast.makeText(MyItemDetailsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MyItemDetailsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
     }
 }
