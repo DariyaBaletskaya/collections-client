@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -51,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String username, password;
     private UserClient userClient;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,9 @@ public class LoginActivity extends AppCompatActivity {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
 
+        sp = getSharedPreferences("login", MODE_PRIVATE);
+
+
         Retrofit retrofit = new Retrofit.Builder()
                 .client(httpClient.build())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -72,11 +77,18 @@ public class LoginActivity extends AppCompatActivity {
 
         userClient = retrofit.create(UserClient.class);
 
+        if (getIntent().hasExtra("logout")) {
+            sp.edit().putBoolean("logged", false).apply();
+        } else if (sp.getBoolean("logged", false)) {
+            doLogin(sp.getString("login", "-1"));
+        }
+
+
         signInButton.setOnClickListener(v -> {
             username = emailField.getText().toString();
             password = passwordField.getText().toString();
 
-            doLogin(username, password);
+            doLogin(username/*, password*/);
         });
 
 
@@ -87,35 +99,36 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
     //login existing user
-    private void doLogin(String username, String password) {
+    private void doLogin(String username/*, String password*/) {
+        if (!username.equals("-1")) {
+            Call<List<User>> callGetUsername = userClient.getUsers();
 
-
-        Call<List<User>> callGetUsername = userClient.getUsers();
-
-        callGetUsername.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                List<User> users = response.body();
-                for (User u : users) {
-                    if (u.getUsername().equals(username) /*&& u.getPassword().equals(password)*/) {
-                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                        i.putExtra(USERNAME, username);
-                        startActivity(i);
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Try again!", Toast.LENGTH_SHORT).show();
+            callGetUsername.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    List<User> users = response.body();
+                    for (User u : users) {
+                        if (u.getUsername().equals(username) /*&& u.getPassword().equals(password)*/) {
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            i.putExtra(USERNAME, username);
+                            startActivity(i);
+                            sp.edit().putString("login", username).putBoolean("logged", true).apply();
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Try again!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-            }
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
+                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
+                }
 
-        });
-
+            });
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package onpu.pnit.collectionsclient.viewmodel;
 
 import android.app.Application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -118,11 +119,11 @@ public class ItemListViewModel extends AndroidViewModel {
     }
 
     public void insertJoins(List<ItemCollectionJoin> joins) {
-        itemRepository.insertJoins(joins);
+        executor.execute(() -> itemRepository.insertJoins(joins));
     }
 
     public List<ItemCollectionJoin> getAllJoins() {
-        return itemCollectionJoinRepository.getAllJoins();
+        return itemRepository.getAllJoins();
     }
 
     public void insertItemInCollection(int itemId, int collectionId) {
@@ -131,5 +132,9 @@ public class ItemListViewModel extends AndroidViewModel {
 
     public List<ItemCollectionJoin> getAllJoinsForCollection(int collectionId) {
         return itemRepository.getAllJoinsForCollection(collectionId);
+    }
+
+    public void deleteAllJoins() {
+        itemRepository.deleteAllJoins();
     }
 }

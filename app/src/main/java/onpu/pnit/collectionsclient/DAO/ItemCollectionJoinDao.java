@@ -54,4 +54,7 @@ public interface ItemCollectionJoinDao {
 
     @Query("SELECT * FROM item_collection_join WHERE collection_id=:collectionId")
     List<ItemCollectionJoin> getAllJoinsForCollection(int collectionId);
+
+    @Query("DELETE FROM item_collection_join")
+    void deleteAllJoins();
 }

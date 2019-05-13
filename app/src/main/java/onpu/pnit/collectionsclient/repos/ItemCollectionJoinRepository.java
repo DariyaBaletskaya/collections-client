@@ -22,7 +22,7 @@ public class ItemCollectionJoinRepository {
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
-    public ItemCollectionJoinRepository(Application application) {
+    private ItemCollectionJoinRepository(Application application) {
         itemCollectionJoinDao = AppDatabase.getInstance(application).itemCollectionJoinDao();
     }
 

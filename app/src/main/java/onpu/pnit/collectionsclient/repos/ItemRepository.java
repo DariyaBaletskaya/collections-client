@@ -38,7 +38,7 @@ public class ItemRepository {
         if (instance == null) {
             synchronized (ItemRepository.class) {
                 if (instance == null) {
-                    instance = new ItemRepository (application);
+                    instance = new ItemRepository(application);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class ItemRepository {
     public long insertItem(Item item) throws ExecutionException, InterruptedException {
         Callable<Long> callable = () -> itemDao.insertItem(item);
         Future<Long> future = executorService.submit(callable);
-        return  future.get();
+        return future.get();
     }
 
     public void insertItems(List<Item> items) {
@@ -100,7 +100,7 @@ public class ItemRepository {
     }
 
     public Item getItemById(int id) {
-         return itemDao.getItemById(id);
+        return itemDao.getItemById(id);
     }
 
     public void deleteAllItemsFromCollection(int collectionId) {
@@ -115,7 +115,7 @@ public class ItemRepository {
 
     public void insertInCollection(int collectionId, List<Item> items) {
         executor.execute(() -> {
-            for (Item i:items) {
+            for (Item i : items) {
                 itemCollectionJoinDao.insert(new ItemCollectionJoin(i.getId(), collectionId));
             }
         });
@@ -146,7 +146,7 @@ public class ItemRepository {
     }
 
     public void insertJoins(List<ItemCollectionJoin> joins) {
-        executor.execute(() -> itemCollectionJoinDao.insert(joins));
+        itemCollectionJoinDao.insert(joins);
     }
 
     public List<ItemCollectionJoin> getAllJoinsForNotDefaultCollections() {
@@ -165,5 +165,9 @@ public class ItemRepository {
         });
 
         return joins;
+    }
+
+    public void deleteAllJoins() {
+        executor.execute(() -> itemCollectionJoinDao.deleteAllJoins());
     }
 }

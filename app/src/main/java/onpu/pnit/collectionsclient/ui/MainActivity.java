@@ -1,6 +1,7 @@
 package onpu.pnit.collectionsclient.ui;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -370,6 +371,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_signout) {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            i.putExtra("logout", true);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         } else if (id == R.id.nav_help) {
 

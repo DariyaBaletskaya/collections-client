@@ -2,6 +2,7 @@ package onpu.pnit.collectionsclient.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -163,10 +164,8 @@ public class CollectionActivity extends AppCompatActivity {
 
     }
 
-    // удаление из кастомной коллекции работает нормально
-    //   TODO: удаление из дефолтной (вылетает при  undo)
+    // ошибка многопоточности, если быстро удалить и нажать анду, то будет вылет (ошибка sql, не успевает каскадно удалить из таблицы связи
     private void deleteAllItems() {
-
         /*Кеш удаляемых связей для всех предметов*/
         /*Проверяем, не пустая ли коллекция*/
         if (adapter.getItemCount() > 0) {
@@ -187,25 +186,25 @@ public class CollectionActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { // Удаление
-//                            List<Item> cachedItems = new ArrayList<>(adapter.getCurrentList());
-                            List<ItemCollectionJoin> cachedJoins = new ArrayList<>();
+                            List<Item> cachedItems = new ArrayList<>(adapter.getCurrentList());
+                            List<ItemCollectionJoin> cachedJoins;
                             if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                                Toast.makeText(CollectionActivity.this, "DEFAULT", Toast.LENGTH_SHORT).show();
                                 // Doesn't work
-//                                cachedJoins = viewModel.getAllJoins();
+                                cachedJoins = viewModel.getAllJoins();
                                 viewModel.deleteAllItems();
                             } else {
                                 cachedJoins = viewModel.getAllJoinsForCollection(collectionId);
                                 viewModel.deleteAllFromCollection(collectionId);
                             }
                             // Снекбар для отмены действия
-                            if (collectionId != Collection.DEFAULT_COLLECTION_ID) {
-                                List<ItemCollectionJoin> finalCachedJoins = cachedJoins;
+//                            if (collectionId != Collection.DEFAULT_COLLECTION_ID) {
                                 Snackbar.make(CollectionActivity.this.findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
                                         .setAction("Undo", v -> { // отмена удаления
-//                                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-//                                                viewModel.insertItems(cachedItems);
-//                                            }
-                                            viewModel.insertJoins(finalCachedJoins);
+                                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
+                                                viewModel.insertItems(cachedItems);
+                                            }
+                                            viewModel.insertJoins(cachedJoins);
                                         })
                                         .addCallback(new Snackbar.Callback() {
                                             @Override
@@ -217,7 +216,7 @@ public class CollectionActivity extends AppCompatActivity {
                                         })
                                         .show();
                                 dialog.dismiss();
-                            }
+//                            }
 
                         }
                     })
