@@ -186,25 +186,21 @@ public class CollectionActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { // Удаление
-                            List<Item> cachedItems = new ArrayList<>(adapter.getCurrentList());
-                            List<ItemCollectionJoin> cachedJoins;
+                            List<ItemCollectionJoin> cachedJoins = viewModel.getAllJoins();
+                            ;
                             if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                                Toast.makeText(CollectionActivity.this, "DEFAULT", Toast.LENGTH_SHORT).show();
                                 // Doesn't work
-                                cachedJoins = viewModel.getAllJoins();
                                 viewModel.deleteAllItems();
                             } else {
                                 cachedJoins = viewModel.getAllJoinsForCollection(collectionId);
                                 viewModel.deleteAllFromCollection(collectionId);
                             }
                             // Снекбар для отмены действия
-//                            if (collectionId != Collection.DEFAULT_COLLECTION_ID) {
+                            if (collectionId != Collection.DEFAULT_COLLECTION_ID) {
+                                List<ItemCollectionJoin> finalCachedJoins = cachedJoins;
                                 Snackbar.make(CollectionActivity.this.findViewById(R.id.collection_frame_layout), "Deleted!", Snackbar.LENGTH_LONG)
                                         .setAction("Undo", v -> { // отмена удаления
-                                            if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
-                                                viewModel.insertItems(cachedItems);
-                                            }
-                                            viewModel.insertJoins(cachedJoins);
+                                            viewModel.insertJoins(finalCachedJoins);
                                         })
                                         .addCallback(new Snackbar.Callback() {
                                             @Override
@@ -216,7 +212,7 @@ public class CollectionActivity extends AppCompatActivity {
                                         })
                                         .show();
                                 dialog.dismiss();
-//                            }
+                            }
 
                         }
                     })
