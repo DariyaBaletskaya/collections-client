@@ -1,45 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="categories_array">
-        <item>Другое</item>
-        <item>Монеты</item>
-        <item>Почтовые марки</item>
-        <item>Картины</item>
-        <item>Модели</item>
-        <item>Автомобили</item>
-        <item>Кинофильмы</item>
-        <item>Музыкальные диски</item>
-        <item>Виниловые пластинки</item>
-        <item>Компьютерные игры</item>
-        <item>Насекомые</item>
-        <item>Минералы</item>
-        <item>Раковины моллюсков</item>
-        <item>Цветы</item>
-        <item>Купюры</item>
-        <item>Нашивки и шевроны</item>
-        <item>Униформа</item>
-        <item>Ордена, медали, значки</item>
-        <item>Пуговицы</item>
-        <item>Книги</item>
-        <item>Наклейки</item>
-        <item>Билеты</item>
-        <item>Часы</item>
-        <item>Посуда</item>
-        <item>Предметы из стекла</item>
-        <item>Техника</item>
-        <item>Бирдекели</item>
-        <item>Бабочки</item>
-        <item>Кактусы</item>
-        <item>Растения</item>
-        <item>Комнатные растения</item>
-        <item>Конструкторы</item>
-        <item>Куклы</item>
-        <item>Брелоки</item>
-        <item>Свечи</item>
-        <item>Вино</item>
-        <item>Алкоголь</item>
-        <item>Канцелярия</item>
-        <item>Настольные игры</item>
-        <item>Игральные карты</item>
+        <item>Other</item>
+        <item>Coins</item>
+        <item>Postage stamps</item>
+        <item>Paintings</item>
+        <item>Models</item>
+        <item>Cars</item>
+        <item>Movies</item>
+        <item>Music CDs</item>
+        <item>Vinyl records</item>
+        <item>Computer games</item>
+        <item>Insects</item>
+        <item>Minerals</item>
+        <item>Shellfish Sinks</item>
+        <item>Flowers</item>
+        <item>Bills</item>
+        <item>Stripes and Chevrons</item>
+        <item>Uniform</item>
+        <item>Orders, Medals, Badges</item>
+        <item>Buttons</item>
+        <item>Books</item>
+        <item>Stickers</item>
+        <item>Tickets</item>
+        <item>Watch</item>
+        <item>Tableware</item>
+        <item>Glass Objects</item>
+        <item>Technique</item>
+        <item>Beerdekels</item>
+        <item>Butterflies</item>
+        <item>Cacti</item>
+        <item>Plants</item>
+        <item>House Plants</item>
+        <item>Constructors</item>
+        <item>Dolls</item>
+        <item>Charms</item>
+        <item>Candles</item>
+        <item>Wine</item>
+        <item>Alcohol</item>
+        <item>Office</item>
+        <item>Board Games</item>
+        <item>Playing cards</item>
+        <!--<item>Другое</item>-->
+        <!--<item>Монеты</item>-->
+        <!--<item>Почтовые марки</item>-->
+        <!--<item>Картины</item>-->
+        <!--<item>Модели</item>-->
+        <!--<item>Автомобили</item>-->
+        <!--<item>Кинофильмы</item>-->
+        <!--<item>Музыкальные диски</item>-->
+        <!--<item>Виниловые пластинки</item>-->
+        <!--<item>Компьютерные игры</item>-->
+        <!--<item>Насекомые</item>-->
+        <!--<item>Минералы</item>-->
+        <!--<item>Раковины моллюсков</item>-->
+        <!--<item>Цветы</item>-->
+        <!--<item>Купюры</item>-->
+        <!--<item>Нашивки и шевроны</item>-->
+        <!--<item>Униформа</item>-->
+        <!--<item>Ордена, медали, значки</item>-->
+        <!--<item>Пуговицы</item>-->
+        <!--<item>Книги</item>-->
+        <!--<item>Наклейки</item>-->
+        <!--<item>Билеты</item>-->
+        <!--<item>Часы</item>-->
+        <!--<item>Посуда</item>-->
+        <!--<item>Предметы из стекла</item>-->
+        <!--<item>Техника</item>-->
+        <!--<item>Бирдекели</item>-->
+        <!--<item>Бабочки</item>-->
+        <!--<item>Кактусы</item>-->
+        <!--<item>Растения</item>-->
+        <!--<item>Комнатные растения</item>-->
+        <!--<item>Конструкторы</item>-->
+        <!--<item>Куклы</item>-->
+        <!--<item>Брелоки</item>-->
+        <!--<item>Свечи</item>-->
+        <!--<item>Вино</item>-->
+        <!--<item>Алкоголь</item>-->
+        <!--<item>Канцелярия</item>-->
+        <!--<item>Настольные игры</item>-->
+        <!--<item>Игральные карты</item>-->
     </string-array>
 </resources>

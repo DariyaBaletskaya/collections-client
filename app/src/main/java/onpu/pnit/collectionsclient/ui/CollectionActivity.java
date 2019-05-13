@@ -234,7 +234,6 @@ public class CollectionActivity extends AppCompatActivity {
             if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                 viewModel.deleteItem(cachedItem);
             } else {
-
                 viewModel.deleteItemFromCollection(cachedItem.getId(), collectionId);
             }
             // Снекбар для отмены действия
@@ -242,7 +241,6 @@ public class CollectionActivity extends AppCompatActivity {
                     .setAction("Undo", v -> {
                         if (collectionId == Collection.DEFAULT_COLLECTION_ID) {
                             try {
-                                /*ошибка где-то тут. cachedItem и cachedJoins - в порядке, вьюмодел их не добавляет в бд*/
                                 viewModel.insertItem(cachedItem);
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
@@ -256,6 +254,8 @@ public class CollectionActivity extends AppCompatActivity {
 
                     })
                     .show();
+        } else if (requestCode == EDIT_COLLECTION_REQUEST && resultCode == RESULT_OK) {
+            initView();
         }
 
     }
